@@ -22,24 +22,28 @@ html, body {
 }
 
 .page {
-  min-height: 100vh;
-  display: grid;
-  place-items: center;
-  padding: 12px;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  padding: 0;
+  overflow: hidden;
 }
 
 .scene {
   position: relative;
-  width: min(100%, 1536px);
-  aspect-ratio: 3 / 2;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
 
-  background: url('sfondo-esploria.png')
-              center / 100% 100% no-repeat;
+  background-image: url('sfondo-esploria.png');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 
-  box-shadow: 0 12px 35px #193b3b33;
+  box-shadow: none;
   overflow: hidden;
 }
-
+  
 /* PULSANTI INTERATTIVI */
 
 .hotspot {
@@ -130,18 +134,6 @@ html, body {
   cursor: pointer;
 }
 
-@media (max-width: 700px) {
-  .page {
-    padding: 0;
-    min-height: 100dvh;
-  }
-
-  .scene {
-    width: 100vw;
-    aspect-ratio: 3 / 2;
-    box-shadow: none;
-  }
-}
 
 </style>
 </head>

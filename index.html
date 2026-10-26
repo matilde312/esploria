@@ -1,54 +1,249 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Esploria</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#dce9e0">
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f5f0ff;
-      text-align: center;
-      padding: 50px 20px;
-    }
+<title>Esploria — Inizia l'avventura</title>
 
-    h1 {
-      color: #7255a5;
-      font-size: 42px;
-    }
+<style>
 
-    p {
-      font-size: 20px;
-      color: #444;
-    }
+* {
+  box-sizing: border-box;
+}
 
-    button {
-      background-color: #7255a5;
-      color: white;
-      border: none;
-      border-radius: 15px;
-      padding: 15px 30px;
-      font-size: 20px;
-      cursor: pointer;
-      margin-top: 20px;
-    }
+html, body {
+  margin: 0;
+  min-height: 100%;
+  background: #dce9e0;
+  font-family: Arial, sans-serif;
+}
 
-    button:hover {
-      background-color: #584080;
-    }
-  </style>
+.page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 12px;
+}
+
+.scene {
+  position: relative;
+  width: min(100%, 1536px);
+  aspect-ratio: 3 / 2;
+
+  background: url('sfondo-esploria.png')
+              center / 100% 100% no-repeat;
+
+  box-shadow: 0 12px 35px #193b3b33;
+  overflow: hidden;
+}
+
+/* PULSANTI INTERATTIVI */
+
+.hotspot {
+  position: absolute;
+  display: block;
+  border-radius: 30px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: box-shadow .2s, transform .2s;
+}
+
+.hotspot:hover {
+  box-shadow: 0 0 0 4px #fff8,
+              0 0 24px #fff9;
+  transform: scale(1.02);
+}
+
+.hotspot:focus-visible {
+  outline: 4px solid #fff;
+  outline-offset: 3px;
+}
+
+/* INIZIA L'AVVENTURA */
+
+.start {
+  left: 36.7%;
+  top: 41.3%;
+  width: 28.7%;
+  height: 9.5%;
+}
+
+/* RITROVA IL PERSONAGGIO */
+
+.recover {
+  left: 38%;
+  top: 52.4%;
+  width: 25.3%;
+  height: 7.2%;
+}
+
+/* AREA INSEGNANTI */
+
+.teacher {
+  left: 84.5%;
+  top: 2.3%;
+  width: 12%;
+  height: 8.1%;
+}
+
+/* FINESTRA DEI MESSAGGI */
+
+.notice {
+  position: fixed;
+  inset: 0;
+  background: #152a32b8;
+  display: none;
+  place-items: center;
+  padding: 20px;
+  z-index: 2;
+}
+
+.notice.open {
+  display: grid;
+}
+
+.card {
+  max-width: 420px;
+  background: #fff8e7;
+  border: 3px solid #775b3e;
+  border-radius: 20px;
+  padding: 28px;
+  text-align: center;
+  color: #263b44;
+  box-shadow: 0 10px 30px #0005;
+}
+
+.card h2 {
+  margin-top: 0;
+}
+
+.card button {
+  border: 0;
+  border-radius: 12px;
+  padding: 12px 25px;
+  background: #c66e50;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+@media (max-width: 700px) {
+  .page {
+    padding: 0;
+    min-height: 100dvh;
+  }
+
+  .scene {
+    width: 100vw;
+    aspect-ratio: 3 / 2;
+    box-shadow: none;
+  }
+}
+
+</style>
 </head>
 
 <body>
 
-  <h1>🌍 BENVENUTO A ESPLORIA!</h1>
+<main class="page">
 
-  <p>Un mondo di giochi, scoperte e avventure ti aspetta!</p>
+  <div class="scene"
+       role="img"
+       aria-label="Paesaggio illustrato di Esploria,
+       con due giovani esploratori e città fantastiche">
 
-  <button onclick="alert('Le avventure stanno arrivando!')">
-    INIZIA L'AVVENTURA
-  </button>
+    <!-- INIZIA L'AVVENTURA -->
+
+    <a class="hotspot start"
+       href="#inizia"
+       aria-label="Inizia l'avventura"
+       data-message="Qui creeremo il tuo personaggio e inizierà l'avventura!">
+    </a>
+
+    <!-- RITROVA IL PERSONAGGIO -->
+
+    <a class="hotspot recover"
+       href="#ritrova"
+       aria-label="Ritrova il tuo personaggio"
+       data-message="Qui potrai ritrovare il tuo personaggio e continuare a giocare.">
+    </a>
+
+    <!-- AREA INSEGNANTI -->
+
+    <a class="hotspot teacher"
+       href="#insegnanti"
+       aria-label="Area insegnanti"
+       data-message="Qui realizzeremo l'accesso protetto per gli insegnanti.">
+    </a>
+
+  </div>
+
+</main>
+
+<!-- FINESTRA INFORMATIVA -->
+
+<div class="notice"
+     id="notice"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="notice-title">
+
+  <div class="card">
+
+    <h2 id="notice-title">
+      Esploria è in costruzione 🌿
+    </h2>
+
+    <p id="notice-text"></p>
+
+    <button id="close" type="button">
+      Chiudi
+    </button>
+
+  </div>
+
+</div>
+
+<script>
+
+const notice = document.getElementById('notice');
+const close = document.getElementById('close');
+
+document.querySelectorAll('[data-message]').forEach(link => {
+
+  link.addEventListener('click', event => {
+
+    event.preventDefault();
+
+    document.getElementById('notice-text').textContent =
+      link.dataset.message;
+
+    notice.classList.add('open');
+
+    close.focus();
+
+  });
+
+});
+
+function hide() {
+  notice.classList.remove('open');
+}
+
+close.addEventListener('click', hide);
+
+notice.addEventListener('click', event => {
+  if (event.target === notice) hide();
+});
+
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape') hide();
+});
+
+</script>
 
 </body>
 </html>

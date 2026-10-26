@@ -5,11 +5,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Esploria — Inizia l'avventura</title>
+<title>Esploria - Inizia l'avventura</title>
 
 <style>
-
-/* IMPOSTAZIONI GENERALI */
 
 * {
   box-sizing: border-box;
@@ -24,99 +22,103 @@ html, body {
   background: #dce9e0;
 }
 
-/* CONTENITORE DEL PAESAGGIO */
+/* FINESTRA CHE PERMETTE DI SCORRERE CON IL TRACKPAD */
 
-.page {
-  position: relative;
-  width: 100vw;
+#viewport {
+  width: 100%;
   height: 100vh;
   height: 100dvh;
-  overflow: auto;
-  cursor: grab;
-  scrollbar-width: thin;
-  scrollbar-color: #8b9b8b transparent;
+
+  overflow-x: auto;
+  overflow-y: auto;
+
   overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
-.page.dragging {
-  cursor: grabbing;
-  user-select: none;
-}
+/* SCENA: NON SI RIMPICCIOLISCE SOTTO 1536 PIXEL */
 
-/* IMMAGINE PRINCIPALE */
-
-.scene {
+#scene {
   position: relative;
 
-  width: max(100vw, 1536px);
-  height: auto;
-  aspect-ratio: 3 / 2;
-
-  background-image: url("sfondo-esploria.png");
-  background-size: 100% 100%;
-  background-position: center;
-  background-repeat: no-repeat;
+  width: max(100%, 1536px);
+  aspect-ratio: 1536 / 1024;
 
   overflow: hidden;
 }
 
-/* PULSANTI INVISIBILI SOPRA L'IMMAGINE */
+/* IMMAGINE ORIGINALE */
+
+#landscape {
+  display: block;
+  width: 100%;
+  height: 100%;
+
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* AREE CLICCABILI INVISIBILI */
 
 .hotspot {
   position: absolute;
   display: block;
+
+  background: transparent;
+  border: 0;
+  outline: none;
+
   cursor: pointer;
 
-  border: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* NESSUNA ILLUMINAZIONE O BORDO AL PASSAGGIO */
+
+.hotspot:hover,
+.hotspot:active {
   background: transparent;
-  border-radius: 30px;
-
-  text-decoration: none;
-  outline-offset: 4px;
-
-  transition: filter 0.2s ease;
+  box-shadow: none;
+  filter: none;
 }
 
-/* NESSUN CONTORNO DOPPIO */
-
-.hotspot:hover {
-  filter: brightness(1.08);
-}
+/* CONTORNO SOLO PER NAVIGAZIONE CON TASTIERA */
 
 .hotspot:focus-visible {
-  outline: 3px solid white;
+  outline: 3px solid #ffffff;
+  outline-offset: 3px;
 }
 
 /* INIZIA L'AVVENTURA */
 
-.start {
-  left: 36.7%;
-  top: 41.3%;
-  width: 28.7%;
-  height: 9.5%;
+#start {
+  left: 34%;
+  top: 40%;
+  width: 33%;
+  height: 11%;
 }
 
-/* RITROVA IL PERSONAGGIO */
+/* RITROVA IL TUO PERSONAGGIO */
 
-.recover {
-  left: 38%;
-  top: 52.4%;
-  width: 25.3%;
-  height: 7.2%;
+#recover {
+  left: 36%;
+  top: 51%;
+  width: 29%;
+  height: 9%;
 }
 
 /* AREA INSEGNANTI */
 
-.teacher {
-  left: 84.5%;
-  top: 2.3%;
-  width: 12%;
-  height: 8.1%;
+#teacher {
+  left: 83%;
+  top: 1%;
+  width: 16%;
+  height: 10%;
 }
 
-/* FINESTRA DEI MESSAGGI */
+/* FINESTRA INFORMATIVA */
 
-.notice {
+#notice {
   position: fixed;
   inset: 0;
 
@@ -124,25 +126,25 @@ html, body {
   align-items: center;
   justify-content: center;
 
-  background: rgba(20, 40, 50, 0.75);
   padding: 20px;
+
+  background: rgba(22, 39, 45, 0.75);
   z-index: 100;
 }
 
-.notice.open {
+#notice.open {
   display: flex;
 }
 
 .card {
   width: min(420px, 100%);
-  background: #fff8e7;
+  padding: 30px;
 
+  background: #fff8e7;
   border: 3px solid #775b3e;
   border-radius: 22px;
 
-  padding: 30px;
   text-align: center;
-
   color: #263b44;
 
   box-shadow: 0 12px 35px rgba(0,0,0,0.3);
@@ -159,13 +161,14 @@ html, body {
 }
 
 .card button {
+  padding: 13px 30px;
+
   background: #c66e50;
   color: white;
 
   border: none;
   border-radius: 12px;
 
-  padding: 13px 30px;
   font-size: 17px;
   font-weight: bold;
 
@@ -181,45 +184,51 @@ html, body {
 
 <body>
 
-<main class="page" id="page">
+<main id="viewport">
 
-  <div class="scene" id="scene">
+  <div id="scene">
 
-    <!-- PULSANTE INIZIA -->
+    <img
+      id="landscape"
+      src="sfondo-esploria.png"
+      alt="Esploria, un mondo fantastico da esplorare"
+      draggable="false"
+    >
 
     <a
-      class="hotspot start"
+      id="start"
+      class="hotspot"
       href="#inizia"
       aria-label="Inizia l'avventura"
-      data-message="Presto potrai creare il tuo personaggio e iniziare a esplorare Esploria!">
-    </a>
-
-    <!-- PULSANTE RITROVA PERSONAGGIO -->
+      data-message="Presto potrai creare il tuo personaggio e iniziare a esplorare Esploria!"
+    ></a>
 
     <a
-      class="hotspot recover"
+      id="recover"
+      class="hotspot"
       href="#ritrova"
       aria-label="Ritrova il tuo personaggio"
-      data-message="Qui potrai recuperare il tuo personaggio e continuare le tue avventure.">
-    </a>
-
-    <!-- AREA INSEGNANTI -->
+      data-message="Qui potrai ritrovare il tuo personaggio e continuare la tua avventura."
+    ></a>
 
     <a
-      class="hotspot teacher"
+      id="teacher"
+      class="hotspot"
       href="#insegnanti"
       aria-label="Area insegnanti"
-      data-message="Qui realizzeremo l'area riservata agli insegnanti.">
-    </a>
+      data-message="Qui realizzeremo l'area riservata agli insegnanti."
+    ></a>
 
   </div>
 
 </main>
 
-<!-- FINESTRA INFORMATIVA -->
-
-<div class="notice" id="notice" role="dialog"
-     aria-modal="true" aria-labelledby="notice-title">
+<div
+  id="notice"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="notice-title"
+>
 
   <div class="card">
 
@@ -239,93 +248,33 @@ html, body {
 
 <script>
 
-/* ELEMENTI PRINCIPALI */
-
-const page = document.getElementById("page");
+const viewport = document.getElementById("viewport");
 const scene = document.getElementById("scene");
 
 const notice = document.getElementById("notice");
-const closeButton = document.getElementById("close");
 const noticeText = document.getElementById("notice-text");
+const closeButton = document.getElementById("close");
 
-/* POSIZIONE INIZIALE DEL PAESAGGIO */
+/* ALL'APERTURA MOSTRA IL CENTRO DEL PAESAGGIO */
 
-function centerScene() {
+function centerLandscape() {
 
-  page.scrollLeft =
-    Math.max(0, (scene.scrollWidth - page.clientWidth) / 2);
+  const horizontalSpace =
+    scene.scrollWidth - viewport.clientWidth;
 
-  page.scrollTop =
-    Math.max(0, (scene.scrollHeight - page.clientHeight) / 2);
+  const verticalSpace =
+    scene.scrollHeight - viewport.clientHeight;
+
+  viewport.scrollLeft = Math.max(0, horizontalSpace / 2);
+  viewport.scrollTop = Math.max(0, verticalSpace / 2);
 
 }
 
-window.addEventListener("load", centerScene);
+window.addEventListener("load", centerLandscape);
 
-/* TRASCINAMENTO DEL PAESAGGIO */
+/* APERTURA MESSAGGI */
 
-let dragging = false;
-
-let startX = 0;
-let startY = 0;
-
-let initialScrollLeft = 0;
-let initialScrollTop = 0;
-
-let moved = false;
-
-page.addEventListener("pointerdown", function(event) {
-
-  if (event.pointerType === "mouse" && event.button !== 0) {
-    return;
-  }
-
-  if (event.target.closest(".hotspot")) {
-    return;
-  }
-
-  dragging = true;
-  moved = false;
-
-  startX = event.clientX;
-  startY = event.clientY;
-
-  initialScrollLeft = page.scrollLeft;
-  initialScrollTop = page.scrollTop;
-
-  page.classList.add("dragging");
-
-  page.setPointerCapture(event.pointerId);
-
-});
-
-page.addEventListener("pointermove", function(event) {
-
-  if (!dragging) return;
-
-  const deltaX = event.clientX - startX;
-  const deltaY = event.clientY - startY;
-
-  if (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3) {
-    moved = true;
-  }
-
-  page.scrollLeft = initialScrollLeft - deltaX;
-  page.scrollTop = initialScrollTop - deltaY;
-
-});
-
-function stopDragging() {
-  dragging = false;
-  page.classList.remove("dragging");
-}
-
-page.addEventListener("pointerup", stopDragging);
-page.addEventListener("pointercancel", stopDragging);
-
-/* FUNZIONAMENTO PULSANTI */
-
-document.querySelectorAll("[data-message]").forEach(function(link) {
+document.querySelectorAll(".hotspot").forEach(function(link) {
 
   link.addEventListener("click", function(event) {
 
@@ -341,7 +290,7 @@ document.querySelectorAll("[data-message]").forEach(function(link) {
 
 });
 
-/* CHIUSURA FINESTRA */
+/* CHIUSURA MESSAGGI */
 
 function closeNotice() {
   notice.classList.remove("open");

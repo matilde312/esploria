@@ -13,7 +13,8 @@
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   margin: 0;
   width: 100%;
   height: 100%;
@@ -22,7 +23,7 @@ html, body {
   background: #dce9e0;
 }
 
-/* AREA DI SCORRIMENTO */
+/* FINESTRA PRINCIPALE */
 
 #viewport {
   width: 100%;
@@ -34,14 +35,20 @@ html, body {
 
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
+
+  scrollbar-width: none;
 }
 
-/* PAESAGGIO: DIMENSIONE INTERMEDIA */
+#viewport::-webkit-scrollbar {
+  display: none;
+}
+
+/* PAESAGGIO */
 
 #scene {
   position: relative;
 
-  width: max(100%, 120vh);
+  width: max(100vw, 150dvh);
   aspect-ratio: 1536 / 1024;
 
   overflow: hidden;
@@ -54,19 +61,20 @@ html, body {
   width: 100%;
   height: 100%;
 
+  object-fit: fill;
+
   user-select: none;
   -webkit-user-drag: none;
 }
 
-/* PULSANTI INVISIBILI SOPRA L'IMMAGINE */
+/* AREE CLICCABILI */
 
 .hotspot {
   position: absolute;
   display: block;
 
-  background: transparent;
   border: none;
-  outline: none;
+  background: transparent;
 
   cursor: pointer;
   text-decoration: none;
@@ -83,10 +91,10 @@ html, body {
 
 .hotspot:focus-visible {
   outline: 3px solid white;
-  outline-offset: 3px;
+  outline-offset: 4px;
 }
 
-/* INIZIA L'AVVENTURA */
+/* PULSANTE INIZIA L'AVVENTURA */
 
 #start {
   left: 34%;
@@ -95,7 +103,7 @@ html, body {
   height: 11%;
 }
 
-/* RITROVA IL TUO PERSONAGGIO */
+/* PULSANTE RITROVA IL PERSONAGGIO */
 
 #recover {
   left: 36%;
@@ -104,7 +112,7 @@ html, body {
   height: 9%;
 }
 
-/* AREA INSEGNANTI */
+/* PULSANTE AREA INSEGNANTI */
 
 #teacher {
   left: 83%;
@@ -176,6 +184,46 @@ html, body {
   background: #a9543a;
 }
 
+/* TABLET */
+
+@media (max-width: 1024px) {
+
+  #scene {
+    width: max(100vw, 150dvh);
+  }
+
+}
+
+/* SMARTPHONE */
+
+@media (max-width: 600px) {
+
+  #scene {
+    width: max(100vw, 135dvh);
+  }
+
+  #start {
+    left: 33%;
+    width: 35%;
+  }
+
+  #recover {
+    left: 35%;
+    width: 31%;
+  }
+
+}
+
+/* SCHERMI MOLTO LARGHI */
+
+@media (min-aspect-ratio: 16/9) {
+
+  #scene {
+    width: max(100vw, 150dvh);
+  }
+
+}
+
 </style>
 </head>
 
@@ -188,7 +236,7 @@ html, body {
     <img
       id="landscape"
       src="sfondo-esploria.png"
-      alt="Esploria, un mondo fantastico da esplorare"
+      alt="Esploria, un paesaggio fantastico con un castello, un fiume e un mondo da esplorare"
       draggable="false"
     >
 
@@ -252,24 +300,61 @@ const notice = document.getElementById("notice");
 const noticeText = document.getElementById("notice-text");
 const closeButton = document.getElementById("close");
 
-/* CENTRA IL PAESAGGIO ALL'APERTURA */
+/* CENTRA IL PAESAGGIO */
 
 function centerLandscape() {
 
-  const horizontalSpace =
-    scene.scrollWidth - viewport.clientWidth;
+  viewport.scrollLeft =
+    Math.max(0, (scene.scrollWidth - viewport.clientWidth) / 2);
 
-  const verticalSpace =
-    scene.scrollHeight - viewport.clientHeight;
-
-  viewport.scrollLeft = Math.max(0, horizontalSpace / 2);
-  viewport.scrollTop = Math.max(0, verticalSpace / 2);
+  viewport.scrollTop =
+    Math.max(0, (scene.scrollHeight - viewport.clientHeight) / 2);
 
 }
 
 window.addEventListener("load", centerLandscape);
 
-/* APERTURA DEI MESSAGGI */
+/* MANTIENE LA POSIZIONE DURANTE IL RIDIMENSIONAMENTO */
+
+let previousWidth = window.innerWidth;
+let previousHeight = window.innerHeight;
+
+window.addEventListener("resize", function() {
+
+  const oldScrollableWidth =
+    Math.max(0, scene.scrollWidth - previousWidth);
+
+  const oldScrollableHeight =
+    Math.max(0, scene.scrollHeight - previousHeight);
+
+  const horizontalProgress =
+    oldScrollableWidth > 0
+      ? viewport.scrollLeft / oldScrollableWidth
+      : 0.5;
+
+  const verticalProgress =
+    oldScrollableHeight > 0
+      ? viewport.scrollTop / oldScrollableHeight
+      : 0.5;
+
+  const newScrollableWidth =
+    Math.max(0, scene.scrollWidth - viewport.clientWidth);
+
+  const newScrollableHeight =
+    Math.max(0, scene.scrollHeight - viewport.clientHeight);
+
+  viewport.scrollLeft =
+    newScrollableWidth * horizontalProgress;
+
+  viewport.scrollTop =
+    newScrollableHeight * verticalProgress;
+
+  previousWidth = window.innerWidth;
+  previousHeight = window.innerHeight;
+
+});
+
+/* PULSANTI */
 
 document.querySelectorAll(".hotspot").forEach(function(link) {
 
@@ -287,7 +372,7 @@ document.querySelectorAll(".hotspot").forEach(function(link) {
 
 });
 
-/* CHIUSURA DEI MESSAGGI */
+/* CHIUSURA FINESTRA */
 
 function closeNotice() {
   notice.classList.remove("open");

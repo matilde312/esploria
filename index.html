@@ -22,7 +22,7 @@ html, body {
   background: #dce9e0;
 }
 
-/* FINESTRA CHE PERMETTE DI SCORRERE CON IL TRACKPAD */
+/* AREA DI SCORRIMENTO */
 
 #viewport {
   width: 100%;
@@ -36,18 +36,18 @@ html, body {
   -webkit-overflow-scrolling: touch;
 }
 
-/* SCENA: NON SI RIMPICCIOLISCE SOTTO 1536 PIXEL */
+/* PAESAGGIO: DIMENSIONE INTERMEDIA */
 
 #scene {
   position: relative;
 
-  width: max(100%, 1536px);
+  width: max(100%, 120vh);
   aspect-ratio: 1536 / 1024;
 
   overflow: hidden;
 }
 
-/* IMMAGINE ORIGINALE */
+/* IMMAGINE */
 
 #landscape {
   display: block;
@@ -58,22 +58,21 @@ html, body {
   -webkit-user-drag: none;
 }
 
-/* AREE CLICCABILI INVISIBILI */
+/* PULSANTI INVISIBILI SOPRA L'IMMAGINE */
 
 .hotspot {
   position: absolute;
   display: block;
 
   background: transparent;
-  border: 0;
+  border: none;
   outline: none;
 
   cursor: pointer;
+  text-decoration: none;
 
   -webkit-tap-highlight-color: transparent;
 }
-
-/* NESSUNA ILLUMINAZIONE O BORDO AL PASSAGGIO */
 
 .hotspot:hover,
 .hotspot:active {
@@ -82,10 +81,8 @@ html, body {
   filter: none;
 }
 
-/* CONTORNO SOLO PER NAVIGAZIONE CON TASTIERA */
-
 .hotspot:focus-visible {
-  outline: 3px solid #ffffff;
+  outline: 3px solid white;
   outline-offset: 3px;
 }
 
@@ -255,7 +252,7 @@ const notice = document.getElementById("notice");
 const noticeText = document.getElementById("notice-text");
 const closeButton = document.getElementById("close");
 
-/* ALL'APERTURA MOSTRA IL CENTRO DEL PAESAGGIO */
+/* CENTRA IL PAESAGGIO ALL'APERTURA */
 
 function centerLandscape() {
 
@@ -272,7 +269,7 @@ function centerLandscape() {
 
 window.addEventListener("load", centerLandscape);
 
-/* APERTURA MESSAGGI */
+/* APERTURA DEI MESSAGGI */
 
 document.querySelectorAll(".hotspot").forEach(function(link) {
 
@@ -290,7 +287,7 @@ document.querySelectorAll(".hotspot").forEach(function(link) {
 
 });
 
-/* CHIUSURA MESSAGGI */
+/* CHIUSURA DEI MESSAGGI */
 
 function closeNotice() {
   notice.classList.remove("open");

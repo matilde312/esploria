@@ -2,13 +2,14 @@
 <html lang="it">
 
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#dce9e0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Esploria — Inizia l'avventura</title>
 
 <style>
+
+/* IMPOSTAZIONI GENERALI */
 
 * {
   box-sizing: border-box;
@@ -16,54 +17,74 @@
 
 html, body {
   margin: 0;
-  min-height: 100%;
-  background: #dce9e0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
   font-family: Arial, sans-serif;
+  background: #dce9e0;
 }
 
+/* CONTENITORE DEL PAESAGGIO */
+
 .page {
-  width: 100%;
+  position: relative;
+  width: 100vw;
   height: 100vh;
   height: 100dvh;
-  padding: 0;
-  overflow: hidden;
+  overflow: auto;
+  cursor: grab;
+  scrollbar-width: thin;
+  scrollbar-color: #8b9b8b transparent;
+  overscroll-behavior: contain;
 }
+
+.page.dragging {
+  cursor: grabbing;
+  user-select: none;
+}
+
+/* IMMAGINE PRINCIPALE */
 
 .scene {
   position: relative;
-  width: 100%;
-  height: 100%;
-  aspect-ratio: auto;
 
-  background-image: url('sfondo-esploria.png');
+  width: max(100vw, 1536px);
+  height: auto;
+  aspect-ratio: 3 / 2;
+
+  background-image: url("sfondo-esploria.png");
+  background-size: 100% 100%;
   background-position: center;
-  background-size: cover;
   background-repeat: no-repeat;
 
-  box-shadow: none;
   overflow: hidden;
 }
-  
-/* PULSANTI INTERATTIVI */
+
+/* PULSANTI INVISIBILI SOPRA L'IMMAGINE */
 
 .hotspot {
   position: absolute;
   display: block;
-  border-radius: 30px;
   cursor: pointer;
+
+  border: none;
+  background: transparent;
+  border-radius: 30px;
+
   text-decoration: none;
-  transition: box-shadow .2s, transform .2s;
+  outline-offset: 4px;
+
+  transition: filter 0.2s ease;
 }
 
+/* NESSUN CONTORNO DOPPIO */
+
 .hotspot:hover {
-  box-shadow: 0 0 0 4px #fff8,
-              0 0 24px #fff9;
-  transform: scale(1.02);
+  filter: brightness(1.08);
 }
 
 .hotspot:focus-visible {
-  outline: 4px solid #fff;
-  outline-offset: 3px;
+  outline: 3px solid white;
 }
 
 /* INIZIA L'AVVENTURA */
@@ -98,77 +119,97 @@ html, body {
 .notice {
   position: fixed;
   inset: 0;
-  background: #152a32b8;
+
   display: none;
-  place-items: center;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(20, 40, 50, 0.75);
   padding: 20px;
-  z-index: 2;
+  z-index: 100;
 }
 
 .notice.open {
-  display: grid;
+  display: flex;
 }
 
 .card {
-  max-width: 420px;
+  width: min(420px, 100%);
   background: #fff8e7;
+
   border: 3px solid #775b3e;
-  border-radius: 20px;
-  padding: 28px;
+  border-radius: 22px;
+
+  padding: 30px;
   text-align: center;
+
   color: #263b44;
-  box-shadow: 0 10px 30px #0005;
+
+  box-shadow: 0 12px 35px rgba(0,0,0,0.3);
 }
 
 .card h2 {
   margin-top: 0;
+  font-size: 26px;
+}
+
+.card p {
+  font-size: 18px;
+  line-height: 1.5;
 }
 
 .card button {
-  border: 0;
-  border-radius: 12px;
-  padding: 12px 25px;
   background: #c66e50;
   color: white;
+
+  border: none;
+  border-radius: 12px;
+
+  padding: 13px 30px;
+  font-size: 17px;
   font-weight: bold;
+
   cursor: pointer;
 }
 
+.card button:hover {
+  background: #a9543a;
+}
 
 </style>
 </head>
 
 <body>
 
-<main class="page">
+<main class="page" id="page">
 
-  <div class="scene"
-       role="img"
-       aria-label="Paesaggio illustrato di Esploria,
-       con due giovani esploratori e città fantastiche">
+  <div class="scene" id="scene">
 
-    <!-- INIZIA L'AVVENTURA -->
+    <!-- PULSANTE INIZIA -->
 
-    <a class="hotspot start"
-       href="#inizia"
-       aria-label="Inizia l'avventura"
-       data-message="Qui creeremo il tuo personaggio e inizierà l'avventura!">
+    <a
+      class="hotspot start"
+      href="#inizia"
+      aria-label="Inizia l'avventura"
+      data-message="Presto potrai creare il tuo personaggio e iniziare a esplorare Esploria!">
     </a>
 
-    <!-- RITROVA IL PERSONAGGIO -->
+    <!-- PULSANTE RITROVA PERSONAGGIO -->
 
-    <a class="hotspot recover"
-       href="#ritrova"
-       aria-label="Ritrova il tuo personaggio"
-       data-message="Qui potrai ritrovare il tuo personaggio e continuare a giocare.">
+    <a
+      class="hotspot recover"
+      href="#ritrova"
+      aria-label="Ritrova il tuo personaggio"
+      data-message="Qui potrai recuperare il tuo personaggio e continuare le tue avventure.">
     </a>
 
     <!-- AREA INSEGNANTI -->
 
-    <a class="hotspot teacher"
-       href="#insegnanti"
-       aria-label="Area insegnanti"
-       data-message="Qui realizzeremo l'accesso protetto per gli insegnanti.">
+    <a
+      class="hotspot teacher"
+      href="#insegnanti"
+      aria-label="Area insegnanti"
+      data-message="Qui realizzeremo l'area riservata agli insegnanti.">
     </a>
 
   </div>
@@ -177,11 +218,8 @@ html, body {
 
 <!-- FINESTRA INFORMATIVA -->
 
-<div class="notice"
-     id="notice"
-     role="dialog"
-     aria-modal="true"
-     aria-labelledby="notice-title">
+<div class="notice" id="notice" role="dialog"
+     aria-modal="true" aria-labelledby="notice-title">
 
   <div class="card">
 
@@ -192,7 +230,7 @@ html, body {
     <p id="notice-text"></p>
 
     <button id="close" type="button">
-      Chiudi
+      CHIUDI
     </button>
 
   </div>
@@ -201,38 +239,130 @@ html, body {
 
 <script>
 
-const notice = document.getElementById('notice');
-const close = document.getElementById('close');
+/* ELEMENTI PRINCIPALI */
 
-document.querySelectorAll('[data-message]').forEach(link => {
+const page = document.getElementById("page");
+const scene = document.getElementById("scene");
 
-  link.addEventListener('click', event => {
+const notice = document.getElementById("notice");
+const closeButton = document.getElementById("close");
+const noticeText = document.getElementById("notice-text");
+
+/* POSIZIONE INIZIALE DEL PAESAGGIO */
+
+function centerScene() {
+
+  page.scrollLeft =
+    Math.max(0, (scene.scrollWidth - page.clientWidth) / 2);
+
+  page.scrollTop =
+    Math.max(0, (scene.scrollHeight - page.clientHeight) / 2);
+
+}
+
+window.addEventListener("load", centerScene);
+
+/* TRASCINAMENTO DEL PAESAGGIO */
+
+let dragging = false;
+
+let startX = 0;
+let startY = 0;
+
+let initialScrollLeft = 0;
+let initialScrollTop = 0;
+
+let moved = false;
+
+page.addEventListener("pointerdown", function(event) {
+
+  if (event.pointerType === "mouse" && event.button !== 0) {
+    return;
+  }
+
+  if (event.target.closest(".hotspot")) {
+    return;
+  }
+
+  dragging = true;
+  moved = false;
+
+  startX = event.clientX;
+  startY = event.clientY;
+
+  initialScrollLeft = page.scrollLeft;
+  initialScrollTop = page.scrollTop;
+
+  page.classList.add("dragging");
+
+  page.setPointerCapture(event.pointerId);
+
+});
+
+page.addEventListener("pointermove", function(event) {
+
+  if (!dragging) return;
+
+  const deltaX = event.clientX - startX;
+  const deltaY = event.clientY - startY;
+
+  if (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3) {
+    moved = true;
+  }
+
+  page.scrollLeft = initialScrollLeft - deltaX;
+  page.scrollTop = initialScrollTop - deltaY;
+
+});
+
+function stopDragging() {
+  dragging = false;
+  page.classList.remove("dragging");
+}
+
+page.addEventListener("pointerup", stopDragging);
+page.addEventListener("pointercancel", stopDragging);
+
+/* FUNZIONAMENTO PULSANTI */
+
+document.querySelectorAll("[data-message]").forEach(function(link) {
+
+  link.addEventListener("click", function(event) {
 
     event.preventDefault();
 
-    document.getElementById('notice-text').textContent =
-      link.dataset.message;
+    noticeText.textContent = link.dataset.message;
 
-    notice.classList.add('open');
+    notice.classList.add("open");
 
-    close.focus();
+    closeButton.focus();
 
   });
 
 });
 
-function hide() {
-  notice.classList.remove('open');
+/* CHIUSURA FINESTRA */
+
+function closeNotice() {
+  notice.classList.remove("open");
 }
 
-close.addEventListener('click', hide);
+closeButton.addEventListener("click", closeNotice);
 
-notice.addEventListener('click', event => {
-  if (event.target === notice) hide();
+notice.addEventListener("click", function(event) {
+
+  if (event.target === notice) {
+    closeNotice();
+  }
+
 });
 
-document.addEventListener('keydown', event => {
-  if (event.key === 'Escape') hide();
+document.addEventListener("keydown", function(event) {
+
+  if (event.key === "Escape") {
+    closeNotice();
+  }
+
 });
 
 </script>

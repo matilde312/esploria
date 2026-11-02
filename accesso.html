@@ -1,0 +1,352 @@
+
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ESPLORIA - COME VUOI ENTRARE?</title>
+
+<link
+  href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap"
+  rel="stylesheet"
+>
+
+<style>
+
+/* IMPOSTAZIONI GENERALI */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #e7e8d9;
+  font-family: "Patrick Hand", cursive;
+  color: #243d4b;
+}
+
+/* PAESAGGIO ADATTIVO */
+
+#viewport {
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow-x: auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+#viewport::-webkit-scrollbar {
+  display: none;
+}
+
+#scene {
+  position: relative;
+  width: max(100vw, 177.78dvh);
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+#landscape {
+  display: block;
+  width: 100%;
+  height: 100%;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* AREE CLICCABILI INVISIBILI */
+
+.hotspot {
+  position: absolute;
+  display: block;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.hotspot:focus-visible {
+  outline: 3px solid #243d4b;
+  outline-offset: 3px;
+}
+
+/* TORNA INDIETRO */
+
+#back {
+  left: 2%;
+  top: 3%;
+  width: 16%;
+  height: 11%;
+}
+
+/* HO UN CODICE */
+
+#codeAccess {
+  left: 15%;
+  top: 46%;
+  width: 33%;
+  height: 31%;
+}
+
+/* GIOCA COME OSPITE */
+
+#guestAccess {
+  left: 50%;
+  top: 46%;
+  width: 34%;
+  height: 31%;
+}
+
+/* FINESTRA INFORMATIVA */
+
+#overlay {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(24, 43, 49, 0.7);
+  z-index: 100;
+}
+
+#overlay.open {
+  display: flex;
+}
+
+.card {
+  width: min(430px, 100%);
+  padding: 28px;
+  background: #fff5e2;
+  border: 3px solid #a9855d;
+  border-radius: 22px;
+  text-align: center;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+}
+
+.card h2 {
+  margin: 0 0 15px;
+  font-size: 34px;
+  line-height: 1.1;
+}
+
+.card p {
+  font-size: 22px;
+  line-height: 1.35;
+}
+
+.card button {
+  width: 100%;
+  padding: 13px 18px;
+  border: 0;
+  border-radius: 13px;
+  background: #c66e50;
+  color: white;
+  font-family: "Patrick Hand", cursive;
+  font-size: 23px;
+  cursor: pointer;
+}
+
+/* SMARTPHONE */
+
+@media (max-width: 600px) {
+  #scene {
+    width: max(100vw, 160dvh);
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<main id="viewport">
+
+  <div id="scene">
+
+    <!-- IMMAGINE DELLA PAGINA DI ACCESSO -->
+
+    <img
+      id="landscape"
+      src="sfondo-accesso.png"
+      alt="ESPLORIA: SCEGLI SE ENTRARE CON UN CODICE O GIOCARE COME OSPITE"
+      draggable="false"
+    >
+
+    <!-- TORNA INDIETRO -->
+
+    <a
+      id="back"
+      class="hotspot"
+      href="index.html"
+      aria-label="TORNA ALLA HOMEPAGE"
+    ></a>
+
+    <!-- HO UN CODICE -->
+
+    <button
+      id="codeAccess"
+      class="hotspot"
+      type="button"
+      aria-label="HO UN CODICE"
+    ></button>
+
+    <!-- GIOCA COME OSPITE -->
+
+    <a
+      id="guestAccess"
+      class="hotspot"
+      href="compagni.html"
+      aria-label="GIOCA COME OSPITE"
+    ></a>
+
+  </div>
+
+</main>
+
+<!-- FINESTRA ACCESSO CON CODICE -->
+
+<div
+  id="overlay"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="dialogTitle"
+>
+
+  <div class="card">
+
+    <h2 id="dialogTitle">
+      LA TUA CHIAVE PER ESPLORIA
+    </h2>
+
+    <p>
+      HAI GIÀ RICEVUTO UN CODICE DALLA TUA
+      INSEGNANTE?
+    </p>
+
+    <p>
+      PRESTO POTRAI INSERIRLO QUI PER
+      RITROVARE IL TUO COMPAGNO E
+      CONTINUARE L'AVVENTURA!
+    </p>
+
+    <button id="close" type="button">
+      TORNA INDIETRO
+    </button>
+
+  </div>
+
+</div>
+
+<script>
+
+const viewport = document.getElementById("viewport");
+const scene = document.getElementById("scene");
+
+const codeAccess = document.getElementById("codeAccess");
+const overlay = document.getElementById("overlay");
+const closeButton = document.getElementById("close");
+
+/* CENTRA IL PAESAGGIO */
+
+function centerLandscape() {
+  viewport.scrollLeft = Math.max(
+    0,
+    (scene.scrollWidth - viewport.clientWidth) / 2
+  );
+
+  viewport.scrollTop = Math.max(
+    0,
+    (scene.scrollHeight - viewport.clientHeight) / 2
+  );
+}
+
+window.addEventListener("load", centerLandscape);
+
+/* CONSERVA LA POSIZIONE AL RIDIMENSIONAMENTO */
+
+let previousWidth = window.innerWidth;
+let previousHeight = window.innerHeight;
+
+window.addEventListener("resize", function() {
+
+  const oldWidth = Math.max(
+    0,
+    scene.scrollWidth - previousWidth
+  );
+
+  const oldHeight = Math.max(
+    0,
+    scene.scrollHeight - previousHeight
+  );
+
+  const progressX = oldWidth > 0
+    ? viewport.scrollLeft / oldWidth
+    : 0.5;
+
+  const progressY = oldHeight > 0
+    ? viewport.scrollTop / oldHeight
+    : 0.5;
+
+  const newWidth = Math.max(
+    0,
+    scene.scrollWidth - viewport.clientWidth
+  );
+
+  const newHeight = Math.max(
+    0,
+    scene.scrollHeight - viewport.clientHeight
+  );
+
+  viewport.scrollLeft = newWidth * progressX;
+  viewport.scrollTop = newHeight * progressY;
+
+  previousWidth = window.innerWidth;
+  previousHeight = window.innerHeight;
+});
+
+/* APERTURA FINESTRA CODICE */
+
+codeAccess.addEventListener("click", function() {
+  overlay.classList.add("open");
+  closeButton.focus();
+});
+
+/* CHIUSURA FINESTRA */
+
+function closeOverlay() {
+  overlay.classList.remove("open");
+  codeAccess.focus();
+}
+
+closeButton.addEventListener("click", closeOverlay);
+
+overlay.addEventListener("click", function(event) {
+  if (event.target === overlay) {
+    closeOverlay();
+  }
+});
+
+document.addEventListener("keydown", function(event) {
+  if (event.key === "Escape" &&
+      overlay.classList.contains("open")) {
+    closeOverlay();
+  }
+});
+
+</script>
+
+</body>
+</html>

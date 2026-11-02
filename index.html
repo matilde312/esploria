@@ -1,6 +1,7 @@
 
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,11 +9,15 @@
 <title>ESPLORIA - INIZIA L'AVVENTURA</title>
 
 <style>
+
+/* IMPOSTAZIONI GENERALI */
+
 * {
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   margin: 0;
   width: 100%;
   height: 100%;
@@ -27,10 +32,13 @@ html, body {
   width: 100%;
   height: 100vh;
   height: 100dvh;
+
   overflow-x: auto;
   overflow-y: auto;
+
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
+
   scrollbar-width: none;
 }
 
@@ -38,35 +46,42 @@ html, body {
   display: none;
 }
 
-/* PAESAGGIO */
+/* PAESAGGIO ADATTIVO */
 
 #scene {
   position: relative;
+
   width: max(100vw, 177.78dvh);
   aspect-ratio: 16 / 9;
+
   overflow: hidden;
 }
 
-/* IMMAGINE */
+/* IMMAGINE DI SFONDO */
 
 #landscape {
   display: block;
   width: 100%;
   height: 100%;
+
   object-fit: fill;
+
   user-select: none;
   -webkit-user-drag: none;
 }
 
-/* AREE CLICCABILI */
+/* PULSANTI INVISIBILI */
 
 .hotspot {
   position: absolute;
   display: block;
+
   border: none;
   background: transparent;
+
   cursor: pointer;
   text-decoration: none;
+
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -85,27 +100,18 @@ html, body {
 /* INIZIA L'AVVENTURA */
 
 #start {
-  left: 35%;
-  top: 43%;
-  width: 30%;
-  height: 11%;
-}
-
-/* TROVA IL TUO COMPAGNO */
-
-#recover {
   left: 36%;
-  top: 55%;
-  width: 28%;
-  height: 9%;
+  top: 45%;
+  width: 29%;
+  height: 12%;
 }
 
 /* AREA INSEGNANTI */
 
 #teacher {
-  left: 85%;
+  left: 84%;
   top: 2%;
-  width: 13%;
+  width: 14%;
   height: 10%;
 }
 
@@ -114,10 +120,13 @@ html, body {
 #notice {
   position: fixed;
   inset: 0;
+
   display: none;
   align-items: center;
   justify-content: center;
+
   padding: 20px;
+
   background: rgba(22, 39, 45, 0.75);
   z-index: 100;
 }
@@ -129,12 +138,15 @@ html, body {
 .card {
   width: min(420px, 100%);
   padding: 30px;
+
   background: #fff8e7;
   border: 3px solid #775b3e;
   border-radius: 22px;
+
   text-align: center;
   color: #263b44;
-  box-shadow: 0 12px 35px rgba(0,0,0,0.3);
+
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
 }
 
 .card h2 {
@@ -149,67 +161,70 @@ html, body {
 
 .card button {
   padding: 13px 30px;
+
   background: #c66e50;
   color: white;
+
   border: none;
   border-radius: 12px;
+
   font-size: 17px;
   font-weight: bold;
-  cursor: pointer;
-}
 
-.card button:hover {
-  background: #a9543a;
+  cursor: pointer;
 }
 
 /* SMARTPHONE */
 
 @media (max-width: 600px) {
+
   #scene {
     width: max(100vw, 160dvh);
   }
+
 }
+
 </style>
 </head>
 
 <body>
 
+<!-- HOMEPAGE -->
+
 <main id="viewport">
+
   <div id="scene">
 
     <img
       id="landscape"
       src="sfondo-esploria.png"
-      alt="ESPLORIA, UN MONDO FANTASTICO DA ESPLORARE"
+      alt="ESPLORIA, UN MONDO DI GIOCHI, SCOPERTE E AVVENTURE"
       draggable="false"
     >
+
+    <!-- INIZIA L'AVVENTURA -->
 
     <a
       id="start"
       class="hotspot"
-      href="#inizia"
+      href="accesso.html"
       aria-label="INIZIA L'AVVENTURA"
-      data-message="PRESTO POTRAI SCEGLIERE IL TUO COMPAGNO DI AVVENTURA ED ESPLORARE IL MONDO DI ESPLORIA!"
     ></a>
 
-    <a
-      id="recover"
-      class="hotspot"
-      href="#ritrova"
-      aria-label="TROVA IL TUO COMPAGNO"
-      data-message="QUI POTRAI RITROVARE IL TUO COMPAGNO E CONTINUARE LA TUA AVVENTURA!"
-    ></a>
+    <!-- AREA INSEGNANTI -->
 
     <a
       id="teacher"
       class="hotspot"
       href="#insegnanti"
       aria-label="AREA INSEGNANTI"
-      data-message="QUI REALIZZEREMO L'AREA RISERVATA AGLI INSEGNANTI."
     ></a>
 
   </div>
+
 </main>
+
+<!-- FINESTRA AREA INSEGNANTI -->
 
 <div
   id="notice"
@@ -217,30 +232,39 @@ html, body {
   aria-modal="true"
   aria-labelledby="notice-title"
 >
+
   <div class="card">
+
     <h2 id="notice-title">
-      ESPLORIA È IN COSTRUZIONE 🌿
+      AREA INSEGNANTI
     </h2>
 
-    <p id="notice-text"></p>
+    <p>
+      QUEST'AREA DI ESPLORIA È ANCORA
+      IN COSTRUZIONE!
+    </p>
 
     <button id="close" type="button">
       CHIUDI
     </button>
+
   </div>
+
 </div>
 
 <script>
+
 const viewport = document.getElementById("viewport");
 const scene = document.getElementById("scene");
 
+const teacher = document.getElementById("teacher");
 const notice = document.getElementById("notice");
-const noticeText = document.getElementById("notice-text");
 const closeButton = document.getElementById("close");
 
 /* CENTRA IL PAESAGGIO */
 
 function centerLandscape() {
+
   viewport.scrollLeft = Math.max(
     0,
     (scene.scrollWidth - viewport.clientWidth) / 2
@@ -250,16 +274,18 @@ function centerLandscape() {
     0,
     (scene.scrollHeight - viewport.clientHeight) / 2
   );
+
 }
 
 window.addEventListener("load", centerLandscape);
 
-/* MANTIENE LA POSIZIONE DURANTE IL RIDIMENSIONAMENTO */
+/* MANTIENE LA POSIZIONE AL RIDIMENSIONAMENTO */
 
 let previousWidth = window.innerWidth;
 let previousHeight = window.innerHeight;
 
 window.addEventListener("resize", function() {
+
   const oldScrollableWidth = Math.max(
     0,
     scene.scrollWidth - previousWidth
@@ -296,22 +322,19 @@ window.addEventListener("resize", function() {
 
   previousWidth = window.innerWidth;
   previousHeight = window.innerHeight;
+
 });
 
-/* PULSANTI */
+/* AREA INSEGNANTI */
 
-document.querySelectorAll(".hotspot").forEach(function(link) {
-  link.addEventListener("click", function(event) {
-    if (link.id === "start") {
-  window.location.href = "compagni.html";
-  return;
-}
-    event.preventDefault();
+teacher.addEventListener("click", function(event) {
 
-    noticeText.textContent = link.dataset.message;
-    notice.classList.add("open");
-    closeButton.focus();
-  });
+  event.preventDefault();
+
+  notice.classList.add("open");
+
+  closeButton.focus();
+
 });
 
 /* CHIUSURA FINESTRA */
@@ -323,16 +346,21 @@ function closeNotice() {
 closeButton.addEventListener("click", closeNotice);
 
 notice.addEventListener("click", function(event) {
+
   if (event.target === notice) {
     closeNotice();
   }
+
 });
 
 document.addEventListener("keydown", function(event) {
+
   if (event.key === "Escape") {
     closeNotice();
   }
+
 });
+
 </script>
 
 </body>

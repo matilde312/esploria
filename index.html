@@ -1,20 +1,18 @@
+
 <!DOCTYPE html>
 <html lang="it">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Esploria - Inizia l'avventura</title>
+<title>ESPLORIA - INIZIA L'AVVENTURA</title>
 
 <style>
-
 * {
   box-sizing: border-box;
 }
 
-html,
-body {
+html, body {
   margin: 0;
   width: 100%;
   height: 100%;
@@ -29,13 +27,10 @@ body {
   width: 100%;
   height: 100vh;
   height: 100dvh;
-
   overflow-x: auto;
   overflow-y: auto;
-
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
-
   scrollbar-width: none;
 }
 
@@ -47,10 +42,8 @@ body {
 
 #scene {
   position: relative;
-
-  width: max(100vw, 150dvh);
-  aspect-ratio: 1536 / 1024;
-
+  width: max(100vw, 177.78dvh);
+  aspect-ratio: 16 / 9;
   overflow: hidden;
 }
 
@@ -60,9 +53,7 @@ body {
   display: block;
   width: 100%;
   height: 100%;
-
   object-fit: fill;
-
   user-select: none;
   -webkit-user-drag: none;
 }
@@ -72,13 +63,10 @@ body {
 .hotspot {
   position: absolute;
   display: block;
-
   border: none;
   background: transparent;
-
   cursor: pointer;
   text-decoration: none;
-
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -94,30 +82,30 @@ body {
   outline-offset: 4px;
 }
 
-/* PULSANTE INIZIA L'AVVENTURA */
+/* INIZIA L'AVVENTURA */
 
 #start {
-  left: 34%;
-  top: 40%;
-  width: 33%;
+  left: 35%;
+  top: 43%;
+  width: 30%;
   height: 11%;
 }
 
-/* PULSANTE RITROVA IL PERSONAGGIO */
+/* TROVA IL TUO COMPAGNO */
 
 #recover {
   left: 36%;
-  top: 51%;
-  width: 29%;
+  top: 55%;
+  width: 28%;
   height: 9%;
 }
 
-/* PULSANTE AREA INSEGNANTI */
+/* AREA INSEGNANTI */
 
 #teacher {
-  left: 83%;
-  top: 1%;
-  width: 16%;
+  left: 85%;
+  top: 2%;
+  width: 13%;
   height: 10%;
 }
 
@@ -126,13 +114,10 @@ body {
 #notice {
   position: fixed;
   inset: 0;
-
   display: none;
   align-items: center;
   justify-content: center;
-
   padding: 20px;
-
   background: rgba(22, 39, 45, 0.75);
   z-index: 100;
 }
@@ -144,14 +129,11 @@ body {
 .card {
   width: min(420px, 100%);
   padding: 30px;
-
   background: #fff8e7;
   border: 3px solid #775b3e;
   border-radius: 22px;
-
   text-align: center;
   color: #263b44;
-
   box-shadow: 0 12px 35px rgba(0,0,0,0.3);
 }
 
@@ -167,16 +149,12 @@ body {
 
 .card button {
   padding: 13px 30px;
-
   background: #c66e50;
   color: white;
-
   border: none;
   border-radius: 12px;
-
   font-size: 17px;
   font-weight: bold;
-
   cursor: pointer;
 }
 
@@ -184,59 +162,25 @@ body {
   background: #a9543a;
 }
 
-/* TABLET */
-
-@media (max-width: 1024px) {
-
-  #scene {
-    width: max(100vw, 150dvh);
-  }
-
-}
-
 /* SMARTPHONE */
 
 @media (max-width: 600px) {
-
   #scene {
-    width: max(100vw, 135dvh);
+    width: max(100vw, 160dvh);
   }
-
-  #start {
-    left: 33%;
-    width: 35%;
-  }
-
-  #recover {
-    left: 35%;
-    width: 31%;
-  }
-
 }
-
-/* SCHERMI MOLTO LARGHI */
-
-@media (min-aspect-ratio: 16/9) {
-
-  #scene {
-    width: max(100vw, 150dvh);
-  }
-
-}
-
 </style>
 </head>
 
 <body>
 
 <main id="viewport">
-
   <div id="scene">
 
     <img
       id="landscape"
       src="sfondo-esploria.png"
-      alt="Esploria, un paesaggio fantastico con un castello, un fiume e un mondo da esplorare"
+      alt="ESPLORIA, UN MONDO FANTASTICO DA ESPLORARE"
       draggable="false"
     >
 
@@ -244,28 +188,27 @@ body {
       id="start"
       class="hotspot"
       href="#inizia"
-      aria-label="Inizia l'avventura"
-      data-message="Presto potrai creare il tuo personaggio e iniziare a esplorare Esploria!"
+      aria-label="INIZIA L'AVVENTURA"
+      data-message="PRESTO POTRAI SCEGLIERE IL TUO COMPAGNO DI AVVENTURA ED ESPLORARE IL MONDO DI ESPLORIA!"
     ></a>
 
     <a
       id="recover"
       class="hotspot"
       href="#ritrova"
-      aria-label="Ritrova il tuo personaggio"
-      data-message="Qui potrai ritrovare il tuo personaggio e continuare la tua avventura."
+      aria-label="TROVA IL TUO COMPAGNO"
+      data-message="QUI POTRAI RITROVARE IL TUO COMPAGNO E CONTINUARE LA TUA AVVENTURA!"
     ></a>
 
     <a
       id="teacher"
       class="hotspot"
       href="#insegnanti"
-      aria-label="Area insegnanti"
-      data-message="Qui realizzeremo l'area riservata agli insegnanti."
+      aria-label="AREA INSEGNANTI"
+      data-message="QUI REALIZZEREMO L'AREA RISERVATA AGLI INSEGNANTI."
     ></a>
 
   </div>
-
 </main>
 
 <div
@@ -274,11 +217,9 @@ body {
   aria-modal="true"
   aria-labelledby="notice-title"
 >
-
   <div class="card">
-
     <h2 id="notice-title">
-      Esploria è in costruzione 🌿
+      ESPLORIA È IN COSTRUZIONE 🌿
     </h2>
 
     <p id="notice-text"></p>
@@ -286,13 +227,10 @@ body {
     <button id="close" type="button">
       CHIUDI
     </button>
-
   </div>
-
 </div>
 
 <script>
-
 const viewport = document.getElementById("viewport");
 const scene = document.getElementById("scene");
 
@@ -303,13 +241,15 @@ const closeButton = document.getElementById("close");
 /* CENTRA IL PAESAGGIO */
 
 function centerLandscape() {
+  viewport.scrollLeft = Math.max(
+    0,
+    (scene.scrollWidth - viewport.clientWidth) / 2
+  );
 
-  viewport.scrollLeft =
-    Math.max(0, (scene.scrollWidth - viewport.clientWidth) / 2);
-
-  viewport.scrollTop =
-    Math.max(0, (scene.scrollHeight - viewport.clientHeight) / 2);
-
+  viewport.scrollTop = Math.max(
+    0,
+    (scene.scrollHeight - viewport.clientHeight) / 2
+  );
 }
 
 window.addEventListener("load", centerLandscape);
@@ -320,28 +260,33 @@ let previousWidth = window.innerWidth;
 let previousHeight = window.innerHeight;
 
 window.addEventListener("resize", function() {
+  const oldScrollableWidth = Math.max(
+    0,
+    scene.scrollWidth - previousWidth
+  );
 
-  const oldScrollableWidth =
-    Math.max(0, scene.scrollWidth - previousWidth);
+  const oldScrollableHeight = Math.max(
+    0,
+    scene.scrollHeight - previousHeight
+  );
 
-  const oldScrollableHeight =
-    Math.max(0, scene.scrollHeight - previousHeight);
+  const horizontalProgress = oldScrollableWidth > 0
+    ? viewport.scrollLeft / oldScrollableWidth
+    : 0.5;
 
-  const horizontalProgress =
-    oldScrollableWidth > 0
-      ? viewport.scrollLeft / oldScrollableWidth
-      : 0.5;
+  const verticalProgress = oldScrollableHeight > 0
+    ? viewport.scrollTop / oldScrollableHeight
+    : 0.5;
 
-  const verticalProgress =
-    oldScrollableHeight > 0
-      ? viewport.scrollTop / oldScrollableHeight
-      : 0.5;
+  const newScrollableWidth = Math.max(
+    0,
+    scene.scrollWidth - viewport.clientWidth
+  );
 
-  const newScrollableWidth =
-    Math.max(0, scene.scrollWidth - viewport.clientWidth);
-
-  const newScrollableHeight =
-    Math.max(0, scene.scrollHeight - viewport.clientHeight);
+  const newScrollableHeight = Math.max(
+    0,
+    scene.scrollHeight - viewport.clientHeight
+  );
 
   viewport.scrollLeft =
     newScrollableWidth * horizontalProgress;
@@ -351,25 +296,18 @@ window.addEventListener("resize", function() {
 
   previousWidth = window.innerWidth;
   previousHeight = window.innerHeight;
-
 });
 
 /* PULSANTI */
 
 document.querySelectorAll(".hotspot").forEach(function(link) {
-
   link.addEventListener("click", function(event) {
-
     event.preventDefault();
 
     noticeText.textContent = link.dataset.message;
-
     notice.classList.add("open");
-
     closeButton.focus();
-
   });
-
 });
 
 /* CHIUSURA FINESTRA */
@@ -381,21 +319,16 @@ function closeNotice() {
 closeButton.addEventListener("click", closeNotice);
 
 notice.addEventListener("click", function(event) {
-
   if (event.target === notice) {
     closeNotice();
   }
-
 });
 
 document.addEventListener("keydown", function(event) {
-
   if (event.key === "Escape") {
     closeNotice();
   }
-
 });
-
 </script>
 
 </body>

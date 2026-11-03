@@ -19,6 +19,8 @@ html, body {
   color: #243d4b;
 }
 
+button { font: inherit; }
+
 #viewport {
   width: 100%;
   height: 100dvh;
@@ -49,87 +51,132 @@ html, body {
   inset: 0;
 }
 
-.animal {
+.animal, #back {
   position: absolute;
   border: 0;
   background: transparent;
   cursor: pointer;
-  border-radius: 15px;
   -webkit-tap-highlight-color: transparent;
 }
 
-.animal:focus-visible {
+.animal {
+  border-radius: 15px;
+}
+
+.animal:focus-visible,
+#back:focus-visible,
+.hotspot:focus-visible {
   outline: 3px solid #b66c3d;
   outline-offset: -3px;
 }
 
 #back {
-  position: fixed;
-  left: 14px;
-  bottom: 14px;
   z-index: 5;
-  background: #fff4dc;
-  border: 2px solid #a67b51;
-  border-radius: 30px;
-  padding: 12px 17px;
-  color: #243d4b;
-  font-weight: bold;
-  cursor: pointer;
-  text-decoration: none;
-  font-size: 13px;
+  left: 2%;
+  top: 1.5%;
+  width: 18%;
+  height: 13%;
+  border-radius: 20px;
 }
 
-/* FINESTRA DI PRESENTAZIONE */
+/* SCHEDA ILLUSTRATA */
 
 #overlay {
   display: none;
   position: fixed;
   inset: 0;
   z-index: 20;
-  background: rgba(24, 40, 48, 0.76);
+  background: rgba(18, 35, 48, 0.82);
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+
+#overlay.open { display: flex; }
+
+#cardViewport {
+  position: relative;
+  width: min(100%, 150dvh);
+  max-height: calc(100dvh - 16px);
+  aspect-ratio: 3 / 2;
+}
+
+#cardImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.hotspot {
+  position: absolute;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* POSIZIONI DEI PULSANTI NELLE SCHEDE */
+
+#closeCard {
+  top: 3%;
+  right: 7%;
+  width: 7%;
+  height: 13%;
+  border-radius: 50%;
+}
+
+#returnAnimals {
+  left: 11%;
+  bottom: 5%;
+  width: 28%;
+  height: 16%;
+  border-radius: 30px;
+}
+
+#chooseCompanion {
+  left: 43%;
+  bottom: 4%;
+  width: 41%;
+  height: 19%;
+  border-radius: 30px;
+}
+
+/* SCHERMATE SUCCESSIVE */
+
+#dialogOverlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  background: rgba(18, 35, 48, 0.82);
   align-items: center;
   justify-content: center;
   padding: 16px;
 }
 
-#overlay.open { display: flex; }
+#dialogOverlay.open { display: flex; }
 
 #panel {
-  background: #fff7e8;
-  border: 3px solid #9d754d;
-  border-radius: 22px;
   width: min(440px, 100%);
   max-height: 90dvh;
   overflow-y: auto;
-  padding: 23px;
+  padding: 25px;
+  background: #fff7e8;
+  border: 3px solid #9d754d;
+  border-radius: 22px;
   text-align: center;
   box-shadow: 0 15px 45px #0005;
 }
 
 #panel h2 {
-  margin: 4px 0 14px;
-  font-size: 25px;
+  margin: 4px 0 15px;
+  font-size: 24px;
 }
 
-#animalPicture {
-  width: min(240px, 75%);
-  height: 180px;
-  margin: 0 auto 12px;
-  background-image: url("compagni-esploria.png");
-  background-repeat: no-repeat;
-  background-size: 700% 400%;
-  border-radius: 15px;
-}
-
-#traits {
-  color: #98633d;
-  font-weight: bold;
-  font-size: 13px;
-  line-height: 1.6;
-}
-
-#intro {
-  font-size: 16px;
+#panel p {
   line-height: 1.6;
 }
 
@@ -146,8 +193,8 @@ html, body {
 .action {
   display: block;
   width: 100%;
-  margin-top: 10px;
-  padding: 13px 10px;
+  margin-top: 12px;
+  padding: 14px 10px;
   border: 0;
   border-radius: 12px;
   background: #c66e50;
@@ -186,42 +233,71 @@ html, body {
 
     <div id="animals"></div>
 
+    <a
+      id="back"
+      href="accesso.html"
+      aria-label="TORNA INDIETRO"
+      title="TORNA INDIETRO"
+    ></a>
+
   </div>
 </main>
 
-<a id="back" href="index.html">
-  ← TORNA ALL'INIZIO
-</a>
+<!-- SCHEDA ILLUSTRATA DELL'ANIMALE -->
 
 <div id="overlay" role="dialog"
-     aria-modal="true" aria-labelledby="animalTitle">
+     aria-modal="true"
+     aria-label="SCHEDA DEL COMPAGNO">
+
+  <div id="cardViewport">
+
+    <img id="cardImage" src="" alt="">
+
+    <button
+      id="closeCard"
+      class="hotspot"
+      type="button"
+      aria-label="CHIUDI LA SCHEDA"
+    ></button>
+
+    <button
+      id="returnAnimals"
+      class="hotspot"
+      type="button"
+      aria-label="TORNA AGLI ANIMALI"
+    ></button>
+
+    <button
+      id="chooseCompanion"
+      class="hotspot"
+      type="button"
+      aria-label="SCEGLI QUESTO COMPAGNO"
+    ></button>
+
+  </div>
+</div>
+
+<!-- SCELTA DEL NOME -->
+
+<div id="dialogOverlay" role="dialog"
+     aria-modal="true"
+     aria-label="DAI UN NOME AL COMPAGNO">
 
   <div id="panel">
 
-    <section id="presentation">
-      <h2 id="animalTitle"></h2>
-      <div id="animalPicture" role="img"></div>
-      <p id="traits"></p>
-      <p id="intro"></p>
-
-      <button class="action" id="choose">
-        SCEGLI IL TUO COMPAGNO
-      </button>
-
-      <button class="action secondary" id="cancel">
-        TORNA INDIETRO
-      </button>
-    </section>
-
     <section id="naming">
       <h2>COME VUOI CHIAMARLO?</h2>
+
       <p>OGNI COMPAGNO HA BISOGNO DI UN NOME SPECIALE!</p>
 
-      <input id="nameInput"
-             type="text"
-             maxlength="20"
-             placeholder="SCRIVI IL NOME"
-             autocomplete="off">
+      <input
+        id="nameInput"
+        type="text"
+        maxlength="20"
+        placeholder="SCRIVI IL NOME"
+        aria-label="NOME DEL COMPAGNO"
+        autocomplete="off"
+      >
 
       <button class="action" id="confirm">
         CONFERMA
@@ -249,104 +325,63 @@ html, body {
 </div>
 
 <script>
+
+/* ELENCO DEI 28 COMPAGNI */
+
 const companions = [
-  ["VOLPE", "CURIOSA · ASTUTA · GIOCOSA",
-   "CIAO! ADORO SCOPRIRE SENTIERI NASCOSTI E LUOGHI MISTERIOSI. VUOI ESPLORARLI CON ME?"],
+  ["VOLPE", "volpe"],
+  ["LUPO", "lupo"],
+  ["CERVO", "cervo"],
+  ["GUFO", "gufo"],
+  ["CONIGLIO", "coniglio"],
+  ["SCOIATTOLO", "scoiattolo"],
+  ["PROCIONE", "procione"],
 
-  ["LUPO", "LEALE · CORAGGIOSO · ATTENTO",
-   "CIAO! MI PIACE CAMMINARE TRA I BOSCHI E NON LASCIO MAI SOLO UN AMICO."],
+  ["ORSO", "orso"],
+  ["TASSO", "tasso"],
+  ["LONTRA", "lontra"],
+  ["RICCIO", "riccio"],
+  ["CASTORO", "castoro"],
+  ["LINCE", "lince"],
+  ["GATTO SELVATICO", "gatto-selvatico"],
 
-  ["CERVO", "GENTILE · CALMO · SENSIBILE",
-   "CIAO! CONOSCO I SENTIERI PIÙ TRANQUILLI DEL BOSCO. TI VA DI SCOPRIRLI INSIEME?"],
+  ["DRAGHETTO", "draghetto"],
+  ["TARTARUGA", "tartaruga"],
+  ["AQUILA", "aquila"],
+  ["CORVO", "corvo"],
+  ["FALCO", "falco"],
+  ["CINGHIALE", "cinghiale"],
+  ["CAPRIOLO", "capriolo"],
 
-  ["GUFO", "OSSERVATORE · SAGGIO · SOGNATORE",
-   "CIAO! MI PIACE OSSERVARE LE STELLE E ASCOLTARE I SUONI DELLA NOTTE."],
-
-  ["CONIGLIO", "ALLEGRO · VIVACE · AFFETTUOSO",
-   "CIAO! SONO SEMPRE PRONTO A SALTELLARE VERSO UNA NUOVA AVVENTURA!"],
-
-  ["SCOIATTOLO", "ENERGICO · CREATIVO · CURIOSO",
-   "CIAO! RACCOLGO PICCOLI TESORI E HO SEMPRE MILLE IDEE PER LA TESTA."],
-
-  ["PROCIONE", "INGEGNOSO · SIMPATICO · AVVENTUROSO",
-   "CIAO! ADORO FRUGARE TRA LE COSE E SCOPRIRE OGGETTI SORPRENDENTI."],
-
-  ["ORSO", "PROTETTIVO · DOLCE · TRANQUILLO",
-   "CIAO! MI PIACCIONO LE PASSEGGIATE LENTE E LE GRANDI AVVENTURE CON GLI AMICI."],
-
-  ["TASSO", "TENACE · PRUDENTE · FEDELE",
-   "CIAO! CONOSCO TANTE GALLERIE SEGRETE SOTTO IL BOSCO."],
-
-  ["LONTRA", "GIOCOSA · SOCIEVOLE · ALLEGRA",
-   "CIAO! ADORO NUOTARE E SCIVOLARE NELL'ACQUA. VIENI CON ME?"],
-
-  ["RICCIO", "TIMIDO · DOLCE · ATTENTO",
-   "CIAO! ALL'INIZIO SONO UN PO' TIMIDO, MA CON GLI AMICI MI SENTO A CASA."],
-
-  ["CASTORO", "OPEROSO · CREATIVO · PAZIENTE",
-   "CIAO! MI PIACE COSTRUIRE RIFUGI E INVENTARE COSE NUOVE."],
-
-  ["LINCE", "AGILE · INDIPENDENTE · CURIOSA",
-   "CIAO! MI MUOVO SILENZIOSAMENTE E SCOPRO DETTAGLI CHE ALTRI NON NOTANO."],
-
-  ["GATTO SELVATICO", "LIBERO · GIOCOSO · OSSERVATORE",
-   "CIAO! AMO ARRAMPICARMI E CERCARE ANGOLI NASCOSTI."],
-
-  ["DRAGHETTO", "FANTASIOSO · CORAGGIOSO · ALLEGRO",
-   "CIAO! HO PICCOLE ALI E GRANDISSIMI SOGNI. VUOI VOLARE CON ME?"],
-
-  ["TARTARUGA", "PAZIENTE · RIFLESSIVA · GENTILE",
-   "CIAO! NON HO FRETTA: MI PIACE GODERMI OGNI SCOPERTA."],
-
-  ["AQUILA", "AUDACE · LIBERA · ATTENTA",
-   "CIAO! DALL'ALTO VEDO MONTAGNE, FIUMI E STRADE ANCORA DA ESPLORARE."],
-
-  ["CORVO", "INGEGNOSO · CURIOSO · VIVACE",
-   "CIAO! MI PIACCIONO GLI OGGETTI INSOLITI E LE SORPRESE."],
-
-  ["FALCO", "VELOCE · DETERMINATO · OSSERVATORE",
-   "CIAO! AMO IL VENTO E LE AVVENTURE TRA LE NUVOLE."],
-
-  ["CINGHIALE", "CORAGGIOSO · TESTARDO · GENEROSO",
-   "CIAO! NON MI SPAVENTO FACILMENTE E ADORO ESPLORARE IL SOTTOBOSCO."],
-
-  ["CAPRIOLO", "DELICATO · AGILE · CURIOSO",
-   "CIAO! MI PIACE CORRERE NEI PRATI E ASCOLTARE IL FRUSCIO DELLE FOGLIE."],
-
-  ["DELFINO", "SOCIEVOLE · GIOCOSO · INTELLIGENTE",
-   "CIAO! ADORO LE ONDE, I SALTI E LE AVVENTURE IN COMPAGNIA."],
-
-  ["FOCA", "DOLCE · ALLEGRA · TRANQUILLA",
-   "CIAO! MI PIACE RIPOSARE SUGLI SCOGLI E TUFFARMI NEL MARE."],
-
-  ["PANDA", "PACIFICO · AFFETTUOSO · CURIOSO",
-   "CIAO! AMO I POSTI TRANQUILLI E LE PASSEGGIATE CON GLI AMICI."],
-
-  ["PANDA ROSSO", "VIVACE · TIMIDO · GIOCOSO",
-   "CIAO! MI PIACE ARRAMPICARMI SUI RAMI E NASCONDERMI TRA LE FOGLIE."],
-
-  ["PINGUINO", "SOCIEVOLE · TENACE · SIMPATICO",
-   "CIAO! AMO SCIVOLARE SUL GHIACCIO E VIAGGIARE IN COMPAGNIA."],
-
-  ["ORSO POLARE", "FORTE · GENTILE · CORAGGIOSO",
-   "CIAO! CONOSCO DISTESE DI NEVE E PAESAGGI MERAVIGLIOSI."],
-
-  ["VOLPE ARTICA", "INGEGNOSA · VIVACE · ATTENTA",
-   "CIAO! MI PIACCIONO I PAESAGGI INNEVATI E LE PICCOLE SORPRESE."],
+  ["DELFINO", "delfino"],
+  ["FOCA", "foca"],
+  ["PANDA", "panda"],
+  ["PANDA ROSSO", "panda-rosso"],
+  ["PINGUINO", "pinguino"],
+  ["ORSO POLARE", "orso-polare"],
+  ["VOLPE ARTICA", "volpe-artica"]
 ];
 
 const viewport = document.getElementById("viewport");
 const scene = document.getElementById("scene");
 const animals = document.getElementById("animals");
-const overlay = document.getElementById("overlay");
 
-const presentation = document.getElementById("presentation");
+const overlay = document.getElementById("overlay");
+const cardImage = document.getElementById("cardImage");
+
+const dialogOverlay = document.getElementById("dialogOverlay");
 const naming = document.getElementById("naming");
 const finished = document.getElementById("finished");
 
+const nameInput = document.getElementById("nameInput");
+
 let selected = -1;
 
-/* CREA LE 28 AREE CLICCABILI */
+/* CREA LE AREE CLICCABILI SULLA GALLERIA */
+
+const centersX = [9.5, 23.1, 36.5, 50, 63.5, 77, 90.5];
+const tops = [15, 39, 59, 79];
+const heights = [23, 19, 19, 20];
 
 companions.forEach((animal, index) => {
   const column = index % 7;
@@ -355,127 +390,161 @@ companions.forEach((animal, index) => {
   const button = document.createElement("button");
   button.className = "animal";
   button.type = "button";
-  button.setAttribute("aria-label", "SCEGLI " + animal[0]);
 
-  /* POSIZIONI SULLA TAVOLA ORIGINALE */
-
-  const centersX = [9.5, 23.1, 36.5, 50, 63.5, 77, 90.5];
-  const tops = [15, 39, 59, 79];
-  const heights = [23, 19, 19, 20];
+  button.setAttribute(
+    "aria-label",
+    "SCOPRI " + animal[0]
+  );
 
   button.style.left = (centersX[column] - 6.5) + "%";
   button.style.top = tops[row] + "%";
   button.style.width = "13%";
   button.style.height = heights[row] + "%";
 
-  button.addEventListener("click", () => showAnimal(index));
+  button.addEventListener("click", () => {
+    showAnimal(index);
+  });
 
   animals.appendChild(button);
 });
 
-/* APRE LA PRESENTAZIONE */
+/* APRE LA SCHEDA ILLUSTRATA */
 
 function showAnimal(index) {
   selected = index;
+
   const animal = companions[index];
 
-  document.getElementById("animalTitle").textContent = animal[0];
-  document.getElementById("traits").textContent = animal[1];
-  document.getElementById("intro").textContent = animal[2];
+  cardImage.src =
+    "schede/scheda-" + animal[1] + ".png";
 
-  const column = index % 7;
-  const row = Math.floor(index / 7);
-
-  const picture = document.getElementById("animalPicture");
-  picture.style.backgroundPosition =
-    (column * 100 / 6) + "% " + (row * 100 / 3) + "%";
-  picture.setAttribute("aria-label", animal[0]);
-
-  presentation.style.display = "block";
-  naming.style.display = "none";
-  finished.style.display = "none";
+  cardImage.alt =
+    "SCHEDA DEL COMPAGNO " + animal[0];
 
   overlay.classList.add("open");
-  document.getElementById("choose").focus();
+  document.getElementById("closeCard").focus();
 }
 
-function closeOverlay() {
+/* CHIUDE LA SCHEDA */
+
+function closeCard() {
   overlay.classList.remove("open");
 }
 
-/* SCELTA DEL COMPAGNO */
+document.getElementById("closeCard").onclick = closeCard;
 
-document.getElementById("choose").onclick = () => {
-  presentation.style.display = "none";
+document.getElementById("returnAnimals").onclick = closeCard;
+
+/* CONFERMA LA SCELTA E CHIEDE IL NOME */
+
+document.getElementById("chooseCompanion").onclick = () => {
+  if (selected < 0) return;
+
+  closeCard();
+
   naming.style.display = "block";
-  document.getElementById("nameInput").value = "";
-  document.getElementById("nameInput").focus();
+  finished.style.display = "none";
+
+  nameInput.value = "";
+
+  dialogOverlay.classList.add("open");
+  nameInput.focus();
 };
 
-document.getElementById("confirm").onclick = () => {
-  const name = document.getElementById("nameInput").value
-    .trim().toUpperCase();
+/* CONFERMA IL NOME */
+
+function confirmName() {
+  if (selected < 0) return;
+
+  const name = nameInput.value.trim().toUpperCase();
 
   if (!name) {
     alert("SCRIVI PRIMA IL NOME DEL TUO COMPAGNO!");
+    nameInput.focus();
     return;
   }
 
-  /* SALVATAGGIO LOCALE DI PROVA */
   const companion = {
     animal: companions[selected][0],
     index: selected,
     name: name
   };
 
-  localStorage.setItem(
-    "esploria-compagno-prova",
-    JSON.stringify(companion)
-  );
+  /* SALVATAGGIO LOCALE DI PROVA */
+
+  try {
+    localStorage.setItem(
+      "esploria-compagno-prova",
+      JSON.stringify(companion)
+    );
+  } catch (error) {
+    console.warn("SALVATAGGIO LOCALE NON DISPONIBILE", error);
+  }
 
   document.getElementById("result").textContent =
     name + " È IL TUO NUOVO COMPAGNO DI AVVENTURA!";
 
   naming.style.display = "none";
   finished.style.display = "block";
-};
+}
 
-document.getElementById("cancel").onclick = closeOverlay;
+document.getElementById("confirm").onclick = confirmName;
+
+nameInput.addEventListener("keydown", event => {
+  if (event.key === "Enter") confirmName();
+});
+
+/* TORNA ALLA SCHEDA */
 
 document.getElementById("goBack").onclick = () => {
-  naming.style.display = "none";
-  presentation.style.display = "block";
+  dialogOverlay.classList.remove("open");
+  overlay.classList.add("open");
 };
 
-document.getElementById("restart").onclick = closeOverlay;
+/* CAMBIA COMPAGNO */
+
+document.getElementById("restart").onclick = () => {
+  dialogOverlay.classList.remove("open");
+  closeCard();
+  selected = -1;
+};
+
+/* PROSEGUI: PAGINA FUTURA ANCORA DA CREARE */
 
 document.getElementById("finish").onclick = () => {
   alert("PRESTO POTRAI ENTRARE NEL MONDO DI ESPLORIA!");
-  closeOverlay();
+  dialogOverlay.classList.remove("open");
 };
 
-overlay.addEventListener("click", event => {
-  if (event.target === overlay) closeOverlay();
-});
+/* CHIUSURA CON ESC */
 
 document.addEventListener("keydown", event => {
-  if (event.key === "Escape") closeOverlay();
+  if (event.key !== "Escape") return;
+
+  if (dialogOverlay.classList.contains("open")) {
+    dialogOverlay.classList.remove("open");
+  } else {
+    closeCard();
+  }
 });
 
 /* CENTRAMENTO DEL PAESAGGIO */
 
 function centerScene() {
   viewport.scrollLeft = Math.max(
-    0, (scene.scrollWidth - viewport.clientWidth) / 2
+    0,
+    (scene.scrollWidth - viewport.clientWidth) / 2
   );
+
   viewport.scrollTop = Math.max(
-    0, (scene.scrollHeight - viewport.clientHeight) / 2
+    0,
+    (scene.scrollHeight - viewport.clientHeight) / 2
   );
 }
 
 window.addEventListener("load", centerScene);
 window.addEventListener("resize", centerScene);
-</script>
 
+</script>
 </body>
 </html>

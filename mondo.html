@@ -486,10 +486,16 @@ function openPlace(button) {
 
 document.querySelectorAll(".place").forEach(button => {
   button.addEventListener("click", () => {
+
+    if (button.id === "borgo") {
+      window.location.href = "borgo.html";
+      return;
+    }
+
     openPlace(button);
+
   });
 });
-
 /* CHIUSURA DELLA FINESTRA */
 
 function closePlace() {

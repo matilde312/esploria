@@ -21,7 +21,11 @@ html, body {
   overflow: hidden;
   background: #e4e8e0;
   font-family: 'Patrick Hand', cursive;
-  color: #26394b;
+  color: #302d35;
+}
+
+button {
+  font-family: 'Patrick Hand', cursive;
 }
 
 /* MAPPA */
@@ -151,7 +155,7 @@ html, body {
   height: 20%;
 }
 
-/* CASTELLO: AREA INSEGNANTI */
+/* CASTELLO - AREA INSEGNANTI */
 
 #castello {
   left: 69%;
@@ -161,7 +165,7 @@ html, body {
   z-index: 3;
 }
 
-/* PULSANTE PROFILO IN ALTO A DESTRA */
+/* PROFILO */
 
 #profilo {
   left: 90%;
@@ -172,7 +176,7 @@ html, body {
   border-radius: 50%;
 }
 
-/* FINESTRA PROVVISORIA */
+/* FINESTRA ILLUSTRATA */
 
 #overlay {
   position: fixed;
@@ -190,8 +194,8 @@ html, body {
 }
 
 #dialog {
-  width: min(430px, 100%);
-  padding: 26px;
+  width: min(450px, 100%);
+  padding: 28px 25px;
   background: #fff0d2;
   border: 5px solid #9c744c;
   border-radius: 24px;
@@ -200,25 +204,42 @@ html, body {
 }
 
 #dialog h2 {
-  margin: 0 0 12px;
-  font-size: clamp(26px, 5vw, 36px);
+  margin: 0 0 14px;
+  font-family: 'Patrick Hand', cursive;
+  font-size: clamp(27px, 5vw, 37px);
+  font-weight: 400;
   line-height: 1.1;
+  text-transform: uppercase;
 }
 
 #dialog p {
-  margin: 0 0 20px;
-  font-size: clamp(19px, 3vw, 25px);
+  margin: 0 0 22px;
+  font-family: 'Patrick Hand', cursive;
+  font-size: clamp(20px, 3vw, 26px);
   line-height: 1.3;
+  text-transform: uppercase;
 }
+
+/* PULSANTE ROSSO CON PATRICK HAND */
 
 #closeDialog {
   border: 2px solid #9b5d3b;
   border-radius: 16px;
   padding: 10px 28px;
+
   background: #d87850;
-  color: white;
-  font-size: 24px;
+  color: #fffaf0;
+
+  font-family: 'Patrick Hand', cursive;
+  font-size: 25px;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+
   cursor: pointer;
+}
+
+#closeDialog:hover {
+  background: #c96a44;
 }
 
 #closeDialog:focus-visible {
@@ -238,138 +259,59 @@ html, body {
     <img
       id="mapImage"
       src="mondo-esploria.png"
-      alt="MAPPA DEL MONDO DI ESPLORIA CON UNDICI LUOGHI DA ESPLORARE"
+      alt="MAPPA DEL MONDO DI ESPLORIA"
       draggable="false"
     >
 
-    <!-- ITALIANO -->
-    <button
-      class="place"
-      id="biblioteca"
-      aria-label="BIBLIOTECA DELLE STORIE - ITALIANO"
-      data-title="BIBLIOTECA DELLE STORIE"
-      data-subject="ITALIANO"
-    ></button>
+    <button class="place" id="biblioteca"
+      aria-label="BIBLIOTECA DELLE STORIE"></button>
 
-    <!-- GRAMMATICA -->
-    <button
-      class="place"
-      id="officina"
-      aria-label="OFFICINA DELLE PAROLE - GRAMMATICA"
-      data-title="OFFICINA DELLE PAROLE"
-      data-subject="GRAMMATICA"
-    ></button>
+    <button class="place" id="officina"
+      aria-label="OFFICINA DELLE PAROLE"></button>
 
-    <!-- MATEMATICA -->
-    <button
-      class="place"
-      id="borgo"
-      aria-label="BORGO DEGLI INGRANAGGI - MATEMATICA"
-      data-title="BORGO DEGLI INGRANAGGI"
-      data-subject="MATEMATICA"
-    ></button>
+    <button class="place" id="borgo"
+      aria-label="BORGO DEGLI INGRANAGGI"></button>
 
-    <!-- STORIA -->
-    <button
-      class="place"
-      id="torre"
-      aria-label="TORRE DEL TEMPO - STORIA"
-      data-title="TORRE DEL TEMPO"
-      data-subject="STORIA"
-    ></button>
+    <button class="place" id="torre"
+      aria-label="TORRE DEL TEMPO"></button>
 
-    <!-- GEOGRAFIA -->
-    <button
-      class="place"
-      id="osservatorio"
-      aria-label="OSSERVATORIO DEI VIAGGI - GEOGRAFIA"
-      data-title="OSSERVATORIO DEI VIAGGI"
-      data-subject="GEOGRAFIA"
-    ></button>
+    <button class="place" id="osservatorio"
+      aria-label="OSSERVATORIO DEI VIAGGI"></button>
 
-    <!-- SCIENZE -->
-    <button
-      class="place"
-      id="serra"
-      aria-label="SERRA DELLE SCOPERTE - SCIENZE"
-      data-title="SERRA DELLE SCOPERTE"
-      data-subject="SCIENZE"
-    ></button>
+    <button class="place" id="serra"
+      aria-label="SERRA DELLE SCOPERTE"></button>
 
-    <!-- TECNOLOGIA E LOGICA -->
-    <button
-      class="place"
-      id="laboratorio"
-      aria-label="LABORATORIO DELLE INVENZIONI - TECNOLOGIA E LOGICA"
-      data-title="LABORATORIO DELLE INVENZIONI"
-      data-subject="TECNOLOGIA E LOGICA"
-    ></button>
+    <button class="place" id="laboratorio"
+      aria-label="LABORATORIO DELLE INVENZIONI"></button>
 
-    <!-- INGLESE -->
-    <button
-      class="place"
-      id="porto"
-      aria-label="PORTO DELLE LINGUE - INGLESE"
-      data-title="PORTO DELLE LINGUE"
-      data-subject="INGLESE"
-    ></button>
+    <button class="place" id="porto"
+      aria-label="PORTO DELLE LINGUE"></button>
 
-    <!-- ARTE E MUSICA -->
-    <button
-      class="place"
-      id="arti"
-      aria-label="CASA DELLE ARTI - ARTE E MUSICA"
-      data-title="CASA DELLE ARTI"
-      data-subject="ARTE E MUSICA"
-    ></button>
+    <button class="place" id="arti"
+      aria-label="CASA DELLE ARTI"></button>
 
-    <!-- EDUCAZIONE CIVICA -->
-    <button
-      class="place"
-      id="piazza"
-      aria-label="PIAZZA DELLA COMUNITÀ - EDUCAZIONE CIVICA"
-      data-title="PIAZZA DELLA COMUNITÀ"
-      data-subject="EDUCAZIONE CIVICA"
-    ></button>
+    <button class="place" id="piazza"
+      aria-label="PIAZZA DELLA COMUNITÀ"></button>
 
-    <!-- ATTIVITÀ SPECIALI -->
-    <button
-      class="place"
-      id="sfide"
-      aria-label="PADIGLIONE DELLE SFIDE - ATTIVITÀ SPECIALI"
-      data-title="PADIGLIONE DELLE SFIDE"
-      data-subject="ATTIVITÀ SPECIALI"
-    ></button>
+    <button class="place" id="sfide"
+      aria-label="PADIGLIONE DELLE SFIDE"></button>
 
-    <!-- CASTELLO -->
-    <button
-      class="place"
-      id="castello"
-      aria-label="AREA INSEGNANTI"
-      data-title="AREA INSEGNANTI"
-      data-subject="SPAZIO RISERVATO AI DOCENTI"
-    ></button>
+    <button class="place" id="castello"
+      aria-label="AREA INSEGNANTI"></button>
 
-    <!-- PROFILO -->
-    <button
-      class="place"
-      id="profilo"
-      aria-label="IL MIO PROFILO"
-      data-title="IL MIO PROFILO"
-      data-subject="COMPAGNO, PROGRESSI E DISTINTIVI"
-    ></button>
+    <button class="place" id="profilo"
+      aria-label="IL MIO PROFILO"></button>
 
   </div>
 </main>
 
-<!-- MESSAGGIO TEMPORANEO -->
+<!-- FINESTRA DEL LUOGO -->
 
-<div
-  id="overlay"
+<div id="overlay"
   role="dialog"
   aria-modal="true"
-  aria-labelledby="dialogTitle"
->
+  aria-labelledby="dialogTitle">
+
   <div id="dialog">
 
     <h2 id="dialogTitle"></h2>
@@ -390,46 +332,157 @@ html, body {
 const viewport = document.getElementById("viewport");
 const scene = document.getElementById("scene");
 const overlay = document.getElementById("overlay");
-const dialogTitle = document.getElementById("dialogTitle");
-const dialogText = document.getElementById("dialogText");
-const closeDialog = document.getElementById("closeDialog");
+
+const dialogTitle =
+  document.getElementById("dialogTitle");
+
+const dialogText =
+  document.getElementById("dialogText");
+
+const closeDialog =
+  document.getElementById("closeDialog");
 
 let lastFocused = null;
 
-/* APERTURA DEI LUOGHI */
+/* STORIE DEI LUOGHI */
+
+const places = {
+
+  biblioteca: {
+    title: "BIBLIOTECA DELLE STORIE",
+    text:
+      "TRA QUESTI SCAFFALI SI NASCONDONO " +
+      "RACCONTI, SEGRETI E PERSONAGGI " +
+      "STRAORDINARI. " +
+      "PRESTO POTRAI SCOPRIRLI!"
+  },
+
+  officina: {
+    title: "OFFICINA DELLE PAROLE",
+    text:
+      "IN QUESTA PICCOLA OFFICINA LE PAROLE " +
+      "SI INCONTRANO, CAMBIANO FORMA E " +
+      "CREANO QUALCOSA DI SPECIALE. " +
+      "PRESTO POTRAI ENTRARE!"
+  },
+
+  borgo: {
+    title: "BORGO DEGLI INGRANAGGI",
+    text:
+      "QUI OGNI INGRANAGGIO NASCONDE " +
+      "UNA SFIDA E OGNI MISTERO " +
+      "ASPETTA DI ESSERE RISOLTO. " +
+      "PRESTO IL BORGO APRIRÀ LE SUE PORTE!"
+  },
+
+  torre: {
+    title: "TORRE DEL TEMPO",
+    text:
+      "LE LANCETTE DI QUESTA TORRE " +
+      "CUSTODISCONO SEGRETI DI EPOCHE " +
+      "LONTANE. " +
+      "PRESTO POTRAI VIAGGIARE NEL TEMPO!"
+  },
+
+  osservatorio: {
+    title: "OSSERVATORIO DEI VIAGGI",
+    text:
+      "MAPPE MISTERIOSE, BUSSOLE E " +
+      "SENTIERI SCONOSCIUTI TI ASPETTANO. " +
+      "PRESTO POTRAI PARTIRE ALLA SCOPERTA!"
+  },
+
+  serra: {
+    title: "SERRA DELLE SCOPERTE",
+    text:
+      "TRA FOGLIE, FIORI E PICCOLE CREATURE " +
+      "SI NASCONDONO GRANDI MISTERI. " +
+      "PRESTO POTRAI ESPLORARE LA SERRA!"
+  },
+
+  laboratorio: {
+    title: "LABORATORIO DELLE INVENZIONI",
+    text:
+      "STRANI MECCANISMI E INVENZIONI " +
+      "SORPRENDENTI ASPETTANO MENTI " +
+      "CURIOSE. " +
+      "PRESTO POTRAI METTERTI ALL'OPERA!"
+  },
+
+  porto: {
+    title: "PORTO DELLE LINGUE",
+    text:
+      "OGNI NAVE PORTA CON SÉ PAROLE, " +
+      "STORIE E MESSAGGI DA LUOGHI " +
+      "LONTANI. " +
+      "PRESTO POTRAI SALPARE!"
+  },
+
+  arti: {
+    title: "CASA DELLE ARTI",
+    text:
+      "QUI COLORI, SUONI E FANTASIA " +
+      "PRENDONO VITA. " +
+      "PRESTO POTRAI DARE SPAZIO " +
+      "ALLA TUA CREATIVITÀ!"
+  },
+
+  piazza: {
+    title: "PIAZZA DELLA COMUNITÀ",
+    text:
+      "IN QUESTA PIAZZA OGNI VOCE " +
+      "È IMPORTANTE E OGNI GESTO " +
+      "PUÒ FARE LA DIFFERENZA. " +
+      "PRESTO POTRAI PARTECIPARE!"
+  },
+
+  sfide: {
+    title: "PADIGLIONE DELLE SFIDE",
+    text:
+      "DIETRO QUESTE PORTE TI ASPETTANO " +
+      "GIOCHI, MISTERI E PROVE " +
+      "SORPRENDENTI. " +
+      "PRESTO POTRAI METTERTI ALLA PROVA!"
+  },
+
+  castello: {
+    title: "AREA INSEGNANTI",
+    text:
+      "QUESTO CASTELLO CUSTODISCE " +
+      "UNO SPAZIO RISERVATO AGLI " +
+      "INSEGNANTI. " +
+      "PRESTO SARÀ POSSIBILE ACCEDERVI!"
+  },
+
+  profilo: {
+    title: "IL MIO PROFILO",
+    text:
+      "QUI POTRAI RITROVARE IL TUO " +
+      "COMPAGNO DI AVVENTURA, " +
+      "SCOPRIRE I TUOI PROGRESSI " +
+      "E COLLEZIONARE DISTINTIVI SPECIALI. " +
+      "QUESTA SEZIONE ARRIVERÀ PRESTO!"
+  }
+
+};
+
+/* APERTURA DELLE FINESTRE */
 
 function openPlace(button) {
+  const place = places[button.id];
+
+  if (!place) return;
+
   lastFocused = button;
 
-  const title = button.dataset.title;
-  const subject = button.dataset.subject;
-
-  dialogTitle.textContent = title;
-
-  if (button.id === "profilo") {
-    dialogText.textContent =
-      "QUI POTRAI RITROVARE IL TUO COMPAGNO, " +
-      "SCOPRIRE I TUOI PROGRESSI E COLLEZIONARE " +
-      "I DISTINTIVI DELLE TUE AVVENTURE. " +
-      "QUESTA SEZIONE ARRIVERÀ PRESTO!";
-  } else if (button.id === "castello") {
-    dialogText.textContent =
-      "QUESTO CASTELLO OSPITERÀ L'AREA " +
-      "RISERVATA AGLI INSEGNANTI. " +
-      "PRESTO SARÀ POSSIBILE ACCEDERVI!";
-  } else {
-    dialogText.textContent =
-      "BENVENUTO IN QUESTO LUOGO DEDICATO A " +
-      subject + "! " +
-      "PRESTO QUI TROVERAI NUOVE ATTIVITÀ " +
-      "E AVVENTURE DA SCOPRIRE!";
-  }
+  dialogTitle.textContent = place.title;
+  dialogText.textContent = place.text;
 
   overlay.classList.add("open");
   closeDialog.focus();
 }
 
-/* COLLEGA TUTTI GLI EDIFICI */
+/* COLLEGA GLI EDIFICI */
 
 document.querySelectorAll(".place").forEach(button => {
   button.addEventListener("click", () => {
@@ -437,7 +490,7 @@ document.querySelectorAll(".place").forEach(button => {
   });
 });
 
-/* CHIUSURA DEL MESSAGGIO */
+/* CHIUSURA DELLA FINESTRA */
 
 function closePlace() {
   overlay.classList.remove("open");
@@ -464,7 +517,7 @@ document.addEventListener("keydown", event => {
   }
 });
 
-/* CENTRA LA MAPPA */
+/* CENTRAMENTO DELLA MAPPA */
 
 function centerMap() {
   viewport.scrollLeft = Math.max(
@@ -479,10 +532,7 @@ function centerMap() {
 }
 
 window.addEventListener("load", centerMap);
-
-window.addEventListener("resize", () => {
-  centerMap();
-});
+window.addEventListener("resize", centerMap);
 
 </script>
 

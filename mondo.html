@@ -1,0 +1,490 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ESPLORIA - IL NOSTRO MONDO</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #e4e8e0;
+  font-family: 'Patrick Hand', cursive;
+  color: #26394b;
+}
+
+/* MAPPA */
+
+#viewport {
+  width: 100%;
+  height: 100dvh;
+  overflow: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+#viewport::-webkit-scrollbar {
+  display: none;
+}
+
+#scene {
+  position: relative;
+  width: max(100vw, 177.78dvh);
+  aspect-ratio: 16 / 9;
+}
+
+#mapImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* EDIFICI CLICCABILI */
+
+.place {
+  position: absolute;
+  z-index: 2;
+  display: block;
+  border: none;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 18px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.place:focus-visible {
+  outline: 3px solid #c77843;
+  outline-offset: 2px;
+}
+
+/* POSIZIONI DEGLI 11 LUOGHI */
+
+#biblioteca {
+  left: 9%;
+  top: 19%;
+  width: 15%;
+  height: 22%;
+}
+
+#officina {
+  left: 28%;
+  top: 25%;
+  width: 13%;
+  height: 15%;
+}
+
+#borgo {
+  left: 45%;
+  top: 19%;
+  width: 17%;
+  height: 22%;
+}
+
+#torre {
+  left: 62%;
+  top: 20%;
+  width: 12%;
+  height: 22%;
+}
+
+#osservatorio {
+  left: 83%;
+  top: 19%;
+  width: 15%;
+  height: 20%;
+}
+
+#serra {
+  left: 7%;
+  top: 42%;
+  width: 18%;
+  height: 22%;
+}
+
+#laboratorio {
+  left: 29%;
+  top: 44%;
+  width: 15%;
+  height: 19%;
+}
+
+#porto {
+  left: 52%;
+  top: 45%;
+  width: 14%;
+  height: 19%;
+}
+
+#arti {
+  left: 79%;
+  top: 43%;
+  width: 17%;
+  height: 22%;
+}
+
+#piazza {
+  left: 40%;
+  top: 65%;
+  width: 21%;
+  height: 22%;
+}
+
+#sfide {
+  left: 67%;
+  top: 65%;
+  width: 18%;
+  height: 20%;
+}
+
+/* CASTELLO: AREA INSEGNANTI */
+
+#castello {
+  left: 69%;
+  top: 4%;
+  width: 16%;
+  height: 18%;
+  z-index: 3;
+}
+
+/* PULSANTE PROFILO IN ALTO A DESTRA */
+
+#profilo {
+  left: 90%;
+  top: 1%;
+  width: 9%;
+  height: 13%;
+  z-index: 4;
+  border-radius: 50%;
+}
+
+/* FINESTRA PROVVISORIA */
+
+#overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(23, 42, 55, 0.58);
+}
+
+#overlay.open {
+  display: flex;
+}
+
+#dialog {
+  width: min(430px, 100%);
+  padding: 26px;
+  background: #fff0d2;
+  border: 5px solid #9c744c;
+  border-radius: 24px;
+  box-shadow: 0 14px 45px rgba(0, 0, 0, 0.25);
+  text-align: center;
+}
+
+#dialog h2 {
+  margin: 0 0 12px;
+  font-size: clamp(26px, 5vw, 36px);
+  line-height: 1.1;
+}
+
+#dialog p {
+  margin: 0 0 20px;
+  font-size: clamp(19px, 3vw, 25px);
+  line-height: 1.3;
+}
+
+#closeDialog {
+  border: 2px solid #9b5d3b;
+  border-radius: 16px;
+  padding: 10px 28px;
+  background: #d87850;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+#closeDialog:focus-visible {
+  outline: 3px solid #26394b;
+  outline-offset: 3px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- MAPPA DI ESPLORIA -->
+
+<main id="viewport">
+  <div id="scene">
+
+    <img
+      id="mapImage"
+      src="mondo-esploria.png"
+      alt="MAPPA DEL MONDO DI ESPLORIA CON UNDICI LUOGHI DA ESPLORARE"
+      draggable="false"
+    >
+
+    <!-- ITALIANO -->
+    <button
+      class="place"
+      id="biblioteca"
+      aria-label="BIBLIOTECA DELLE STORIE - ITALIANO"
+      data-title="BIBLIOTECA DELLE STORIE"
+      data-subject="ITALIANO"
+    ></button>
+
+    <!-- GRAMMATICA -->
+    <button
+      class="place"
+      id="officina"
+      aria-label="OFFICINA DELLE PAROLE - GRAMMATICA"
+      data-title="OFFICINA DELLE PAROLE"
+      data-subject="GRAMMATICA"
+    ></button>
+
+    <!-- MATEMATICA -->
+    <button
+      class="place"
+      id="borgo"
+      aria-label="BORGO DEGLI INGRANAGGI - MATEMATICA"
+      data-title="BORGO DEGLI INGRANAGGI"
+      data-subject="MATEMATICA"
+    ></button>
+
+    <!-- STORIA -->
+    <button
+      class="place"
+      id="torre"
+      aria-label="TORRE DEL TEMPO - STORIA"
+      data-title="TORRE DEL TEMPO"
+      data-subject="STORIA"
+    ></button>
+
+    <!-- GEOGRAFIA -->
+    <button
+      class="place"
+      id="osservatorio"
+      aria-label="OSSERVATORIO DEI VIAGGI - GEOGRAFIA"
+      data-title="OSSERVATORIO DEI VIAGGI"
+      data-subject="GEOGRAFIA"
+    ></button>
+
+    <!-- SCIENZE -->
+    <button
+      class="place"
+      id="serra"
+      aria-label="SERRA DELLE SCOPERTE - SCIENZE"
+      data-title="SERRA DELLE SCOPERTE"
+      data-subject="SCIENZE"
+    ></button>
+
+    <!-- TECNOLOGIA E LOGICA -->
+    <button
+      class="place"
+      id="laboratorio"
+      aria-label="LABORATORIO DELLE INVENZIONI - TECNOLOGIA E LOGICA"
+      data-title="LABORATORIO DELLE INVENZIONI"
+      data-subject="TECNOLOGIA E LOGICA"
+    ></button>
+
+    <!-- INGLESE -->
+    <button
+      class="place"
+      id="porto"
+      aria-label="PORTO DELLE LINGUE - INGLESE"
+      data-title="PORTO DELLE LINGUE"
+      data-subject="INGLESE"
+    ></button>
+
+    <!-- ARTE E MUSICA -->
+    <button
+      class="place"
+      id="arti"
+      aria-label="CASA DELLE ARTI - ARTE E MUSICA"
+      data-title="CASA DELLE ARTI"
+      data-subject="ARTE E MUSICA"
+    ></button>
+
+    <!-- EDUCAZIONE CIVICA -->
+    <button
+      class="place"
+      id="piazza"
+      aria-label="PIAZZA DELLA COMUNITÀ - EDUCAZIONE CIVICA"
+      data-title="PIAZZA DELLA COMUNITÀ"
+      data-subject="EDUCAZIONE CIVICA"
+    ></button>
+
+    <!-- ATTIVITÀ SPECIALI -->
+    <button
+      class="place"
+      id="sfide"
+      aria-label="PADIGLIONE DELLE SFIDE - ATTIVITÀ SPECIALI"
+      data-title="PADIGLIONE DELLE SFIDE"
+      data-subject="ATTIVITÀ SPECIALI"
+    ></button>
+
+    <!-- CASTELLO -->
+    <button
+      class="place"
+      id="castello"
+      aria-label="AREA INSEGNANTI"
+      data-title="AREA INSEGNANTI"
+      data-subject="SPAZIO RISERVATO AI DOCENTI"
+    ></button>
+
+    <!-- PROFILO -->
+    <button
+      class="place"
+      id="profilo"
+      aria-label="IL MIO PROFILO"
+      data-title="IL MIO PROFILO"
+      data-subject="COMPAGNO, PROGRESSI E DISTINTIVI"
+    ></button>
+
+  </div>
+</main>
+
+<!-- MESSAGGIO TEMPORANEO -->
+
+<div
+  id="overlay"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="dialogTitle"
+>
+  <div id="dialog">
+
+    <h2 id="dialogTitle"></h2>
+
+    <p id="dialogText"></p>
+
+    <button id="closeDialog" type="button">
+      TORNA ALLA MAPPA
+    </button>
+
+  </div>
+</div>
+
+<script>
+
+/* ELEMENTI */
+
+const viewport = document.getElementById("viewport");
+const scene = document.getElementById("scene");
+const overlay = document.getElementById("overlay");
+const dialogTitle = document.getElementById("dialogTitle");
+const dialogText = document.getElementById("dialogText");
+const closeDialog = document.getElementById("closeDialog");
+
+let lastFocused = null;
+
+/* APERTURA DEI LUOGHI */
+
+function openPlace(button) {
+  lastFocused = button;
+
+  const title = button.dataset.title;
+  const subject = button.dataset.subject;
+
+  dialogTitle.textContent = title;
+
+  if (button.id === "profilo") {
+    dialogText.textContent =
+      "QUI POTRAI RITROVARE IL TUO COMPAGNO, " +
+      "SCOPRIRE I TUOI PROGRESSI E COLLEZIONARE " +
+      "I DISTINTIVI DELLE TUE AVVENTURE. " +
+      "QUESTA SEZIONE ARRIVERÀ PRESTO!";
+  } else if (button.id === "castello") {
+    dialogText.textContent =
+      "QUESTO CASTELLO OSPITERÀ L'AREA " +
+      "RISERVATA AGLI INSEGNANTI. " +
+      "PRESTO SARÀ POSSIBILE ACCEDERVI!";
+  } else {
+    dialogText.textContent =
+      "BENVENUTO IN QUESTO LUOGO DEDICATO A " +
+      subject + "! " +
+      "PRESTO QUI TROVERAI NUOVE ATTIVITÀ " +
+      "E AVVENTURE DA SCOPRIRE!";
+  }
+
+  overlay.classList.add("open");
+  closeDialog.focus();
+}
+
+/* COLLEGA TUTTI GLI EDIFICI */
+
+document.querySelectorAll(".place").forEach(button => {
+  button.addEventListener("click", () => {
+    openPlace(button);
+  });
+});
+
+/* CHIUSURA DEL MESSAGGIO */
+
+function closePlace() {
+  overlay.classList.remove("open");
+
+  if (lastFocused) {
+    lastFocused.focus();
+  }
+}
+
+closeDialog.addEventListener("click", closePlace);
+
+overlay.addEventListener("click", event => {
+  if (event.target === overlay) {
+    closePlace();
+  }
+});
+
+document.addEventListener("keydown", event => {
+  if (
+    event.key === "Escape" &&
+    overlay.classList.contains("open")
+  ) {
+    closePlace();
+  }
+});
+
+/* CENTRA LA MAPPA */
+
+function centerMap() {
+  viewport.scrollLeft = Math.max(
+    0,
+    (scene.scrollWidth - viewport.clientWidth) / 2
+  );
+
+  viewport.scrollTop = Math.max(
+    0,
+    (scene.scrollHeight - viewport.clientHeight) / 2
+  );
+}
+
+window.addEventListener("load", centerMap);
+
+window.addEventListener("resize", () => {
+  centerMap();
+});
+
+</script>
+
+</body>
+</html>

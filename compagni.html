@@ -7,7 +7,9 @@
 <title>ESPLORIA - SCEGLI IL TUO COMPAGNO</title>
 
 <style>
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 html, body {
   margin: 0;
@@ -19,7 +21,11 @@ html, body {
   color: #243d4b;
 }
 
-button { font: inherit; }
+button, input {
+  font: inherit;
+}
+
+/* GALLERIA ORIGINALE */
 
 #viewport {
   width: 100%;
@@ -30,7 +36,9 @@ button { font: inherit; }
   scrollbar-width: none;
 }
 
-#viewport::-webkit-scrollbar { display: none; }
+#viewport::-webkit-scrollbar {
+  display: none;
+}
 
 #scene {
   position: relative;
@@ -63,25 +71,18 @@ button { font: inherit; }
   border-radius: 15px;
 }
 
-.animal:focus-visible,
-#back:focus-visible,
-.hotspot:focus-visible {
-  outline: 3px solid #b66c3d;
-  outline-offset: -3px;
-}
-
 #back {
   z-index: 5;
-  left: 2%;
-  top: 1.5%;
-  width: 18%;
-  height: 13%;
+  left: 3%;
+  top: 2%;
+  width: 17%;
+  height: 12%;
   border-radius: 20px;
 }
 
-/* SCHEDA ILLUSTRATA */
+/* SCHERMATE ILLUSTRATE */
 
-#overlay {
+.overlay {
   display: none;
   position: fixed;
   inset: 0;
@@ -92,16 +93,22 @@ button { font: inherit; }
   padding: 8px;
 }
 
-#overlay.open { display: flex; }
+.overlay.open {
+  display: flex;
+}
 
-#cardViewport {
+#nameOverlay {
+  z-index: 30;
+}
+
+.illustratedPanel {
   position: relative;
   width: min(100%, 150dvh);
   max-height: calc(100dvh - 16px);
   aspect-ratio: 3 / 2;
 }
 
-#cardImage {
+.illustratedPanel img {
   display: block;
   width: 100%;
   height: 100%;
@@ -118,7 +125,15 @@ button { font: inherit; }
   -webkit-tap-highlight-color: transparent;
 }
 
-/* POSIZIONI DEI PULSANTI NELLE SCHEDE */
+.animal:focus-visible,
+#back:focus-visible,
+.hotspot:focus-visible,
+#nameInput:focus-visible {
+  outline: 3px solid #b66c3d;
+  outline-offset: -3px;
+}
+
+/* PULSANTI DELLE 28 SCHEDE */
 
 #closeCard {
   top: 3%;
@@ -144,76 +159,78 @@ button { font: inherit; }
   border-radius: 30px;
 }
 
-/* SCHERMATE SUCCESSIVE */
-
-#dialogOverlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 30;
-  background: rgba(18, 35, 48, 0.82);
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-}
-
-#dialogOverlay.open { display: flex; }
-
-#panel {
-  width: min(440px, 100%);
-  max-height: 90dvh;
-  overflow-y: auto;
-  padding: 25px;
-  background: #fff7e8;
-  border: 3px solid #9d754d;
-  border-radius: 22px;
-  text-align: center;
-  box-shadow: 0 15px 45px #0005;
-}
-
-#panel h2 {
-  margin: 4px 0 15px;
-  font-size: 24px;
-}
-
-#panel p {
-  line-height: 1.6;
-}
+/* SCHERMATA NOME COMPAGNO */
 
 #nameInput {
-  width: 100%;
-  padding: 13px;
-  border: 2px solid #bda381;
+  position: absolute;
+
+  /* Riquadro vuoto della pergamena */
+  left: 34%;
+  top: 52.5%;
+  width: 32%;
+  height: 8%;
+
+  padding: 0 8px;
+  border: 0;
+  outline: none;
+  background: #f5e7c9;
   border-radius: 12px;
-  font-size: 18px;
+
+  color: #344c5b;
+  font-size: clamp(12px, 2.1vw, 25px);
+  font-weight: bold;
   text-align: center;
   text-transform: uppercase;
 }
 
-.action {
-  display: block;
-  width: 100%;
-  margin-top: 12px;
-  padding: 14px 10px;
-  border: 0;
-  border-radius: 12px;
-  background: #c66e50;
-  color: white;
-  font-size: 14px;
+#nameBack {
+  left: 25%;
+  top: 67%;
+  width: 23%;
+  height: 14%;
+  border-radius: 25px;
+}
+
+#nameConfirm {
+  left: 52%;
+  top: 67%;
+  width: 23%;
+  height: 14%;
+  border-radius: 25px;
+}
+
+#nameClose {
+  top: 3%;
+  right: 8%;
+  width: 7%;
+  height: 12%;
+  border-radius: 50%;
+}
+
+#errorMessage {
+  display: none;
+  position: absolute;
+  left: 25%;
+  top: 61%;
+  width: 50%;
+  margin: 0;
+  padding: 4px;
+  background: #fff5e5;
+  border-radius: 8px;
+  color: #a04435;
+  font-size: clamp(9px, 1.2vw, 15px);
   font-weight: bold;
-  cursor: pointer;
+  text-align: center;
 }
-
-.action.secondary {
-  background: #e9d9bc;
-  color: #243d4b;
-}
-
-#naming, #finished { display: none; }
 
 @media (max-width: 600px) {
   #scene {
     width: max(100vw, 165dvh);
+  }
+
+  #nameInput {
+    font-size: clamp(10px, 3vw, 17px);
+    padding: 0 3px;
   }
 }
 </style>
@@ -221,13 +238,15 @@ button { font: inherit; }
 
 <body>
 
+<!-- GALLERIA DEI 28 ANIMALI -->
+
 <main id="viewport">
   <div id="scene">
 
     <img
       id="landscape"
       src="compagni-esploria.png"
-      alt="SCEGLI IL TUO COMPAGNO DI AVVENTURA TRA 28 ANIMALI"
+      alt="SCEGLI IL TUO COMPAGNO TRA 28 ANIMALI"
       draggable="false"
     >
 
@@ -243,13 +262,17 @@ button { font: inherit; }
   </div>
 </main>
 
-<!-- SCHEDA ILLUSTRATA DELL'ANIMALE -->
+<!-- SCHEDA DELL'ANIMALE -->
 
-<div id="overlay" role="dialog"
-     aria-modal="true"
-     aria-label="SCHEDA DEL COMPAGNO">
+<div
+  id="cardOverlay"
+  class="overlay"
+  role="dialog"
+  aria-modal="true"
+  aria-label="SCHEDA DEL COMPAGNO"
+>
 
-  <div id="cardViewport">
+  <div class="illustratedPanel">
 
     <img id="cardImage" src="" alt="">
 
@@ -277,56 +300,64 @@ button { font: inherit; }
   </div>
 </div>
 
-<!-- SCELTA DEL NOME -->
+<!-- NUOVA SCHERMATA ILLUSTRATA DEL NOME -->
 
-<div id="dialogOverlay" role="dialog"
-     aria-modal="true"
-     aria-label="DAI UN NOME AL COMPAGNO">
+<div
+  id="nameOverlay"
+  class="overlay"
+  role="dialog"
+  aria-modal="true"
+  aria-label="COME SI CHIAMA IL TUO COMPAGNO?"
+>
 
-  <div id="panel">
+  <div class="illustratedPanel">
 
-    <section id="naming">
-      <h2>COME VUOI CHIAMARLO?</h2>
+    <img
+      src="nome-compagno.png"
+      alt="COME SI CHIAMA IL TUO COMPAGNO? SCEGLI UN NOME SPECIALE PER IL TUO COMPAGNO DI AVVENTURA!"
+      draggable="false"
+    >
 
-      <p>OGNI COMPAGNO HA BISOGNO DI UN NOME SPECIALE!</p>
+    <input
+      id="nameInput"
+      type="text"
+      maxlength="20"
+      aria-label="SCRIVI IL NOME DEL COMPAGNO"
+      autocomplete="off"
+      spellcheck="false"
+    >
 
-      <input
-        id="nameInput"
-        type="text"
-        maxlength="20"
-        placeholder="SCRIVI IL NOME"
-        aria-label="NOME DEL COMPAGNO"
-        autocomplete="off"
-      >
+    <p id="errorMessage" role="alert">
+      SCRIVI PRIMA UN NOME!
+    </p>
 
-      <button class="action" id="confirm">
-        CONFERMA
-      </button>
+    <button
+      id="nameBack"
+      class="hotspot"
+      type="button"
+      aria-label="TORNA INDIETRO"
+    ></button>
 
-      <button class="action secondary" id="goBack">
-        TORNA INDIETRO
-      </button>
-    </section>
+    <button
+      id="nameConfirm"
+      class="hotspot"
+      type="button"
+      aria-label="CONFERMA IL NOME"
+    ></button>
 
-    <section id="finished">
-      <h2>CHE BELLA SCELTA!</h2>
-      <p id="result"></p>
-
-      <button class="action" id="finish">
-        CONTINUA L'AVVENTURA
-      </button>
-
-      <button class="action secondary" id="restart">
-        SCEGLI UN ALTRO COMPAGNO
-      </button>
-    </section>
+    <button
+      id="nameClose"
+      class="hotspot"
+      type="button"
+      aria-label="CHIUDI"
+    ></button>
 
   </div>
 </div>
 
 <script>
 
-/* ELENCO DEI 28 COMPAGNI */
+/* I 28 COMPAGNI, NELL'ORDINE ORIGINALE */
 
 const companions = [
   ["VOLPE", "volpe"],
@@ -366,18 +397,16 @@ const viewport = document.getElementById("viewport");
 const scene = document.getElementById("scene");
 const animals = document.getElementById("animals");
 
-const overlay = document.getElementById("overlay");
+const cardOverlay = document.getElementById("cardOverlay");
 const cardImage = document.getElementById("cardImage");
 
-const dialogOverlay = document.getElementById("dialogOverlay");
-const naming = document.getElementById("naming");
-const finished = document.getElementById("finished");
-
+const nameOverlay = document.getElementById("nameOverlay");
 const nameInput = document.getElementById("nameInput");
+const errorMessage = document.getElementById("errorMessage");
 
 let selected = -1;
 
-/* CREA LE AREE CLICCABILI SULLA GALLERIA */
+/* CREA LE 28 AREE CLICCABILI */
 
 const centersX = [9.5, 23.1, 36.5, 50, 63.5, 77, 90.5];
 const tops = [15, 39, 59, 79];
@@ -388,13 +417,10 @@ companions.forEach((animal, index) => {
   const row = Math.floor(index / 7);
 
   const button = document.createElement("button");
+
   button.className = "animal";
   button.type = "button";
-
-  button.setAttribute(
-    "aria-label",
-    "SCOPRI " + animal[0]
-  );
+  button.setAttribute("aria-label", "SCOPRI " + animal[0]);
 
   button.style.left = (centersX[column] - 6.5) + "%";
   button.style.top = tops[row] + "%";
@@ -408,7 +434,7 @@ companions.forEach((animal, index) => {
   animals.appendChild(button);
 });
 
-/* APRE LA SCHEDA ILLUSTRATA */
+/* APRE LA SCHEDA DELL'ANIMALE */
 
 function showAnimal(index) {
   selected = index;
@@ -421,48 +447,61 @@ function showAnimal(index) {
   cardImage.alt =
     "SCHEDA DEL COMPAGNO " + animal[0];
 
-  overlay.classList.add("open");
+  cardOverlay.classList.add("open");
+
   document.getElementById("closeCard").focus();
 }
 
-/* CHIUDE LA SCHEDA */
-
 function closeCard() {
-  overlay.classList.remove("open");
+  cardOverlay.classList.remove("open");
 }
 
 document.getElementById("closeCard").onclick = closeCard;
-
 document.getElementById("returnAnimals").onclick = closeCard;
 
-/* CONFERMA LA SCELTA E CHIEDE IL NOME */
+/* APRE LA NUOVA SCHERMATA DEL NOME */
 
-document.getElementById("chooseCompanion").onclick = () => {
+function openNameScreen() {
   if (selected < 0) return;
 
-  closeCard();
-
-  naming.style.display = "block";
-  finished.style.display = "none";
+  cardOverlay.classList.remove("open");
+  nameOverlay.classList.add("open");
 
   nameInput.value = "";
+  errorMessage.style.display = "none";
 
-  dialogOverlay.classList.add("open");
   nameInput.focus();
-};
+}
+
+document.getElementById("chooseCompanion").onclick =
+  openNameScreen;
+
+/* TORNA ALLA SCHEDA PRECEDENTE */
+
+function returnToCard() {
+  nameOverlay.classList.remove("open");
+  cardOverlay.classList.add("open");
+
+  document.getElementById("chooseCompanion").focus();
+}
+
+document.getElementById("nameBack").onclick = returnToCard;
+document.getElementById("nameClose").onclick = returnToCard;
 
 /* CONFERMA IL NOME */
 
-function confirmName() {
+function confirmCompanion() {
   if (selected < 0) return;
 
   const name = nameInput.value.trim().toUpperCase();
 
   if (!name) {
-    alert("SCRIVI PRIMA IL NOME DEL TUO COMPAGNO!");
+    errorMessage.style.display = "block";
     nameInput.focus();
     return;
   }
+
+  errorMessage.style.display = "none";
 
   const companion = {
     animal: companions[selected][0],
@@ -470,65 +509,51 @@ function confirmName() {
     name: name
   };
 
-  /* SALVATAGGIO LOCALE DI PROVA */
-
   try {
     localStorage.setItem(
       "esploria-compagno-prova",
       JSON.stringify(companion)
     );
   } catch (error) {
-    console.warn("SALVATAGGIO LOCALE NON DISPONIBILE", error);
+    console.warn(
+      "SALVATAGGIO LOCALE NON DISPONIBILE",
+      error
+    );
   }
 
-  document.getElementById("result").textContent =
-    name + " È IL TUO NUOVO COMPAGNO DI AVVENTURA!";
+  nameOverlay.classList.remove("open");
 
-  naming.style.display = "none";
-  finished.style.display = "block";
+  /* COLLEGAMENTO FUTURO AL MONDO DI ESPLORIA */
+
+  alert(
+    "HAI SCELTO " + companion.animal +
+    " E LO HAI CHIAMATO " + name +
+    "! IL MONDO DI ESPLORIA SARÀ PRESTO PRONTO!"
+  );
 }
 
-document.getElementById("confirm").onclick = confirmName;
+document.getElementById("nameConfirm").onclick =
+  confirmCompanion;
 
 nameInput.addEventListener("keydown", event => {
-  if (event.key === "Enter") confirmName();
+  if (event.key === "Enter") {
+    confirmCompanion();
+  }
 });
-
-/* TORNA ALLA SCHEDA */
-
-document.getElementById("goBack").onclick = () => {
-  dialogOverlay.classList.remove("open");
-  overlay.classList.add("open");
-};
-
-/* CAMBIA COMPAGNO */
-
-document.getElementById("restart").onclick = () => {
-  dialogOverlay.classList.remove("open");
-  closeCard();
-  selected = -1;
-};
-
-/* PROSEGUI: PAGINA FUTURA ANCORA DA CREARE */
-
-document.getElementById("finish").onclick = () => {
-  alert("PRESTO POTRAI ENTRARE NEL MONDO DI ESPLORIA!");
-  dialogOverlay.classList.remove("open");
-};
 
 /* CHIUSURA CON ESC */
 
 document.addEventListener("keydown", event => {
   if (event.key !== "Escape") return;
 
-  if (dialogOverlay.classList.contains("open")) {
-    dialogOverlay.classList.remove("open");
-  } else {
+  if (nameOverlay.classList.contains("open")) {
+    returnToCard();
+  } else if (cardOverlay.classList.contains("open")) {
     closeCard();
   }
 });
 
-/* CENTRAMENTO DEL PAESAGGIO */
+/* CENTRAMENTO DELLA GALLERIA */
 
 function centerScene() {
   viewport.scrollLeft = Math.max(
@@ -546,5 +571,6 @@ window.addEventListener("load", centerScene);
 window.addEventListener("resize", centerScene);
 
 </script>
+
 </body>
 </html>

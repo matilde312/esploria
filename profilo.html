@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ESPLORIA — IL MIO ANGOLO DI AVVENTURA</title>
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#e7ecdf;color:#2c4345;font-family:'Patrick Hand',cursive;font-size:21px}button,a{font:inherit}a{color:inherit}button,.linkButton{display:inline-block;border:0;border-radius:14px;background:#b95f42;color:#fffaf0;padding:12px 24px;text-decoration:none;cursor:pointer}button:disabled{opacity:.6;cursor:wait}button:focus-visible,a:focus-visible{outline:3px solid #243d4b;outline-offset:4px}.secondary{background:#456c61}[hidden]{display:none!important}main{max-width:1060px;margin:auto;padding:28px 22px 50px}nav{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap}nav a{text-decoration:none}header{margin:38px 0 25px;text-align:center}.eyebrow{font-size:19px;letter-spacing:2px;margin:0;color:#60735c}h1{font-size:clamp(34px,6vw,52px);line-height:1.1;margin:12px 0}h2{font-size:30px;margin:0 0 12px}p{line-height:1.4}.panel{background:#fff6e3;border:2px solid #b29569;border-radius:25px;padding:26px;box-shadow:0 6px 0 #d4d8c5}.companion{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:28px;align-items:center}.picture{position:relative;aspect-ratio:1;background:#efe4cc;border-radius:18px;overflow:hidden}.picture img{position:absolute;display:block;width:250%;max-width:none;height:auto;left:-20%;top:-25%}.name{font-size:clamp(32px,5vw,48px);overflow-wrap:anywhere;color:#7b482f;margin:8px 0}.pill{display:inline-block;font-size:18px;background:#dce8d7;color:#345c4b;padding:6px 14px;border-radius:30px}.section{margin-top:30px}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.metric{background:#fffcf3;border:1px solid #d8c8a8;border-radius:17px;padding:20px;text-align:center}.metric strong{display:block;font-size:38px;color:#456c61}.muted{color:#596b62}.badges{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;margin-top:20px}.badge{background:#fffcf3;border:1px solid #d8c8a8;border-radius:20px;padding:22px;text-align:center;overflow-wrap:anywhere}.badgeIcon{font-size:48px;display:block}.badge h3{margin:14px 0 8px;font-size:24px}.badge p{font-size:19px}.badge small{font-size:16px;display:block;color:#596b62}.empty{border:2px dashed #c6b994;border-radius:17px;padding:22px}.locked{text-align:center;max-width:600px;margin:70px auto}.status{white-space:pre-line;text-align:center}footer{display:flex;justify-content:center;gap:15px;flex-wrap:wrap;margin-top:30px}@media(max-width:650px){main{padding:20px 14px 35px}.panel{padding:20px}.companion{grid-template-columns:1fr;gap:20px}.metrics{grid-template-columns:1fr}.metric{display:flex;align-items:center;justify-content:space-between;text-align:left}.metric strong{font-size:32px}.badges{grid-template-columns:1fr}header{margin-top:25px}}
+</style>
+</head>
+<body>
+<main>
+<nav aria-label="NAVIGAZIONE"><a href="mondo.html?modalita=codice">← TORNA ALLA MAPPA</a><a href="index.html">ESPLORIA</a></nav>
+<p id="status" class="status" role="status" aria-live="polite">APRO IL TUO ANGOLO DI AVVENTURA…</p>
+<section id="locked" class="panel locked" hidden>
+<h1>IL TUO ANGOLO DI AVVENTURA</h1>
+<p id="lockedText">QUESTO SPAZIO È RISERVATO A CHI ENTRA CON IL PROPRIO CODICE.</p>
+<a class="linkButton" href="accesso.html">ENTRA CON IL TUO CODICE</a>
+<button id="retry" class="secondary" type="button">RIPROVA</button>
+</section>
+<div id="privateArea" hidden>
+<header><p class="eyebrow">IL MIO ANGOLO DI AVVENTURA</p><h1>OGNI SCOPERTA È UN PASSO IN PIÙ</h1></header>
+<section class="panel companion" aria-labelledby="companionTitle">
+<div class="picture"><img id="companionImage" alt="" hidden><p id="imageFallback" class="status" hidden>IL TUO COMPAGNO È QUI CON TE!</p></div>
+<div><span class="pill">IL TUO COMPAGNO</span><h2 id="companionTitle" class="name"></h2><p id="animalType"></p><p>UN NOME SPECIALE, UN’AVVENTURA TUTTA VOSTRA.</p><a id="chooseCompanion" class="linkButton" href="compagni.html?modalita=codice" hidden>SCEGLI IL TUO COMPAGNO</a></div>
+</section>
+<section class="panel section" aria-labelledby="statsTitle">
+<h2 id="statsTitle">LE MIE AVVENTURE</h2>
+<div class="metrics">
+<div class="metric"><span>PARTITE GIOCATE</span><strong>—</strong></div>
+<div class="metric"><span>OBIETTIVI DI GIOCO COMPLETATI</span><strong>—</strong></div>
+<div class="metric"><span>DISTINTIVI RACCOLTI</span><strong id="badgeCount">0</strong></div>
+</div>
+<p class="muted">LE STATISTICHE DELLE PARTITE ARRIVERANNO QUANDO I GIOCHI SARANNO COLLEGATI AL TUO PROFILO.</p>
+</section>
+<section class="panel section" aria-labelledby="badgesTitle">
+<h2 id="badgesTitle">IL MIO SCRIGNO DEI DISTINTIVI</h2>
+<p>ALCUNI DISTINTIVI CELEBRANO I TUOI OBIETTIVI, ALTRI SONO UN RICONOSCIMENTO DELL’INSEGNANTE.</p>
+<p id="noBadges" class="empty" hidden>IL TUO SCRIGNO ASPETTA LE PRIME CONQUISTE!</p>
+<div id="badges" class="badges"></div>
+</section>
+<footer><button id="refresh" class="secondary" type="button">AGGIORNA IL MIO ANGOLO</button><button id="exit" type="button">ESCI DAL MIO PROFILO</button></footer>
+</div>
+</main>
+<script src="esploria-accesso.js?v=codici-scelti-1"></script>
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const slugs = ['volpe','lupo','cervo','gufo','coniglio','scoiattolo','procione','orso','tasso','lontra','riccio','castoro','lince','gatto-selvatico','draghetto','tartaruga','aquila','corvo','falco','cinghiale','capriolo','delfino','foca','panda','panda-rosso','pinguino','orso-polare','volpe-artica'];
+const names = ['VOLPE','LUPO','CERVO','GUFO','CONIGLIO','SCOIATTOLO','PROCIONE','ORSO','TASSO','LONTRA','RICCIO','CASTORO','LINCE','GATTO SELVATICO','DRAGHETTO','TARTARUGA','AQUILA','CORVO','FALCO','CINGHIALE','CAPRIOLO','DELFINO','FOCA','PANDA','PANDA ROSSO','PINGUINO','ORSO POLARE','VOLPE ARTICA'];
+const symbols = {stella:'⭐',foglia:'🌿',bussola:'🧭',cuore:'💚',trofeo:'🏆'};
+let generation = 0;
+
+function hidePrivate() {
+  $('privateArea').hidden = true;
+  $('companionTitle').textContent = '';
+  $('animalType').textContent = '';
+  $('badges').replaceChildren();
+  $('companionImage').hidden = true;
+  $('companionImage').removeAttribute('src');
+  $('badgeCount').textContent = '0';
+}
+
+function render(profile) {
+  const index = names.indexOf(profile.animale);
+  $('companionTitle').textContent = profile.nome_personaggio || 'LA TUA AVVENTURA STA PER INIZIARE';
+  $('animalType').textContent = profile.animale || 'SCEGLI L’ANIMALE CHE TI ACCOMPAGNERÀ.';
+  $('chooseCompanion').hidden = !!profile.animale;
+  $('imageFallback').hidden = index >= 0;
+  if (index >= 0) {
+    $('companionImage').alt = 'IL TUO COMPAGNO: ' + profile.animale;
+    $('companionImage').src = 'schede/scheda-' + slugs[index] + '.png';
+    $('companionImage').hidden = false;
+  }
+  const badges = Array.isArray(profile.distintivi) ? profile.distintivi : [];
+  $('badgeCount').textContent = String(badges.length);
+  $('noBadges').hidden = badges.length > 0;
+  for (const badge of badges) {
+    const card = document.createElement('article');
+    card.className = 'badge';
+    const icon = document.createElement('span');
+    icon.className = 'badgeIcon';
+    icon.setAttribute('aria-hidden','true');
+    icon.textContent = symbols[badge.simbolo] || '⭐';
+    const title = document.createElement('h3');
+    title.textContent = badge.titolo;
+    const description = document.createElement('p');
+    description.textContent = badge.descrizione;
+    const source = document.createElement('small');
+    source.textContent = badge.origine === 'insegnante' ? 'UN RICONOSCIMENTO DELL’INSEGNANTE' : 'OBIETTIVO RAGGIUNTO';
+    card.append(icon,title,description,source);
+    $('badges').append(card);
+  }
+  $('privateArea').hidden = false;
+}
+
+async function loadProfile() {
+  const request = ++generation;
+  hidePrivate();
+  $('locked').hidden = true;
+  $('status').textContent = 'APRO IL TUO ANGOLO DI AVVENTURA…';
+  try {
+    if (!window.EsploriaAccesso) throw new Error('IL COLLEGAMENTO NON È PRONTO. CHIEDI AIUTO ALL’INSEGNANTE.');
+    const profile = await EsploriaAccesso.carica();
+    if (request !== generation) return;
+    render(profile);
+    $('status').textContent = '';
+  } catch (error) {
+    if (request !== generation) return;
+    $('status').textContent = '';
+    $('lockedText').textContent = error.message;
+    $('locked').hidden = false;
+  }
+}
+$('companionImage').addEventListener('error', () => {
+  $('companionImage').hidden = true;
+  $('imageFallback').hidden = false;
+});
+$('refresh').addEventListener('click',loadProfile);
+$('retry').addEventListener('click',loadProfile);
+$('exit').addEventListener('click', () => {
+  generation++;
+  hidePrivate();
+  if (window.EsploriaAccesso) EsploriaAccesso.cancellaSessione();
+  try { localStorage.removeItem('esploria-compagno-prova'); } catch (_) {}
+  window.location.replace('accesso.html');
+});
+// Anche tornando indietro nel browser, il profilo viene verificato di nuovo online.
+window.addEventListener('pagehide', () => { generation++; hidePrivate(); });
+window.addEventListener('pageshow',loadProfile);
+</script>
+</body>
+</html>

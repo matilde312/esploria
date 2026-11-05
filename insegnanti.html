@@ -6,7 +6,7 @@
 <title>Esploria — Area insegnante</title>
 <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box}body{margin:0;background:#e7e8d9;color:#243d4b;font-family:'Patrick Hand',cursive;font-size:22px}main{max-width:850px;margin:40px auto;padding:20px}a{color:#243d4b}.card{background:#fff5e2;border:3px solid #a9855d;border-radius:22px;padding:28px;margin-top:24px}h1{margin:0;font-size:38px}h2{font-size:28px}label{display:block;margin:15px 0 5px}input,button{font:inherit;border-radius:12px;padding:12px;width:100%}input{background:#fffdf7;border:2px solid #a9855d;color:#243d4b}button{background:#c66e50;color:white;border:0;cursor:pointer;margin-top:18px}button:disabled{opacity:.6;cursor:wait}button.secondary{background:#486a63}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #243d4b;outline-offset:3px}[hidden]{display:none!important}#message{white-space:pre-line}#newCode{font-family:monospace;font-size:clamp(17px,4vw,30px);overflow-wrap:anywhere;user-select:all}li{padding:12px 0;border-bottom:1px solid #d9c6a9}small{display:block;font-size:17px}ul{list-style:none;padding:0}p{line-height:1.4}@media(max-width:600px){main{margin:10px auto}.card{padding:20px}}
+*{box-sizing:border-box}body{margin:0;background:#e7e8d9;color:#243d4b;font-family:'Patrick Hand',cursive;font-size:22px}main{max-width:850px;margin:40px auto;padding:20px}a{color:#243d4b}.card{background:#fff5e2;border:3px solid #a9855d;border-radius:22px;padding:28px;margin-top:24px}h1{margin:0;font-size:38px}h2{font-size:28px}label{display:block;margin:15px 0 5px}input,button,select,textarea{font:inherit;border-radius:12px;padding:12px;width:100%}input,select,textarea{background:#fffdf7;border:2px solid #a9855d;color:#243d4b}button{background:#c66e50;color:white;border:0;cursor:pointer;margin-top:18px}button:disabled{opacity:.6;cursor:wait}button.secondary{background:#486a63}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #243d4b;outline-offset:3px}[hidden]{display:none!important}#message{white-space:pre-line}#newCode{font-family:monospace;font-size:clamp(17px,4vw,30px);overflow-wrap:anywhere;user-select:all}li{padding:12px 0;border-bottom:1px solid #d9c6a9}small{display:block;font-size:17px}ul{list-style:none;padding:0}p{line-height:1.4}@media(max-width:600px){main{margin:10px auto}.card{padding:20px}}
 </style>
 </head>
 <body>
@@ -43,6 +43,22 @@
 <p id="empty" hidden>Non hai ancora creato codici.</p>
 <ul id="profiles"></ul>
 <button id="refreshButton" class="secondary" type="button">AGGIORNA ELENCO</button>
+<section class="card" aria-labelledby="badgeHeading">
+<h2 id="badgeHeading">ASSEGNA UN DISTINTIVO</h2>
+<p>Premia un impegno, una scoperta o un gesto speciale. Il bambino lo troverà nel proprio profilo.</p>
+<form id="awardForm">
+<label for="badgeProfile">A QUALE PROFILO?</label>
+<select id="badgeProfile" required><option value="">SCEGLI UN PROFILO</option></select>
+<label for="badgeTitle">NOME DEL DISTINTIVO</label>
+<input id="badgeTitle" maxlength="60" required placeholder="ES. GRANDE CURIOSITÀ">
+<label for="badgeDescription">UN MESSAGGIO PER IL BAMBINO</label>
+<textarea id="badgeDescription" maxlength="200" rows="3" placeholder="ES. HAI FATTO UNA DOMANDA CHE CI HA FATTO SCOPRIRE QUALCOSA DI NUOVO!"></textarea>
+<label for="badgeSymbol">SIMBOLO</label>
+<select id="badgeSymbol"><option value="stella">⭐ STELLA</option><option value="foglia">🌿 FOGLIA</option><option value="bussola">🧭 BUSSOLA</option><option value="cuore">💚 CUORE</option><option value="trofeo">🏆 TROFEO</option></select>
+<button id="awardButton" type="submit" disabled>ASSEGNA IL DISTINTIVO</button>
+</form>
+<p id="awardMessage" role="status" aria-live="polite"></p>
+</section>
 <button id="logoutButton" class="secondary" type="button">ESCI</button>
 </div>
 <p id="message" role="status" aria-live="polite"></p>
@@ -59,6 +75,7 @@ let token = null;
 let currentCode = '';
 let creating = false;
 let busy = false;
+let awarding = false;
 const tell = text => { el('message').textContent = text; };
 
 function clearSession() {
@@ -68,6 +85,11 @@ function clearSession() {
   el('newCode').textContent = '';
   el('newProfile').textContent = '';
   el('profiles').replaceChildren();
+  el('badgeProfile').replaceChildren();
+  el('awardMessage').textContent = '';
+  el('badgeTitle').value = '';
+  el('badgeDescription').value = '';
+  el('awardButton').disabled = true;
   el('codeCard').hidden = true;
   el('dashboard').hidden = true;
   el('loginForm').hidden = false;
@@ -93,16 +115,25 @@ async function request(path, body, accessToken) {
       throw new Error('La sessione è scaduta. Accedi di nuovo.');
     }
     if (response.status === 403 || data?.code === '42501') throw new Error('Questo account non è autorizzato come insegnante.');
+    if (data?.message === 'DISTINTIVO_GIA_PRESENTE') throw new Error('Questo profilo ha già un distintivo con lo stesso nome.');
+    if (data?.message === 'DISTINTIVO_NON_VALIDO') throw new Error('Controlla il nome, il messaggio e il simbolo del distintivo.');
     if (data?.message === 'CODICE_GIA_USATO') throw new Error('Questo codice è già usato. Scegliete un’altra combinazione o aggiungete altri numeri.');
     if (data?.message === 'FORMATO_CODICE_NON_VALIDO') throw new Error('Usa da 10 a 32 lettere e numeri, con almeno una lettera e un numero. Spazi e trattini non contano.');
     if (path.includes('/auth/v1/token')) throw new Error('Accesso non riuscito. Controlla email e password e riprova.');
-    throw new Error('Operazione non riuscita. Verifica di aver eseguito il file 005-codici-scelti.sql in Supabase.');
+    throw new Error('Operazione non riuscita. Verifica di aver eseguito i file SQL di aggiornamento, incluso 006-profilo-distintivi.sql in Supabase.');
   }
   return data;
 }
 
 async function loadProfiles() {
   const profiles = await request('/rest/v1/rpc/esploria_elenca_profili', {}, token);
+  const previousProfile = el('badgeProfile').value;
+  el('badgeProfile').replaceChildren();
+  const placeholder = document.createElement('option');
+  placeholder.value = '';
+  placeholder.textContent = 'SCEGLI UN PROFILO';
+  el('badgeProfile').append(placeholder);
+  el('awardButton').disabled = !profiles.some(p => p.attivo);
   el('profiles').replaceChildren();
   el('empty').hidden = profiles.length !== 0;
   for (const profile of profiles) {
@@ -113,7 +144,15 @@ async function loadProfiles() {
     detail.textContent = 'Profilo ' + profile.id + (profile.animale ? ' · ' + profile.animale : '') + (profile.attivo ? '' : ' · DISATTIVATO');
     li.append(title, detail);
     el('profiles').append(li);
+    if (profile.attivo) {
+      const option = document.createElement('option');
+      option.value = profile.id;
+      option.textContent = (profile.nome_personaggio || 'COMPAGNO NON ANCORA SCELTO')
+        + (profile.animale ? ' · ' + profile.animale : '') + ' · ' + profile.id.slice(0,8);
+      el('badgeProfile').append(option);
+    }
   }
+  if (profiles.some(p => p.id === previousProfile && p.attivo)) el('badgeProfile').value = previousProfile;
 }
 
 el('loginForm').addEventListener('submit', async event => {
@@ -169,6 +208,33 @@ el('chooseCodeForm').addEventListener('submit', async event => {
   finally { creating = false; el('chosenCode').disabled = false; el('createButton').disabled = false; }
 });
 
+el('awardForm').addEventListener('submit', async event => {
+  event.preventDefault();
+  if (awarding) return;
+  if (!token) { el('awardMessage').textContent = 'Accedi prima come insegnante.'; return; }
+  const title = el('badgeTitle').value.trim();
+  const description = el('badgeDescription').value.trim();
+  if (!el('badgeProfile').value || !title) {
+    el('awardMessage').textContent = 'Scegli un profilo e scrivi il nome del distintivo.';
+    return;
+  }
+  const selectedOption = el('badgeProfile').selectedOptions[0].textContent;
+  if (!window.confirm('Assegnare «' + title.toUpperCase() + '» a ' + selectedOption + '?')) return;
+  awarding = true;
+  el('awardButton').disabled = true;
+  el('awardMessage').textContent = 'ASSEGNAZIONE IN CORSO…';
+  try {
+    const result = await request('/rest/v1/rpc/esploria_assegna_distintivo', {
+      p_profilo_id: el('badgeProfile').value, p_titolo: title,
+      p_descrizione: description, p_simbolo: el('badgeSymbol').value
+    }, token);
+    el('awardMessage').textContent = 'DISTINTIVO «' + result.titolo + '» ASSEGNATO A ' + selectedOption + '.';
+    el('badgeTitle').value = '';
+    el('badgeDescription').value = '';
+  } catch (error) { el('awardMessage').textContent = error.message; }
+  finally { awarding = false; el('awardButton').disabled = !token; }
+});
+
 el('copyButton').addEventListener('click', async () => {
   try { await navigator.clipboard.writeText(currentCode); tell('CODICE COPIATO. Incollalo dove vuoi conservarlo.'); }
   catch (_) { tell('Seleziona il codice e copialo manualmente.'); }
@@ -182,7 +248,7 @@ el('refreshButton').addEventListener('click', async () => {
   finally { busy = false; el('refreshButton').disabled = false; }
 });
 el('logoutButton').addEventListener('click', async () => {
-  if (creating || busy) { tell('Attendi che l’operazione finisca prima di uscire.'); return; }
+  if (creating || busy || awarding) { tell('Attendi che l’operazione finisca prima di uscire.'); return; }
   if (currentCode && !el('savedCode').checked && !window.confirm('Hai conservato il codice? Uscendo non potrai più visualizzarlo.')) return;
   const oldToken = token;
   clearSession();
@@ -190,7 +256,7 @@ el('logoutButton').addEventListener('click', async () => {
   try { await request('/auth/v1/logout', {}, oldToken); } catch (_) { /* Il token non è più presente nella pagina. */ }
 });
 window.addEventListener('beforeunload', event => {
-  if (creating || (currentCode && !el('savedCode').checked)) { event.preventDefault(); event.returnValue = ''; }
+  if (creating || awarding || (currentCode && !el('savedCode').checked)) { event.preventDefault(); event.returnValue = ''; }
 });
 
 </script>

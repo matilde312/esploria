@@ -300,8 +300,8 @@ button {
       href="insegnanti.html"
       aria-label="AREA INSEGNANTI"></a>
 
-    <a class="place" id="profilo" href="profilo.html"
-      aria-label="IL MIO PROFILO"></a>
+    <button class="place" id="profilo" type="button"
+      aria-label="IL MIO PROFILO"></button>
 
   </div>
 </main>
@@ -449,11 +449,11 @@ const places = {
   profilo: {
     title: "IL MIO PROFILO",
     text:
-      "QUI POTRAI RITROVARE IL TUO " +
-      "COMPAGNO DI AVVENTURA, " +
-      "SCOPRIRE I TUOI PROGRESSI " +
-      "E COLLEZIONARE DISTINTIVI SPECIALI. " +
-      "QUESTA SEZIONE ARRIVERÀ PRESTO!"
+      "STAI ESPLORANDO ESPLORIA COME OSPITE. " +
+      "IL PROFILO PERSONALE E I DISTINTIVI " +
+      "SONO RISERVATI A CHI ENTRA CON UN CODICE " +
+      "DELL’INSEGNANTE. " +
+      "PUOI CONTINUARE LA TUA AVVENTURA SULLA MAPPA!"
   }
 
 };
@@ -474,10 +474,27 @@ function openPlace(button) {
   closeDialog.focus();
 }
 
+/* PROFILO: IL CONTROLLO DEI DATI RESTA NELLA PAGINA PROTETTA */
+
+function hasCodeAccess() {
+  const mode = new URLSearchParams(window.location.search).get("modalita");
+  if (mode === "ospite") return false;
+  try {
+    return !!sessionStorage.getItem("esploria-accesso-codice-v1");
+  } catch (error) {
+    return false;
+  }
+}
+
 /* COLLEGA GLI EDIFICI */
 
 document.querySelectorAll("button.place").forEach(button => {
   button.addEventListener("click", () => {
+
+    if (button.id === "profilo" && hasCodeAccess()) {
+      window.location.href = "profilo.html";
+      return;
+    }
 
     if (button.id === "borgo") {
       window.location.href = "borgo.html";

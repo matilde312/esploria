@@ -1,604 +1,198 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ESPLORIA - AREA INSEGNANTE</title>
-
-<link
-  href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap"
-  rel="stylesheet"
->
-
+<title>Esploria — Area insegnante</title>
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
 <style>
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  background: #e7e8d9;
-  color: #243d4b;
-  font-family: "Patrick Hand", cursive;
-  font-size: 22px;
-}
-
-main {
-  max-width: 850px;
-  margin: 40px auto;
-  padding: 20px;
-}
-
-a {
-  color: #243d4b;
-}
-
-.card {
-  margin-top: 24px;
-  padding: 28px;
-  background: #fff5e2;
-  border: 3px solid #a9855d;
-  border-radius: 22px;
-}
-
-h1 {
-  margin: 0;
-  font-size: 38px;
-}
-
-h2 {
-  font-size: 28px;
-}
-
-p {
-  line-height: 1.4;
-}
-
-label {
-  display: block;
-  margin: 15px 0 5px;
-}
-
-input,
-button {
-  width: 100%;
-  padding: 12px;
-  border-radius: 12px;
-  font: inherit;
-}
-
-input {
-  background: #fffdf7;
-  border: 2px solid #a9855d;
-  color: #243d4b;
-}
-
-button {
-  margin-top: 18px;
-  background: #c66e50;
-  color: white;
-  border: 0;
-  cursor: pointer;
-}
-
-button:disabled {
-  opacity: 0.6;
-  cursor: wait;
-}
-
-.secondary {
-  background: #486a63;
-}
-
-button:focus-visible,
-a:focus-visible,
-input:focus-visible {
-  outline: 3px solid #243d4b;
-  outline-offset: 3px;
-}
-
-[hidden] {
-  display: none !important;
-}
-
-#message {
-  white-space: pre-line;
-}
-
-#newCode {
-  font-family: monospace;
-  font-size: clamp(17px, 4vw, 30px);
-  overflow-wrap: anywhere;
-  user-select: all;
-}
-
-ul {
-  list-style: none;
-  padding: 0;
-}
-
-li {
-  padding: 12px 0;
-  border-bottom: 1px solid #d9c6a9;
-}
-
-small {
-  display: block;
-  font-size: 17px;
-  overflow-wrap: anywhere;
-}
-
-#savedCode {
-  width: auto;
-}
-
-@media (max-width: 600px) {
-  main {
-    margin: 10px auto;
-  }
-
-  .card {
-    padding: 20px;
-  }
-}
+*{box-sizing:border-box}body{margin:0;background:#e7e8d9;color:#243d4b;font-family:'Patrick Hand',cursive;font-size:22px}main{max-width:850px;margin:40px auto;padding:20px}a{color:#243d4b}.card{background:#fff5e2;border:3px solid #a9855d;border-radius:22px;padding:28px;margin-top:24px}h1{margin:0;font-size:38px}h2{font-size:28px}label{display:block;margin:15px 0 5px}input,button{font:inherit;border-radius:12px;padding:12px;width:100%}input{background:#fffdf7;border:2px solid #a9855d;color:#243d4b}button{background:#c66e50;color:white;border:0;cursor:pointer;margin-top:18px}button:disabled{opacity:.6;cursor:wait}button.secondary{background:#486a63}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #243d4b;outline-offset:3px}[hidden]{display:none!important}#message{white-space:pre-line}#newCode{font-family:monospace;font-size:clamp(17px,4vw,30px);overflow-wrap:anywhere;user-select:all}li{padding:12px 0;border-bottom:1px solid #d9c6a9}small{display:block;font-size:17px}ul{list-style:none;padding:0}p{line-height:1.4}@media(max-width:600px){main{margin:10px auto}.card{padding:20px}}
 </style>
 </head>
-
 <body>
 <main>
-
-  <a href="index.html">← TORNA A ESPLORIA</a>
-
-  <section class="card">
-
-    <h1>AREA INSEGNANTE</h1>
-
-    <form id="loginForm">
-      <p>
-        Entra per creare i codici personali dei bambini.
-      </p>
-
-      <label for="email">EMAIL</label>
-      <input
-        id="email"
-        type="email"
-        autocomplete="username"
-        required
-      >
-
-      <label for="password">PASSWORD</label>
-      <input
-        id="password"
-        type="password"
-        autocomplete="current-password"
-        required
-      >
-
-      <button id="loginButton" type="submit">
-        ENTRA
-      </button>
-    </form>
-
-    <div id="dashboard" hidden>
-
-      <p>
-        Ogni codice apre una nuova avventura.
-        Il bambino sceglierà il compagno e il suo nome.
-      </p>
-
-      <button id="createButton" type="button">
-        CREA UN CODICE PERSONALE
-      </button>
-
-      <section
-        id="codeCard"
-        aria-labelledby="codeTitle"
-        hidden
-      >
-        <h2 id="codeTitle">IL NUOVO CODICE</h2>
-
-        <p id="newCode"></p>
-        <small id="newProfile"></small>
-
-        <p>
-          Copialo e conservalo prima di chiudere questa
-          pagina: viene mostrato soltanto ora.
-          Consegnalo al bambino a cui lo assegni.
-        </p>
-
-        <button
-          id="copyButton"
-          class="secondary"
-          type="button"
-        >
-          COPIA IL CODICE
-        </button>
-
-        <label>
-          <input id="savedCode" type="checkbox">
-          HO CONSERVATO QUESTO CODICE
-        </label>
-      </section>
-
-      <h2>I TUOI PROFILI</h2>
-
-      <p id="empty" hidden>
-        Non hai ancora creato codici.
-      </p>
-
-      <ul id="profiles"></ul>
-
-      <button
-        id="refreshButton"
-        class="secondary"
-        type="button"
-      >
-        AGGIORNA ELENCO
-      </button>
-
-      <button
-        id="logoutButton"
-        class="secondary"
-        type="button"
-      >
-        ESCI
-      </button>
-    </div>
-
-    <p
-      id="message"
-      role="status"
-      aria-live="polite"
-    ></p>
-
-  </section>
+<a href="index.html">← TORNA A ESPLORIA</a>
+<section class="card">
+<h1>AREA INSEGNANTE</h1>
+<form id="loginForm">
+<p>Entra per creare i codici personali dei bambini.</p>
+<label for="email">EMAIL</label><input id="email" type="email" autocomplete="username" required>
+<label for="password">PASSWORD</label><input id="password" type="password" autocomplete="current-password" required>
+<button id="loginButton" type="submit">ENTRA</button>
+</form>
+<div id="dashboard" hidden>
+<p>Ogni codice apre una nuova avventura. Il bambino sceglierà il compagno e il suo nome.</p>
+<form id="chooseCodeForm">
+<label for="chosenCode">SCEGLI UN CODICE INSIEME AL BAMBINO</label>
+<input id="chosenCode" type="text" maxlength="40" autocomplete="off"
+  autocapitalize="characters" spellcheck="false" required
+  aria-describedby="codeHelp" placeholder="ES. LUNA-VOLPE-27">
+<small id="codeHelp">Almeno 10 lettere e numeri in tutto, con almeno una lettera e un numero.
+ Puoi separare le parole con spazi o trattini. Usa lettere senza accenti.</small>
+<button id="createButton" type="submit">SALVA IL CODICE SCELTO</button>
+</form>
+<section id="codeCard" hidden aria-labelledby="codeTitle">
+<h2 id="codeTitle">IL NUOVO CODICE</h2>
+<p id="newCode"></p>
+<p id="newProfile"></p>
+<p>Copialo e conservalo prima di chiudere questa pagina: viene mostrato soltanto ora. Consegnalo al bambino a cui lo assegni.</p>
+<button id="copyButton" class="secondary" type="button">COPIA IL CODICE</button>
+<label><input id="savedCode" type="checkbox" style="width:auto"> HO CONSERVATO QUESTO CODICE</label>
+</section>
+<h2>I TUOI PROFILI</h2>
+<p id="empty" hidden>Non hai ancora creato codici.</p>
+<ul id="profiles"></ul>
+<button id="refreshButton" class="secondary" type="button">AGGIORNA ELENCO</button>
+<button id="logoutButton" class="secondary" type="button">ESCI</button>
+</div>
+<p id="message" role="status" aria-live="polite"></p>
+</section>
 </main>
-
 <script>
-"use strict";
-
-/* CONFIGURAZIONE PUBBLICA DI ESPLORIA */
-
-const config = {
-  supabaseUrl:
-    "https://eovmvcxvyhtbsxrjdmak.supabase.co",
-
-  supabasePublishableKey:
-    "sb_publishable_wXXfLDRJLU3fZumfCYMHiA_qqL00eae"
-};
-
-/* STATO DELLA PAGINA */
-
+'use strict';
 const el = id => document.getElementById(id);
-
+const config = {
+  supabaseUrl: 'https://eovmvcxvyhtbsxrjdmak.supabase.co',
+  supabasePublishableKey: 'sb_publishable_wXXfLDRJLU3fZumfCYMHiA_qqL00eae'
+};
 let token = null;
-let currentCode = "";
+let currentCode = '';
 let creating = false;
 let busy = false;
-
-function tell(text) {
-  el("message").textContent = text;
-}
-
-/* USCITA LOCALE */
+const tell = text => { el('message').textContent = text; };
 
 function clearSession() {
   token = null;
-  currentCode = "";
-
-  el("newCode").textContent = "";
-  el("newProfile").textContent = "";
-  el("profiles").replaceChildren();
-
-  el("codeCard").hidden = true;
-  el("dashboard").hidden = true;
-  el("loginForm").hidden = false;
-  el("password").value = "";
+  currentCode = '';
+  el('chosenCode').value = '';
+  el('newCode').textContent = '';
+  el('newProfile').textContent = '';
+  el('profiles').replaceChildren();
+  el('codeCard').hidden = true;
+  el('dashboard').hidden = true;
+  el('loginForm').hidden = false;
+  el('password').value = '';
 }
 
-/* RICHIESTE A SUPABASE */
-
 async function request(path, body, accessToken) {
-  const headers = {
-    "Content-Type": "application/json",
-    apikey: config.supabasePublishableKey
-  };
-
-  if (accessToken) {
-    headers.Authorization = "Bearer " + accessToken;
-  }
-
-  const controller = new AbortController();
-
-  const timeout = setTimeout(() => {
-    controller.abort();
-  }, 20000);
-
+  const headers = {'Content-Type':'application/json', apikey: config.supabasePublishableKey};
+  if (accessToken) headers.Authorization = 'Bearer ' + accessToken;
   let response;
-
   try {
     response = await fetch(config.supabaseUrl + path, {
-      method: "POST",
-      headers: headers,
-      body: JSON.stringify(body),
-      signal: controller.signal
+      method:'POST', headers, body: JSON.stringify(body),
+      signal: AbortSignal.timeout(20000)
     });
-  } catch (error) {
-    throw new Error(
-      "Connessione non disponibile. " +
-      "Se stavi creando un codice, aggiorna l’elenco " +
-      "prima di riprovare: il profilo potrebbe " +
-      "essere stato creato."
-    );
-  } finally {
-    clearTimeout(timeout);
+  } catch (_) {
+    throw new Error('Connessione non disponibile. Se stavi creando un codice, aggiorna l’elenco prima di riprovare: il profilo potrebbe essere stato creato.');
   }
-
   const data = await response.json().catch(() => null);
-
   if (!response.ok) {
     if (accessToken && response.status === 401) {
       clearSession();
-
-      throw new Error(
-        "La sessione è scaduta. Accedi di nuovo."
-      );
+      throw new Error('La sessione è scaduta. Accedi di nuovo.');
     }
-
-    if (
-      response.status === 403 ||
-      data?.code === "42501"
-    ) {
-      throw new Error(
-        "Questo account non è autorizzato " +
-        "come insegnante."
-      );
-    }
-
-    if (path.includes("/auth/v1/token")) {
-      throw new Error(
-        "Accesso non riuscito. " +
-        "Controlla email e password e riprova."
-      );
-    }
-
-    throw new Error(
-      "Operazione non riuscita. Verifica di aver " +
-      "eseguito il file 003-area-insegnante.sql " +
-      "nel SQL Editor di Supabase."
-    );
+    if (response.status === 403 || data?.code === '42501') throw new Error('Questo account non è autorizzato come insegnante.');
+    if (data?.message === 'CODICE_GIA_USATO') throw new Error('Questo codice è già usato. Scegliete un’altra combinazione o aggiungete altri numeri.');
+    if (data?.message === 'FORMATO_CODICE_NON_VALIDO') throw new Error('Usa da 10 a 32 lettere e numeri, con almeno una lettera e un numero. Spazi e trattini non contano.');
+    if (path.includes('/auth/v1/token')) throw new Error('Accesso non riuscito. Controlla email e password e riprova.');
+    throw new Error('Operazione non riuscita. Verifica di aver eseguito il file 005-codici-scelti.sql in Supabase.');
   }
-
   return data;
 }
 
-/* ELENCO DEI PROFILI DELL’INSEGNANTE */
-
 async function loadProfiles() {
-  const profiles = await request(
-    "/rest/v1/rpc/esploria_elenca_profili",
-    {},
-    token
-  );
-
-  el("profiles").replaceChildren();
-  el("empty").hidden = profiles.length !== 0;
-
+  const profiles = await request('/rest/v1/rpc/esploria_elenca_profili', {}, token);
+  el('profiles').replaceChildren();
+  el('empty').hidden = profiles.length !== 0;
   for (const profile of profiles) {
-    const li = document.createElement("li");
-    const title = document.createElement("strong");
-    const detail = document.createElement("small");
-
-    title.textContent =
-      profile.nome_personaggio ||
-      "IN ATTESA DELLA SCELTA DEL COMPAGNO";
-
-    detail.textContent =
-      "Profilo " + profile.id +
-      (profile.animale ? " · " + profile.animale : "") +
-      (profile.attivo ? "" : " · DISATTIVATO");
-
+    const li = document.createElement('li');
+    const title = document.createElement('strong');
+    title.textContent = profile.nome_personaggio || 'IN ATTESA DELLA SCELTA DEL COMPAGNO';
+    const detail = document.createElement('small');
+    detail.textContent = 'Profilo ' + profile.id + (profile.animale ? ' · ' + profile.animale : '') + (profile.attivo ? '' : ' · DISATTIVATO');
     li.append(title, detail);
-    el("profiles").append(li);
+    el('profiles').append(li);
   }
 }
 
-/* ACCESSO INSEGNANTE */
-
-el("loginForm").addEventListener(
-  "submit",
-  async event => {
-    event.preventDefault();
-
-    if (busy) return;
-
-    busy = true;
-    el("loginButton").disabled = true;
-    tell("ACCESSO IN CORSO…");
-
-    try {
-      const session = await request(
-        "/auth/v1/token?grant_type=password",
-        {
-          email: el("email").value.trim(),
-          password: el("password").value
-        }
-      );
-
-      token = session.access_token;
-      el("password").value = "";
-
-      await loadProfiles();
-
-      el("loginForm").hidden = true;
-      el("dashboard").hidden = false;
-
-      tell("");
-    } catch (error) {
-      clearSession();
-      tell(error.message);
-    } finally {
-      busy = false;
-      el("loginButton").disabled = false;
-    }
-  }
-);
-
-/* CREAZIONE DI UN NUOVO CODICE */
-
-el("createButton").addEventListener(
-  "click",
-  async () => {
-    if (creating) return;
-
-    if (currentCode && !el("savedCode").checked) {
-      tell(
-        "Conserva prima il codice mostrato e seleziona " +
-        "«HO CONSERVATO QUESTO CODICE»."
-      );
-
-      return;
-    }
-
-    creating = true;
-    el("createButton").disabled = true;
-
-    tell("CREAZIONE IN CORSO…");
-
-    try {
-      const result = await request(
-        "/rest/v1/rpc/esploria_crea_codice",
-        {},
-        token
-      );
-
-      currentCode = result.codice;
-
-      el("newCode").textContent = result.codice;
-      el("newProfile").textContent =
-        "Profilo " + result.id;
-
-      el("savedCode").checked = false;
-      el("codeCard").hidden = false;
-
-      tell(
-        "Codice creato. Conservalo insieme " +
-        "al riferimento del profilo."
-      );
-
-      try {
-        await loadProfiles();
-      } catch (error) {
-        tell(
-          "Il codice è stato creato. Conservalo. " +
-          "L’elenco non si è aggiornato: " +
-          "riprova con AGGIORNA ELENCO."
-        );
-      }
-    } catch (error) {
-      tell(error.message);
-    } finally {
-      creating = false;
-      el("createButton").disabled = false;
-    }
-  }
-);
-
-/* COPIA DEL CODICE */
-
-el("copyButton").addEventListener(
-  "click",
-  async () => {
-    try {
-      await navigator.clipboard.writeText(currentCode);
-
-      tell(
-        "CODICE COPIATO. " +
-        "Incollalo dove vuoi conservarlo."
-      );
-    } catch (error) {
-      tell(
-        "Seleziona il codice e copialo manualmente."
-      );
-    }
-  }
-);
-
-/* AGGIORNAMENTO ELENCO */
-
-el("refreshButton").addEventListener(
-  "click",
-  async () => {
-    if (busy) return;
-
-    busy = true;
-    el("refreshButton").disabled = true;
-
-    try {
-      await loadProfiles();
-      tell("ELENCO AGGIORNATO.");
-    } catch (error) {
-      tell(error.message);
-    } finally {
-      busy = false;
-      el("refreshButton").disabled = false;
-    }
-  }
-);
-
-/* USCITA */
-
-el("logoutButton").addEventListener(
-  "click",
-  async () => {
-    if (creating || busy) {
-      tell(
-        "Attendi che l’operazione finisca " +
-        "prima di uscire."
-      );
-
-      return;
-    }
-
-    if (
-      currentCode &&
-      !el("savedCode").checked &&
-      !window.confirm(
-        "Hai conservato il codice? " +
-        "Uscendo non potrai più visualizzarlo."
-      )
-    ) {
-      return;
-    }
-
-    const oldToken = token;
-
-    clearSession();
-    tell("SEI USCITA.");
-
-    try {
-      await request(
-        "/auth/v1/logout",
-        {},
-        oldToken
-      );
-    } catch (error) {
-      // Il token è già stato rimosso dalla pagina.
-    }
-  }
-);
-
-/* AVVISO PRIMA DI PERDERE UN CODICE */
-
-window.addEventListener("beforeunload", event => {
-  if (
-    creating ||
-    (currentCode && !el("savedCode").checked)
-  ) {
-    event.preventDefault();
-    event.returnValue = "";
-  }
+el('loginForm').addEventListener('submit', async event => {
+  event.preventDefault();
+  if (busy) return;
+  busy = true;
+  el('loginButton').disabled = true;
+  tell('ACCESSO IN CORSO…');
+  try {
+    const session = await request('/auth/v1/token?grant_type=password', {
+      email: el('email').value.trim(), password: el('password').value
+    });
+    token = session.access_token;
+    el('password').value = '';
+    await loadProfiles();
+    el('loginForm').hidden = true;
+    el('dashboard').hidden = false;
+    tell('');
+  } catch (error) { clearSession(); tell(error.message); }
+  finally { busy = false; el('loginButton').disabled = false; }
 });
+
+el('chooseCodeForm').addEventListener('submit', async event => {
+  event.preventDefault();
+  if (creating) return;
+  if (currentCode && !el('savedCode').checked) {
+    tell('Conserva prima il codice mostrato e seleziona «HO CONSERVATO QUESTO CODICE».');
+    return;
+  }
+  const chosen = el('chosenCode').value.trim().toUpperCase();
+  const normalized = chosen.replace(/[\s-]/g, '');
+  if (!/^[A-Z0-9]{10,32}$/.test(normalized) || !/[A-Z]/.test(normalized) || !/[0-9]/.test(normalized)) {
+    tell('Scegliete da 10 a 32 lettere e numeri, con almeno una lettera e un numero. Spazi e trattini non contano.');
+    el('chosenCode').focus();
+    return;
+  }
+  creating = true;
+  el('chosenCode').disabled = true;
+  el('createButton').disabled = true;
+  tell('CREAZIONE IN CORSO…');
+  try {
+    const result = await request('/rest/v1/rpc/esploria_crea_codice', {p_codice: chosen}, token);
+    el('chosenCode').value = '';
+    currentCode = result.codice;
+    el('newCode').textContent = result.codice;
+    el('newProfile').textContent = 'Profilo ' + result.id;
+    el('savedCode').checked = false;
+    el('codeCard').hidden = false;
+    tell('Codice creato. Conservalo insieme al riferimento del profilo.');
+    try { await loadProfiles(); }
+    catch (_) { tell('Il codice è stato creato. Conservalo; l’elenco non si è aggiornato, riprova con AGGIORNA ELENCO.'); }
+  } catch (error) { tell(error.message); }
+  finally { creating = false; el('chosenCode').disabled = false; el('createButton').disabled = false; }
+});
+
+el('copyButton').addEventListener('click', async () => {
+  try { await navigator.clipboard.writeText(currentCode); tell('CODICE COPIATO. Incollalo dove vuoi conservarlo.'); }
+  catch (_) { tell('Seleziona il codice e copialo manualmente.'); }
+});
+el('refreshButton').addEventListener('click', async () => {
+  if (busy) return;
+  busy = true;
+  el('refreshButton').disabled = true;
+  try { await loadProfiles(); tell('ELENCO AGGIORNATO.'); }
+  catch (error) { tell(error.message); }
+  finally { busy = false; el('refreshButton').disabled = false; }
+});
+el('logoutButton').addEventListener('click', async () => {
+  if (creating || busy) { tell('Attendi che l’operazione finisca prima di uscire.'); return; }
+  if (currentCode && !el('savedCode').checked && !window.confirm('Hai conservato il codice? Uscendo non potrai più visualizzarlo.')) return;
+  const oldToken = token;
+  clearSession();
+  tell('SEI USCITA.');
+  try { await request('/auth/v1/logout', {}, oldToken); } catch (_) { /* Il token non è più presente nella pagina. */ }
+});
+window.addEventListener('beforeunload', event => {
+  if (creating || (currentCode && !el('savedCode').checked)) { event.preventDefault(); event.returnValue = ''; }
+});
+
 </script>
 </body>
 </html>

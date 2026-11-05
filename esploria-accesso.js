@@ -65,7 +65,7 @@ window.EsploriaAccesso = (() => {
 
   async function entra(value) {
     const code = normalizza(value);
-    if (!/^[0-9A-F]{16}$/.test(code)) {
+    if (!/^[A-Z0-9]{10,32}$/.test(code)) {
       throw new Error('SCRIVI IL CODICE COMPLETO CHE TI HA DATO L’INSEGNANTE.');
     }
     // Nessun codice precedente deve restare attivo se cambia il giocatore.

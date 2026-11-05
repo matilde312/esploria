@@ -220,7 +220,7 @@ body {
     <a
       id="guestAccess"
       class="hotspot"
-      href="compagni.html?modalita=ospite"
+      href="mondo.html?modalita=ospite"
       aria-label="GIOCA COME OSPITE"
     ></a>
 
@@ -306,6 +306,10 @@ codeForm.addEventListener("submit", async event => {
 
 document.getElementById("guestAccess").addEventListener("click", () => {
   if (window.EsploriaAccesso) EsploriaAccesso.cancellaSessione();
+  try {
+    sessionStorage.removeItem("esploria-accesso-codice-v1");
+    localStorage.removeItem("esploria-compagno-prova");
+  } catch (error) {}
 });
 
 // Mantiene il focus dentro la finestra quando si usa la tastiera.

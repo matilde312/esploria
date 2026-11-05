@@ -94,3 +94,555 @@ button, input {
   align-items: center;
   justify-content: center;
   padding: 8px;
+}
+
+.overlay.open {
+  display: flex;
+}
+
+#nameOverlay {
+  z-index: 30;
+}
+
+.illustratedPanel {
+  position: relative;
+  width: min(100%, 150dvh);
+  max-height: calc(100dvh - 16px);
+  aspect-ratio: 3 / 2;
+}
+
+.illustratedPanel img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.hotspot {
+  position: absolute;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ACCESSIBILITÀ */
+
+.animal:focus-visible,
+#back:focus-visible,
+.hotspot:focus-visible {
+  outline: 3px solid #b66c3d;
+  outline-offset: -3px;
+}
+
+/* PULSANTI DELLE SCHEDE ANIMALI */
+
+#closeCard {
+  top: 3%;
+  right: 7%;
+  width: 7%;
+  height: 13%;
+  border-radius: 50%;
+}
+
+#returnAnimals {
+  left: 11%;
+  bottom: 5%;
+  width: 28%;
+  height: 16%;
+  border-radius: 30px;
+}
+
+#chooseCompanion {
+  left: 43%;
+  bottom: 4%;
+  width: 41%;
+  height: 19%;
+  border-radius: 30px;
+}
+
+/* CAMPO DEL NOME:
+   TRASPARENTE, FONT PATRICK HAND */
+
+#nameInput {
+  position: absolute;
+
+  left: 24%;
+  top: 58%;
+  width: 52%;
+  height: 11%;
+
+  padding: 0 12px;
+  border: none;
+  outline: none;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+
+  font-family: 'Patrick Hand', cursive;
+  font-size: clamp(18px, 3vw, 34px);
+  font-weight: 400;
+  color: #302d35;
+
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+#nameInput:focus-visible {
+  outline: none;
+}
+
+/* PULSANTI DELLA SCHERMATA NOME */
+
+#nameBack {
+  left: 24%;
+  top: 75%;
+  width: 25%;
+  height: 15%;
+  border-radius: 25px;
+}
+
+#nameConfirm {
+  left: 50%;
+  top: 75%;
+  width: 27%;
+  height: 15%;
+  border-radius: 25px;
+}
+
+/* MESSAGGIO IN CASO DI NOME VUOTO */
+
+#errorMessage {
+  display: none;
+  position: absolute;
+  left: 25%;
+  top: 69%;
+  width: 50%;
+  margin: 0;
+  padding: 3px;
+  background: rgba(255, 245, 229, 0.95);
+  border-radius: 8px;
+  color: #a04435;
+  font-size: clamp(10px, 1.5vw, 17px);
+  text-align: center;
+}
+
+/* SCHERMI PICCOLI */
+
+@media (max-width: 600px) {
+  #scene {
+    width: max(100vw, 165dvh);
+  }
+
+  #nameInput {
+    font-size: clamp(13px, 3vw, 22px);
+    padding: 0 3px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- GALLERIA DEI 28 ANIMALI -->
+
+<main id="viewport">
+  <div id="scene">
+
+    <img
+      id="landscape"
+      src="compagni-esploria.png"
+      alt="SCEGLI IL TUO COMPAGNO TRA 28 ANIMALI"
+      draggable="false"
+    >
+
+    <div id="animals"></div>
+
+    <a
+      id="back"
+      href="accesso.html"
+      aria-label="TORNA INDIETRO"
+      title="TORNA INDIETRO"
+    ></a>
+
+  </div>
+</main>
+
+<!-- SCHEDA ILLUSTRATA DELL'ANIMALE -->
+
+<div
+  id="cardOverlay"
+  class="overlay"
+  role="dialog"
+  aria-modal="true"
+  aria-label="SCHEDA DEL COMPAGNO"
+>
+
+  <div class="illustratedPanel">
+
+    <img id="cardImage" src="" alt="">
+
+    <button
+      id="closeCard"
+      class="hotspot"
+      type="button"
+      aria-label="CHIUDI LA SCHEDA"
+    ></button>
+
+    <button
+      id="returnAnimals"
+      class="hotspot"
+      type="button"
+      aria-label="TORNA AGLI ANIMALI"
+    ></button>
+
+    <button
+      id="chooseCompanion"
+      class="hotspot"
+      type="button"
+      aria-label="SCEGLI QUESTO COMPAGNO"
+    ></button>
+
+  </div>
+</div>
+
+<!-- SCHERMATA ILLUSTRATA DEL NOME -->
+
+<div
+  id="nameOverlay"
+  class="overlay"
+  role="dialog"
+  aria-modal="true"
+  aria-label="COME SI CHIAMA IL TUO COMPAGNO?"
+>
+
+  <div class="illustratedPanel">
+
+    <img
+      src="nome-compagno.png"
+      alt="COME SI CHIAMA IL TUO COMPAGNO? SCEGLI UN NOME SPECIALE PER IL TUO COMPAGNO DI AVVENTURA!"
+      draggable="false"
+    >
+
+    <input
+      id="nameInput"
+      type="text"
+      maxlength="20"
+      aria-label="SCRIVI IL NOME DEL COMPAGNO"
+      autocomplete="off"
+      spellcheck="false"
+    >
+
+    <p id="errorMessage" role="alert">
+      SCRIVI PRIMA UN NOME!
+    </p>
+
+    <button
+      id="nameBack"
+      class="hotspot"
+      type="button"
+      aria-label="TORNA INDIETRO"
+    ></button>
+
+    <button
+      id="nameConfirm"
+      class="hotspot"
+      type="button"
+      aria-label="CONFERMA IL NOME"
+    ></button>
+
+  </div>
+</div>
+
+<script src="esploria-accesso.js"></script>
+<script>
+
+/* ELENCO DEI 28 COMPAGNI */
+
+const companions = [
+  ["VOLPE", "volpe"],
+  ["LUPO", "lupo"],
+  ["CERVO", "cervo"],
+  ["GUFO", "gufo"],
+  ["CONIGLIO", "coniglio"],
+  ["SCOIATTOLO", "scoiattolo"],
+  ["PROCIONE", "procione"],
+
+  ["ORSO", "orso"],
+  ["TASSO", "tasso"],
+  ["LONTRA", "lontra"],
+  ["RICCIO", "riccio"],
+  ["CASTORO", "castoro"],
+  ["LINCE", "lince"],
+  ["GATTO SELVATICO", "gatto-selvatico"],
+
+  ["DRAGHETTO", "draghetto"],
+  ["TARTARUGA", "tartaruga"],
+  ["AQUILA", "aquila"],
+  ["CORVO", "corvo"],
+  ["FALCO", "falco"],
+  ["CINGHIALE", "cinghiale"],
+  ["CAPRIOLO", "capriolo"],
+
+  ["DELFINO", "delfino"],
+  ["FOCA", "foca"],
+  ["PANDA", "panda"],
+  ["PANDA ROSSO", "panda-rosso"],
+  ["PINGUINO", "pinguino"],
+  ["ORSO POLARE", "orso-polare"],
+  ["VOLPE ARTICA", "volpe-artica"]
+];
+
+/* ELEMENTI DELLA PAGINA */
+
+const viewport = document.getElementById("viewport");
+const scene = document.getElementById("scene");
+const animals = document.getElementById("animals");
+
+const cardOverlay = document.getElementById("cardOverlay");
+const cardImage = document.getElementById("cardImage");
+
+const nameOverlay = document.getElementById("nameOverlay");
+const nameInput = document.getElementById("nameInput");
+const errorMessage = document.getElementById("errorMessage");
+
+let selected = -1;
+let savingCompanion = false;
+const withCode = new URLSearchParams(window.location.search).get("modalita") === "codice";
+const confirmButton = document.getElementById("nameConfirm");
+let companionReady = !withCode;
+
+// Controlla il profilo prima di consentire una nuova scelta.
+async function prepareCompanion() {
+  if (!withCode) {
+    if (window.EsploriaAccesso) EsploriaAccesso.cancellaSessione();
+    return;
+  }
+  viewport.inert = true;
+  const notice = document.createElement("p");
+  notice.setAttribute("role", "status");
+  Object.assign(notice.style, {position:"fixed", inset:"20px 20px auto", zIndex:"50",
+    padding:"20px", background:"#fff5e2", border:"2px solid #a9855d", borderRadius:"15px"});
+  notice.textContent = "APRO LA TUA AVVENTURA…";
+  document.body.append(notice);
+  try {
+    if (!window.EsploriaAccesso) throw new Error("IL COLLEGAMENTO NON È PRONTO.");
+    const profile = await EsploriaAccesso.carica();
+    if (profile.animale && profile.nome_personaggio) {
+      window.location.replace("mondo.html?modalita=codice");
+      return;
+    }
+    companionReady = true;
+    viewport.inert = false;
+    notice.remove();
+  } catch (error) {
+    notice.textContent = error.message + " ";
+    const back = document.createElement("a");
+    back.href = "accesso.html";
+    back.textContent = "TORNA ALL’ACCESSO";
+    notice.append(back);
+  }
+}
+prepareCompanion();
+
+/* POSIZIONI DEI 28 ANIMALI */
+
+const centersX = [
+  9.5, 23.1, 36.5, 50, 63.5, 77, 90.5
+];
+
+const tops = [15, 39, 59, 79];
+const heights = [23, 19, 19, 20];
+
+/* CREA I PULSANTI INVISIBILI
+   SOPRA GLI ANIMALI */
+
+companions.forEach((animal, index) => {
+  const column = index % 7;
+  const row = Math.floor(index / 7);
+
+  const button = document.createElement("button");
+
+  button.className = "animal";
+  button.type = "button";
+
+  button.setAttribute(
+    "aria-label",
+    "SCOPRI " + animal[0]
+  );
+
+  button.style.left =
+    (centersX[column] - 6.5) + "%";
+
+  button.style.top = tops[row] + "%";
+  button.style.width = "13%";
+  button.style.height = heights[row] + "%";
+
+  button.addEventListener("click", () => {
+    showAnimal(index);
+  });
+
+  animals.appendChild(button);
+});
+
+/* APRE LA SCHEDA DELL'ANIMALE */
+
+function showAnimal(index) {
+  if (!companionReady || savingCompanion) return;
+  selected = index;
+
+  const animal = companions[index];
+
+  cardImage.src =
+    "schede/scheda-" + animal[1] + ".png";
+
+  cardImage.alt =
+    "SCHEDA DEL COMPAGNO " + animal[0];
+
+  cardOverlay.classList.add("open");
+
+  document.getElementById("closeCard").focus();
+}
+
+/* CHIUDE LA SCHEDA */
+
+function closeCard() {
+  cardOverlay.classList.remove("open");
+}
+
+document.getElementById("closeCard").onclick =
+  closeCard;
+
+document.getElementById("returnAnimals").onclick =
+  closeCard;
+
+/* APRE LA SCHERMATA DEL NOME */
+
+function openNameScreen() {
+  if (selected < 0) return;
+
+  cardOverlay.classList.remove("open");
+  nameOverlay.classList.add("open");
+
+  nameInput.value = "";
+  errorMessage.style.display = "none";
+
+  nameInput.focus();
+}
+
+document.getElementById("chooseCompanion").onclick =
+  openNameScreen;
+
+/* TORNA ALLA SCHEDA DELL'ANIMALE */
+
+function returnToCard() {
+  if (savingCompanion) return;
+  nameOverlay.classList.remove("open");
+  cardOverlay.classList.add("open");
+
+  document.getElementById("chooseCompanion").focus();
+}
+
+document.getElementById("nameBack").onclick =
+  returnToCard;
+
+/* CONFERMA E SALVA IL COMPAGNO */
+
+async function confirmCompanion() {
+  if (selected < 0 || !companionReady || savingCompanion) return;
+
+  const name = nameInput.value.trim().toUpperCase();
+
+  if (!name) {
+    errorMessage.textContent = "SCRIVI PRIMA UN NOME!";
+    errorMessage.style.display = "block";
+    nameInput.focus();
+    return;
+  }
+
+  errorMessage.style.display = "none";
+
+  const companion = {
+    animal: companions[selected][0],
+    index: selected,
+    name: name
+  };
+
+  savingCompanion = true;
+  confirmButton.disabled = true;
+  nameInput.disabled = true;
+  document.getElementById("nameBack").disabled = true;
+
+  if (withCode) {
+    errorMessage.textContent = "SALVO IL TUO COMPAGNO…";
+    errorMessage.style.display = "block";
+    try {
+      await EsploriaAccesso.scegli(selected, name);
+      window.location.href = "mondo.html?modalita=codice";
+    } catch (error) {
+      errorMessage.textContent = error.message;
+      errorMessage.style.display = "block";
+    } finally {
+      savingCompanion = false;
+      confirmButton.disabled = false;
+      nameInput.disabled = false;
+      document.getElementById("nameBack").disabled = false;
+    }
+    return;
+  }
+
+  try {
+    localStorage.setItem("esploria-compagno-prova", JSON.stringify(companion));
+  } catch (error) {
+    console.warn("SALVATAGGIO LOCALE NON DISPONIBILE");
+  }
+  window.location.href = "mondo.html";
+}
+
+document.getElementById("nameConfirm").onclick =
+  confirmCompanion;
+
+/* CONFERMA ANCHE CON INVIO */
+
+nameInput.addEventListener("keydown", event => {
+  if (event.key === "Enter") {
+    confirmCompanion();
+  }
+});
+
+/* TORNA INDIETRO CON ESC */
+
+document.addEventListener("keydown", event => {
+  if (event.key !== "Escape") return;
+
+  if (nameOverlay.classList.contains("open")) {
+    returnToCard();
+  } else if (cardOverlay.classList.contains("open")) {
+    closeCard();
+  }
+});
+
+/* CENTRA LA GALLERIA */
+
+function centerScene() {
+  viewport.scrollLeft = Math.max(
+    0,
+    (scene.scrollWidth - viewport.clientWidth) / 2
+  );
+
+  viewport.scrollTop = Math.max(
+    0,
+    (scene.scrollHeight - viewport.clientHeight) / 2
+  );
+}
+
+window.addEventListener("load", centerScene);
+window.addEventListener("resize", centerScene);
+
+</script>
+
+</body>
+</html>

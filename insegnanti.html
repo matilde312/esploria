@@ -7,6 +7,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box}body{margin:0;background:#e7e8d9;color:#243d4b;font-family:'Patrick Hand',cursive;font-size:22px}main{max-width:850px;margin:40px auto;padding:20px}a{color:#243d4b}.card{background:#fff5e2;border:3px solid #a9855d;border-radius:22px;padding:28px;margin-top:24px}h1{margin:0;font-size:38px}h2{font-size:28px}label{display:block;margin:15px 0 5px}input,button,select,textarea{font:inherit;border-radius:12px;padding:12px;width:100%}input,select,textarea{background:#fffdf7;border:2px solid #a9855d;color:#243d4b}button{background:#c66e50;color:white;border:0;cursor:pointer;margin-top:18px}button:disabled{opacity:.6;cursor:wait}.secondary{background:#486a63}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #243d4b;outline-offset:3px}[hidden]{display:none!important}#message,#awardMessage{white-space:pre-line}#newCode{font-family:monospace;font-size:clamp(17px,4vw,30px);overflow-wrap:anywhere;user-select:all}li{padding:12px 0;border-bottom:1px solid #d9c6a9}small{display:block;font-size:17px}ul{list-style:none;padding:0}p{line-height:1.4}.badgePreview{max-width:200px;max-height:200px;object-fit:contain;display:block;margin:18px auto;background:repeating-conic-gradient(#f1eadb 0% 25%,#fff9ec 0% 50%) 50% /20px 20px;border-radius:16px}#savedCode{width:auto}@media(max-width:600px){main{margin:10px auto}.card{padding:20px}}
+
+.profileActions{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
+.profileActions button{width:auto;font-size:18px;margin:0;padding:9px 15px}
+.danger{background:#9e3e38}
+#deleteProfileDialog{width:min(560px,calc(100vw - 28px));max-height:calc(100dvh - 32px);overflow:auto;background:#fff5e2;color:#243d4b;border:3px solid #a9855d;border-radius:22px;padding:26px;font:inherit}
+#deleteProfileDialog::backdrop{background:rgba(23,42,55,.65)}
+#deleteProfileSummary{overflow-wrap:anywhere}
+#deleteProfileExpected{font-family:monospace;font-size:21px;user-select:none;overflow-wrap:anywhere}
+#deleteProfileInput{text-transform:uppercase}
+#deleteProfileMessage{white-space:pre-line}
 </style>
 </head>
 <body>
@@ -57,6 +67,18 @@
 </div><p id="message" role="status" aria-live="polite"></p>
 </section>
 </main>
-<script src="insegnanti.js?v=immagini-distintivi-1"></script>
+<dialog id="deleteProfileDialog" aria-labelledby="deleteProfileTitle">
+<form id="deleteProfileForm">
+<h2 id="deleteProfileTitle">ELIMINA DEFINITIVAMENTE IL PROFILO</h2>
+<p id="deleteProfileSummary"></p>
+<p>Il personaggio, i progressi e tutti i distintivi verranno cancellati. Il codice non aprirà più questa partita. L’operazione non può essere annullata.</p>
+<p>Per confermare, scrivi:</p><p id="deleteProfileExpected"></p>
+<label for="deleteProfileInput">CONFERMA ELIMINAZIONE</label>
+<input id="deleteProfileInput" autocomplete="off" spellcheck="false" maxlength="40" required>
+<p id="deleteProfileMessage" role="status" aria-live="polite"></p>
+<div class="profileActions"><button id="deleteProfileConfirm" class="danger" type="submit" disabled>ELIMINA DEFINITIVAMENTE</button><button id="deleteProfileCancel" class="secondary" type="button">ANNULLA</button></div>
+</form>
+</dialog>
+<script src="insegnanti.js?v=gestione-profili-1"></script>
 </body>
 </html>

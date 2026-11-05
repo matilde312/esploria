@@ -4,6 +4,7 @@ const config = {supabaseUrl:'https://eovmvcxvyhtbsxrjdmak.supabase.co',supabaseP
 let token = null, currentCode = '', creating = false, busy = false, awarding = false;
 let badgeImageData = null, imageLoading = false, imageGeneration = 0;
 let activeProfiles = [];
+let managingProfile = false, deleteTarget = null, currentProfileId = null;
 const tell = text => { el('message').textContent = text; };
 
 function updateAwardButton() {
@@ -20,7 +21,8 @@ function resetBadgeImage(keepFile = false) {
   updateAwardButton();
 }
 function clearSession() {
-  token = null; currentCode = ''; activeProfiles = [];
+  token = null; currentCode = ''; currentProfileId = null; activeProfiles = [];
+  closeDeleteDialog();
   resetBadgeImage();
   for (const id of ['chosenCode','password','badgeTitle','badgeDescription']) el(id).value = '';
   for (const id of ['newCode','newProfile','awardMessage']) el(id).textContent = '';
@@ -43,6 +45,8 @@ async function request(path, body, accessToken) {
     if (accessToken && response.status === 401) { clearSession(); throw new Error('La sessione è scaduta. Accedi di nuovo.'); }
     if (response.status === 403 || data?.code === '42501') throw new Error('Questo account non è autorizzato oppure il profilo non è disponibile.');
     const messages = {
+      CONFERMA_ELIMINAZIONE_NON_VALIDA:'La conferma non corrisponde al profilo da eliminare.',
+      STATO_NON_VALIDO:'Lo stato del profilo non è valido.',
       DISTINTIVO_GIA_PRESENTE:'Questo profilo ha già un distintivo con lo stesso nome.',
       DISTINTIVO_NON_VALIDO:'Controlla il nome, il messaggio e il simbolo del distintivo.',
       IMMAGINE_NON_VALIDA:'L’immagine non è valida. Scegli un altro file PNG, JPG o WEBP.',
@@ -51,7 +55,7 @@ async function request(path, body, accessToken) {
     };
     if (messages[data?.message]) throw new Error(messages[data.message]);
     if (path.includes('/auth/v1/token')) throw new Error('Accesso non riuscito. Controlla email e password.');
-    throw new Error('Operazione non riuscita. Verifica di aver eseguito gli aggiornamenti SQL, incluso 007-immagini-distintivi.sql, in Supabase.');
+    throw new Error('Operazione non riuscita. Verifica di aver eseguito gli aggiornamenti SQL, incluso 009-gestione-profili.sql, in Supabase.');
   }
   return data;
 }
@@ -66,8 +70,17 @@ async function loadProfiles() {
   for (const profile of profiles) {
     const li = document.createElement('li'), title = document.createElement('strong'), detail = document.createElement('small');
     title.textContent = profile.nome_personaggio || 'IN ATTESA DELLA SCELTA DEL COMPAGNO';
-    detail.textContent = 'Profilo ' + profile.id + (profile.animale ? ' · ' + profile.animale : '') + (profile.attivo ? '' : ' · DISATTIVATO');
-    li.append(title,detail); el('profiles').append(li);
+    detail.textContent = 'Profilo ' + profile.id + (profile.animale ? ' · ' + profile.animale : '') + (profile.attivo ? ' · ATTIVO' : ' · DISATTIVATO');
+    const actions = document.createElement('div'); actions.className = 'profileActions';
+    const toggle = document.createElement('button'); toggle.type = 'button'; toggle.className = 'secondary';
+    toggle.textContent = profile.attivo ? 'DISATTIVA' : 'RIATTIVA';
+    toggle.disabled = managingProfile;
+    toggle.addEventListener('click',() => toggleProfile(profile));
+    const remove = document.createElement('button'); remove.type = 'button'; remove.className = 'danger';
+    remove.textContent = 'ELIMINA DEFINITIVAMENTE'; remove.disabled = managingProfile;
+    remove.addEventListener('click',() => openDeleteDialog(profile));
+    actions.append(toggle,remove);
+    li.append(title,detail,actions); el('profiles').append(li);
     if (profile.attivo) {
       const option = document.createElement('option'); option.value = profile.id;
       option.textContent = (profile.nome_personaggio || 'COMPAGNO NON ANCORA SCELTO') + (profile.animale ? ' · ' + profile.animale : '') + ' · ' + profile.id.slice(0,8);
@@ -95,6 +108,7 @@ el('chooseCodeForm').addEventListener('submit',async event => {
   creating = true; el('createButton').disabled = true; el('chosenCode').disabled = true; tell('CREAZIONE IN CORSO…');
   try {
     const result = await request('/rest/v1/rpc/esploria_crea_codice',{p_codice:chosen},token);
+    currentProfileId = result.id;
     currentCode = result.codice; el('chosenCode').value = ''; el('newCode').textContent = result.codice; el('newProfile').textContent = 'Profilo ' + result.id;
     el('savedCode').checked = false; el('codeCard').hidden = false; tell('Codice creato. Conservalo insieme al riferimento del profilo.');
     try { await loadProfiles(); } catch (_) { tell('Codice creato. Conservalo; premi AGGIORNA ELENCO per aggiornare i profili.'); }
@@ -172,9 +186,95 @@ el('refreshButton').addEventListener('click',async () => {
   finally { busy = false; el('refreshButton').disabled = false; }
 });
 el('logoutButton').addEventListener('click',async () => {
-  if (creating || busy || awarding || imageLoading) { tell('Attendi che l’operazione finisca prima di uscire.'); return; }
+  if (creating || busy || awarding || imageLoading || managingProfile) { tell('Attendi che l’operazione finisca prima di uscire.'); return; }
   if (currentCode && !el('savedCode').checked && !window.confirm('Hai conservato il codice? Uscendo non potrai più visualizzarlo.')) return;
   const oldToken = token; clearSession(); tell('SEI USCITA.');
   try { await request('/auth/v1/logout',{},oldToken); } catch (_) {}
 });
-window.addEventListener('beforeunload',event => { if (creating || awarding || imageLoading || (currentCode && !el('savedCode').checked)) { event.preventDefault(); event.returnValue = ''; } });
+window.addEventListener('beforeunload',event => { if (creating || awarding || imageLoading || managingProfile || (currentCode && !el('savedCode').checked)) { event.preventDefault(); event.returnValue = ''; } });
+
+
+/* GESTIONE DEI SOLI PROFILI DELL’INSEGNANTE AUTENTICATA */
+function profileLabel(profile) {
+  return (profile.nome_personaggio || 'COMPAGNO NON ANCORA SCELTO')
+    + (profile.animale ? ' · ' + profile.animale : '')
+    + ' · PROFILO ' + profile.id.slice(0,8).toUpperCase();
+}
+function managementBusy(value) {
+  managingProfile = value;
+  el('profiles').querySelectorAll('button').forEach(button => { button.disabled = value; });
+}
+async function toggleProfile(profile) {
+  if (managingProfile || !token) return;
+  const next = !profile.attivo;
+  const question = next
+    ? 'Riattivare ' + profileLabel(profile) + '? Il bambino potrà rientrare con lo stesso codice.'
+    : 'Disattivare ' + profileLabel(profile) + '? L’accesso sarà bloccato; personaggio, progressi e distintivi saranno conservati.';
+  if (!window.confirm(question)) return;
+  managementBusy(true); tell(next ? 'RIATTIVAZIONE IN CORSO…' : 'DISATTIVAZIONE IN CORSO…');
+  try {
+    await request('/rest/v1/rpc/esploria_imposta_profilo_attivo',{p_profilo_id:profile.id,p_attivo:next},token);
+    const outcome = next ? 'Profilo riattivato: lo stesso codice è di nuovo utilizzabile.' : 'Profilo disattivato. Tutti i dati sono conservati.';
+    try { await loadProfiles(); tell(outcome); }
+    catch (_) { tell(outcome + ' Aggiorna l’elenco per vedere il nuovo stato.'); }
+  } catch (error) { tell(error.message); }
+  finally { managementBusy(false); }
+}
+function closeDeleteDialog() {
+  if (el('deleteProfileDialog').open) el('deleteProfileDialog').close();
+  deleteTarget = null;
+  el('deleteProfileInput').value = '';
+  el('deleteProfileMessage').textContent = '';
+  el('deleteProfileSummary').textContent = '';
+  el('deleteProfileExpected').textContent = '';
+  el('deleteProfileConfirm').disabled = true;
+}
+function openDeleteDialog(profile) {
+  if (managingProfile || !token) return;
+  deleteTarget = profile;
+  el('deleteProfileSummary').textContent = profileLabel(profile) + ' · ID COMPLETO: ' + profile.id;
+  el('deleteProfileExpected').textContent = 'ELIMINA ' + profile.id.slice(0,8).toUpperCase();
+  el('deleteProfileInput').value = ''; el('deleteProfileMessage').textContent = '';
+  el('deleteProfileConfirm').disabled = true;
+  el('deleteProfileDialog').showModal();
+  el('deleteProfileInput').focus();
+}
+function validDeletionConfirmation() {
+  return deleteTarget && el('deleteProfileInput').value.trim().toUpperCase()
+    === 'ELIMINA ' + deleteTarget.id.slice(0,8).toUpperCase();
+}
+el('deleteProfileInput').addEventListener('input',() => {
+  el('deleteProfileConfirm').disabled = managingProfile || !validDeletionConfirmation();
+});
+el('deleteProfileCancel').addEventListener('click',() => { if (!managingProfile) closeDeleteDialog(); });
+el('deleteProfileDialog').addEventListener('cancel',event => {
+  if (managingProfile) event.preventDefault(); else closeDeleteDialog();
+});
+el('deleteProfileForm').addEventListener('submit',async event => {
+  event.preventDefault();
+  if (managingProfile || !token || !validDeletionConfirmation()) return;
+  const target = deleteTarget;
+  const confirmation = el('deleteProfileInput').value.trim().toUpperCase();
+  managementBusy(true);
+  for (const id of ['deleteProfileConfirm','deleteProfileCancel','deleteProfileInput']) el(id).disabled = true;
+  el('deleteProfileMessage').textContent = 'ELIMINAZIONE IN CORSO…';
+  try {
+    await request('/rest/v1/rpc/esploria_elimina_profilo',{p_profilo_id:target.id,p_conferma:confirmation},token);
+    if (currentProfileId === target.id) {
+      currentProfileId = null; currentCode = ''; el('newCode').textContent = ''; el('newProfile').textContent = '';
+      el('savedCode').checked = false; el('codeCard').hidden = true;
+    }
+    closeDeleteDialog();
+    const outcome = 'Profilo eliminato definitivamente con i suoi progressi e distintivi.';
+    try { await loadProfiles(); tell(outcome); }
+    catch (_) { tell(outcome + ' Aggiorna l’elenco per vedere la modifica.'); }
+  } catch (error) {
+    if (!token) tell(error.message);
+    el('deleteProfileMessage').textContent = error.message
+      + ' Se la connessione si è interrotta, annulla e aggiorna l’elenco prima di riprovare: il profilo potrebbe essere già stato eliminato.';
+  } finally {
+    managementBusy(false);
+    el('deleteProfileCancel').disabled = false; el('deleteProfileInput').disabled = false;
+    el('deleteProfileConfirm').disabled = !validDeletionConfirmation();
+  }
+});

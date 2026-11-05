@@ -296,8 +296,9 @@ button {
     <button class="place" id="sfide"
       aria-label="PADIGLIONE DELLE SFIDE"></button>
 
-    <button class="place" id="castello"
-      aria-label="AREA INSEGNANTI"></button>
+    <a class="place" id="castello"
+      href="insegnanti.html"
+      aria-label="AREA INSEGNANTI"></a>
 
     <button class="place" id="profilo"
       aria-label="IL MIO PROFILO"></button>
@@ -445,15 +446,6 @@ const places = {
       "PRESTO POTRAI METTERTI ALLA PROVA!"
   },
 
-  castello: {
-    title: "AREA INSEGNANTI",
-    text:
-      "QUESTO CASTELLO CUSTODISCE " +
-      "UNO SPAZIO RISERVATO AGLI " +
-      "INSEGNANTI. " +
-      "PRESTO SARÀ POSSIBILE ACCEDERVI!"
-  },
-
   profilo: {
     title: "IL MIO PROFILO",
     text:
@@ -484,7 +476,7 @@ function openPlace(button) {
 
 /* COLLEGA GLI EDIFICI */
 
-document.querySelectorAll(".place").forEach(button => {
+document.querySelectorAll("button.place").forEach(button => {
   button.addEventListener("click", () => {
 
     if (button.id === "borgo") {

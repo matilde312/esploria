@@ -7,6 +7,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box}body{margin:0;background:#e7ecdf;color:#2c4345;font-family:'Patrick Hand',cursive;font-size:21px}button,a{font:inherit}a{color:inherit}button,.linkButton{display:inline-block;border:0;border-radius:14px;background:#b95f42;color:#fffaf0;padding:12px 24px;text-decoration:none;cursor:pointer}button:disabled{opacity:.6;cursor:wait}button:focus-visible,a:focus-visible{outline:3px solid #243d4b;outline-offset:4px}.secondary{background:#456c61}[hidden]{display:none!important}main{max-width:1060px;margin:auto;padding:28px 22px 50px}nav{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap}nav a{text-decoration:none}header{margin:38px 0 25px;text-align:center}.eyebrow{font-size:19px;letter-spacing:2px;margin:0;color:#60735c}h1{font-size:clamp(34px,6vw,52px);line-height:1.1;margin:12px 0}h2{font-size:30px;margin:0 0 12px}p{line-height:1.4}.panel{background:#fff6e3;border:2px solid #b29569;border-radius:25px;padding:26px;box-shadow:0 6px 0 #d4d8c5}.companion{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:28px;align-items:center}.picture{position:relative;aspect-ratio:1;background:#efe4cc;border-radius:18px;overflow:hidden}.picture img{position:absolute;display:block;width:250%;max-width:none;height:auto;left:-20%;top:-25%}.name{font-size:clamp(32px,5vw,48px);overflow-wrap:anywhere;color:#7b482f;margin:8px 0}.pill{display:inline-block;font-size:18px;background:#dce8d7;color:#345c4b;padding:6px 14px;border-radius:30px}.section{margin-top:30px}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.metric{background:#fffcf3;border:1px solid #d8c8a8;border-radius:17px;padding:20px;text-align:center}.metric strong{display:block;font-size:38px;color:#456c61}.muted{color:#596b62}.badges{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;margin-top:20px}.badge{background:#fffcf3;border:1px solid #d8c8a8;border-radius:20px;padding:22px;text-align:center;overflow-wrap:anywhere}.badgeImage{display:block;width:120px;height:120px;object-fit:contain;margin:0 auto 12px}.badgeIcon{font-size:48px;display:block}.badge h3{margin:14px 0 8px;font-size:24px}.badge p{font-size:19px}.badge small{font-size:16px;display:block;color:#596b62}.empty{border:2px dashed #c6b994;border-radius:17px;padding:22px}.locked{text-align:center;max-width:600px;margin:70px auto}.status{white-space:pre-line;text-align:center}footer{display:flex;justify-content:center;gap:15px;flex-wrap:wrap;margin-top:30px}@media(max-width:650px){main{padding:20px 14px 35px}.panel{padding:20px}.companion{grid-template-columns:1fr;gap:20px}.metrics{grid-template-columns:1fr}.metric{display:flex;align-items:center;justify-content:space-between;text-align:left}.metric strong{font-size:32px}.badges{grid-template-columns:1fr}header{margin-top:25px}}
+
+.companionActions{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px}
+#companionEditor{width:min(540px,calc(100vw - 28px));max-height:calc(100dvh - 32px);overflow:auto;background:#fff6e3;color:#2c4345;border:3px solid #b29569;border-radius:24px;padding:26px;font:inherit}
+#companionEditor::backdrop{background:rgba(23,42,55,.65)}
+#companionEditor label{display:block;margin:15px 0 8px}
+#companionEditor input,#companionEditor select{width:100%;font:inherit;color:inherit;padding:12px;border:2px solid #b29569;border-radius:12px;background:#fffdf5}
+#companionEditor input{text-transform:uppercase}
+#companionEditor input:focus-visible,#companionEditor select:focus-visible{outline:3px solid #243d4b;outline-offset:3px}
+#editorPreview{width:min(260px,100%);margin:18px auto}
+.editorActions{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}
+#editorMessage{white-space:pre-line}
 </style>
 </head>
 <body>
@@ -23,7 +34,11 @@
 <header><p class="eyebrow">IL MIO ANGOLO DI AVVENTURA</p><h1>OGNI SCOPERTA È UN PASSO IN PIÙ</h1></header>
 <section class="panel companion" aria-labelledby="companionTitle">
 <div class="picture"><img id="companionImage" alt="" hidden><p id="imageFallback" class="status" hidden>IL TUO COMPAGNO È QUI CON TE!</p></div>
-<div><span class="pill">IL TUO COMPAGNO</span><h2 id="companionTitle" class="name"></h2><p id="animalType"></p><p>UN NOME SPECIALE, UN’AVVENTURA TUTTA VOSTRA.</p><a id="chooseCompanion" class="linkButton" href="compagni.html?modalita=codice" hidden>SCEGLI IL TUO COMPAGNO</a></div>
+<div><span class="pill">IL TUO COMPAGNO</span><h2 id="companionTitle" class="name"></h2><p id="animalType"></p><p>UN NOME SPECIALE, UN’AVVENTURA TUTTA VOSTRA.</p><a id="chooseCompanion" class="linkButton" href="compagni.html?modalita=codice" hidden>SCEGLI IL TUO COMPAGNO</a>
+<div id="companionActions" class="companionActions" hidden>
+<button id="changeName" type="button" class="secondary">CAMBIA NOME</button>
+<button id="changeAnimal" type="button" class="secondary">CAMBIA COMPAGNO</button>
+</div></div>
 </section>
 <section class="panel section" aria-labelledby="statsTitle">
 <h2 id="statsTitle">LE MIE AVVENTURE</h2>
@@ -43,6 +58,16 @@
 <footer><button id="refresh" class="secondary" type="button">AGGIORNA IL MIO ANGOLO</button><button id="exit" type="button">ESCI DAL MIO PROFILO</button></footer>
 </div>
 </main>
+<dialog id="companionEditor" aria-labelledby="editorTitle">
+<form id="companionEditorForm">
+<h2 id="editorTitle"></h2>
+<p>IL TUO CODICE, I PROGRESSI E I DISTINTIVI RESTANO CON TE.</p>
+<div id="editNameField"><label for="newCompanionName">COME SI CHIAMERÀ IL TUO COMPAGNO?</label><input id="newCompanionName" maxlength="20" autocomplete="off" spellcheck="false"></div>
+<div id="editAnimalField"><label for="newCompanionAnimal">SCEGLI IL TUO COMPAGNO</label><select id="newCompanionAnimal"></select><div id="editorPreview" class="picture"><img id="editorAnimalImage" alt=""></div></div>
+<p id="editorMessage" role="status" aria-live="polite"></p>
+<div class="editorActions"><button id="saveCompanionChanges" type="submit">SALVA LA SCELTA</button><button id="cancelCompanionChanges" class="secondary" type="button">ANNULLA</button></div>
+</form>
+</dialog>
 <script src="esploria-accesso.js?v=codici-scelti-1"></script>
 <script>
 'use strict';
@@ -53,6 +78,8 @@ const symbols = {stella:'⭐',foglia:'🌿',bussola:'🧭',cuore:'💚',trofeo:'
 let generation = 0;
 
 function hidePrivate() {
+  document.dispatchEvent(new Event('esploria:profilo-nascosto'));
+  $('companionActions').hidden = true;
   $('privateArea').hidden = true;
   $('companionTitle').textContent = '';
   $('animalType').textContent = '';
@@ -104,6 +131,8 @@ function render(profile) {
     $('badges').append(card);
   }
   $('privateArea').hidden = false;
+  $('companionActions').hidden = !profile.animale || !profile.nome_personaggio;
+  document.dispatchEvent(new CustomEvent('esploria:profilo-caricato',{detail:profile}));
 }
 
 async function loadProfile() {
@@ -128,6 +157,12 @@ $('companionImage').addEventListener('error', () => {
   $('companionImage').hidden = true;
   $('imageFallback').hidden = false;
 });
+document.addEventListener('esploria:compagno-modificato', event => {
+  generation++;
+  hidePrivate();
+  render(event.detail);
+  $('status').textContent = 'LA TUA SCELTA È SALVATA!';
+});
 $('refresh').addEventListener('click',loadProfile);
 $('retry').addEventListener('click',loadProfile);
 $('exit').addEventListener('click', () => {
@@ -141,5 +176,6 @@ $('exit').addEventListener('click', () => {
 window.addEventListener('pagehide', () => { generation++; hidePrivate(); });
 window.addEventListener('pageshow',loadProfile);
 </script>
+<script src="profilo-personalizza.js?v=1"></script>
 </body>
 </html>

@@ -21,7 +21,7 @@ function resetBadgeImage(keepFile = false) {
   updateAwardButton();
 }
 function clearSession() {
-  closeStatistics();
+  closeStatistics();closeOcaStatistics();
   token = null; currentCode = ''; currentProfileId = null; activeProfiles = [];
   closeDeleteDialog();
   resetBadgeImage();
@@ -61,6 +61,7 @@ async function request(path, body, accessToken) {
   return data;
 }
 async function loadProfiles() {
+  closeOcaStatistics();
   const profiles = await request('/rest/v1/rpc/esploria_elenca_profili',{},token);
   const previous = el('badgeProfile').value;
   activeProfiles = profiles.filter(p => p.attivo);
@@ -81,7 +82,8 @@ async function loadProfiles() {
     remove.textContent = 'ELIMINA DEFINITIVAMENTE'; remove.disabled = managingProfile;
     remove.addEventListener('click',() => openDeleteDialog(profile));
     const statsButton=document.createElement('button');statsButton.type='button';statsButton.className='secondary';statsButton.textContent='STATISTICHE DI GIOCO';statsButton.disabled=managingProfile;statsButton.addEventListener('click',()=>openStatistics(profile));
-    actions.append(statsButton,toggle,remove);
+    const ocaButton=document.createElement('button');ocaButton.type='button';ocaButton.className='secondary';ocaButton.textContent='CALCOLO MENTALE';ocaButton.disabled=managingProfile;ocaButton.addEventListener('click',()=>openOcaStatistics(profile));
+    actions.append(statsButton,ocaButton,toggle,remove);
     li.append(title,detail,actions); el('profiles').append(li);
     if (profile.attivo) {
       const option = document.createElement('option'); option.value = profile.id;
@@ -328,4 +330,17 @@ async function loadStatistics(offset){
   nextStatisticsOffset=result.prossimo_offset;el('learningStatsMore').hidden=nextStatisticsOffset===null||nextStatisticsOffset===undefined;
  }catch(error){if(requestId!==statisticsGeneration)return;el('learningStatsMessage').textContent=error.message+' Per le statistiche verifica di aver eseguito attiva-statistiche-escape.sql in Supabase.'}
  finally{if(requestId===statisticsGeneration){statisticsLoading=false;el('learningStatsMore').disabled=false}}
+}
+
+/* CALCOLO MENTALE: tempi e tentativi verificati nel database. */
+let ocaStatsGeneration=0;
+function closeOcaStatistics(){ocaStatsGeneration++;if(el('ocaTeacherStats')){el('ocaTeacherStats').hidden=true;el('ocaTeacherStats').replaceChildren()}}
+function ocaNumber(n){return String(Number(n)).replace(/\B(?=(\d{3})+(?!\d))/g,'.')}
+function ocaQuestion(q){const orders=[['U','UNITÀ'],['DA','DECINE'],['H','CENTINAIA'],['UK','UNITÀ DI MIGLIAIA'],['DAK','DECINE DI MIGLIAIA'],['HK','CENTINAIA DI MIGLIAIA']];const verb=q.delta>0?'AGGIUNGI':'TOGLI';return ocaNumber(q.numero)+' → '+verb+' '+(q.modo===2?ocaNumber(Math.abs(q.delta)):q.quantita+' '+orders[q.ordine][q.modo===0?0:1])}
+async function openOcaStatistics(profile){
+ if(!token||managingProfile)return;ensureStatistics();let section=el('ocaTeacherStats');if(!section){section=statsNode('section',undefined,'card');section.id='ocaTeacherStats';el('profiles').after(section)}const requestId=++ocaStatsGeneration,access=token;section.hidden=false;section.replaceChildren(statsNode('h2','CALCOLO MENTALE · '+profileLabel(profile)),statsNode('p','CARICO TEMPI E TENTATIVI…'));section.scrollIntoView?.({behavior:'smooth',block:'start'});
+ try{const data=await request('/rest/v1/rpc/esploria_oca_statistiche',{p_profilo_id:profile.id},access);if(requestId!==ocaStatsGeneration||token!==access)return;
+ section.replaceChildren(statsNode('h2','CALCOLO MENTALE · '+profileLabel(profile)));section.append(statsNode('p','PARTITE INIZIATE: '+data.totali.iniziate+' · COMPLETATE: '+data.totali.completate+' · TENTATIVI DA RIVEDERE: '+data.totali.errori));if(data.totali.migliore_ms!==null)section.append(statsNode('p','MIGLIOR TEMPO: '+statsTime(data.totali.migliore_ms)));section.append(statsNode('p','ULTIME 20 PARTITE. IL TEMPO DELLA GARA INCLUDE ANCHE EVENTUALI USCITE DALLA PAGINA E ATTESE DI COLLEGAMENTO. NON È UNA MISURA ISOLATA DELL’APPRENDIMENTO.','statsNote'));
+ for(const run of data.partite){const details=statsNode('details',undefined,'statsRun');details.append(statsNode('summary',statsDate(run.iniziata_il)+' · '+(run.completata_il?'COMPLETATA':run.abbandonata_il?'INTERROTTA':'IN CORSO')+' · '+run.posizione+'/18 · ERRORI: '+run.errori));details.append(statsTable(['TAPPA','RICHIESTA','RISPOSTA','ATTESO','ESITO','TEMPO DEL TENTATIVO'],run.tentativi.map(t=>[t.tappa,ocaQuestion(t.quesito),t.risposta,ocaNumber(t.atteso),t.corretta?'CORRETTA':'DA RIVEDERE',statsTime(t.tempo_ms)])));if(run.tentativi.length===200)details.append(statsNode('p','DETTAGLIO DEGLI ULTIMI 200 TENTATIVI. I CONTATORI COMPRENDONO TUTTA LA PARTITA.','statsNote'));section.append(details)}if(!data.partite.length)section.append(statsNode('p','NESSUNA PARTITA AVVIATA.'));const close=statsNode('button','CHIUDI','secondary');close.type='button';close.addEventListener('click',closeOcaStatistics);section.append(close);
+ }catch(error){if(requestId===ocaStatsGeneration)section.append(statsNode('p',error.message+' VERIFICA DI AVER ESEGUITO attiva-gioco-oca.sql.'))}
 }

@@ -501,6 +501,11 @@ document.querySelectorAll("button.place").forEach(button => {
       return;
     }
 
+    if (button.id === "porto") {
+      window.location.href = "porto.html";
+      return;
+    }
+
     openPlace(button);
 
   });

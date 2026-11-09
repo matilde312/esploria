@@ -266,6 +266,7 @@ button, a {
 
 /* Due avventure con contenuti proporzionati alla singola cornice. */
 .activity-card{container-type:inline-size}.card-content{top:19%;bottom:10%;gap:4px}.game-preview{width:58%;height:17cqw;max-height:none;min-height:0;flex-shrink:1;object-fit:cover}.game-title{font-size:clamp(16px,4cqw,34px);line-height:1.05}.game-description{font-size:clamp(12px,2.9cqw,22px);line-height:1.15}.play-button{font-size:clamp(18px,3.6cqw,28px);padding:5px 24px;margin-top:3px}
+.activity-card:last-child:nth-child(odd){grid-column:1/-1;width:min(100%,680px)}
 </style>
 </head>
 
@@ -350,6 +351,15 @@ button, a {
     </article>
 
 
+    <article class="activity-card">
+      <img class="card-frame" src="cornice-borgo.png" alt="">
+      <div class="card-content">
+        <img class="game-preview" src="radura-talpe.png" alt="LA RADURA DELLE TALPE TRA PRATO E BOSCO">
+        <h2 class="game-title">LA RADURA DELLE TALPE</h2>
+        <p class="game-description">TROVA LA MOLTIPLICAZIONE GIUSTA.<br>LE TALPE TI ASPETTANO!</p>
+        <a class="play-button" href="radura-talpe.html">GIOCA →</a>
+      </div>
+    </article>
     <!--
       QUI AGGIUNGEREMO
       LE PROSSIME ATTIVITÀ

@@ -1,0 +1,17 @@
+<!doctype html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESPLORIA · LA RADURA DELLE TALPE</title><link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet"><link rel="stylesheet" href="radura-talpe.css?v=1"></head><body>
+<main id="talpeApp"><nav><a href="borgo.html">← BORGO DEGLI INGRANAGGI</a><a id="profileLink" href="profilo.html">IL MIO ANGOLO</a></nav>
+<header><p class="eyebrow">BORGO DEGLI INGRANAGGI · MATEMATICA</p><h1>LA RADURA DELLE TALPE</h1><p id="playerName">LE TABELLINE PRENDONO VITA!</p></header>
+<fieldset class="levels"><legend>SCEGLI DOVE ESPLORARE</legend><label><input type="radio" name="level" value="prato" checked><span><strong>🌼 PRATO</strong><small>1 · 2 · 3 · 4 · 5 · 10<br>10 RICHIESTE</small></span></label><label><input type="radio" name="level" value="bosco"><span><strong>🌳 BOSCO</strong><small>TUTTE LE TABELLINE · DA 1 A 10<br>20 RICHIESTE</small></span></label></fieldset>
+<div class="gameLayout"><section class="playArea" aria-label="IL PRATO DELLE TALPE">
+<div class="hud"><span id="progress">0 / 10</span><span>DA RIVEDERE: <strong id="mistakes">0</strong></span><span id="timer">00:00.0</span></div>
+<section id="welcome" class="parchment"><p class="eyebrow">UN NUMERO, TRE TALPE, UNA SCOPERTA</p><h2>QUAL È LA MOLTIPLICAZIONE GIUSTA?</h2><p>LEGGI IL NUMERO DA CERCARE E TOCCA LA TALPA CON LA MOLTIPLICAZIONE CHE DÀ QUEL RISULTATO.</p><p>LE TALPE TI ASPETTANO. SE SBAGLI, PUOI RIPROVARE.</p><button id="start" type="button">ENTRA NELLA RADURA →</button></section>
+<div id="targetPanel" class="target" hidden><p id="step">RICHIESTA 1 DI 10</p><h2>CERCA IL <strong id="target">24</strong></h2></div>
+<div id="burrows" class="burrows" hidden aria-label="SCEGLI UNA TALPA"></div>
+<section id="finish" class="parchment" hidden><p class="eyebrow">OGNI SCOPERTA CONTA</p><h2>RADURA COMPLETATA!</h2><p id="finishText"></p><p id="finishRecord"></p><button id="playAgain" type="button">UN’ALTRA AVVENTURA →</button></section>
+<div id="feedbackArea"><p id="feedback" role="status" aria-live="polite"></p><button id="next" type="button" hidden>PROSSIME TALPE →</button></div>
+</section>
+<aside class="ranking parchment"><h2 id="rankingTitle">I PRIMI CINQUE · PRATO</h2><p class="rankRule">PRIMA CONTA IL MINOR NUMERO DI ERRORI, POI IL TEMPO. UN SOLO POSTO PER BAMBINO.</p><ol id="rankingList"></ol><p id="rankingMessage" role="status"></p><p id="personalBest"></p><button id="refreshRank" class="secondary" type="button">AGGIORNA CLASSIFICA</button></aside></div>
+<div class="connection"><p id="connection" role="status" aria-live="polite">PREPARO LA RADURA…</p><button id="retry" class="secondary" type="button" hidden>RIPROVA IL COLLEGAMENTO</button><button id="restart" class="textButton" type="button">RICOMINCIA IL PERCORSO</button></div><p class="timeNote">IL TEMPO CONTINUA ANCHE SE ESCI DALLA PAGINA. PER LA CLASSIFICA E I DISTINTIVI ENTRA CON IL TUO CODICE.</p>
+</main>
+<dialog id="rewardDialog" aria-labelledby="rewardTitle"><h2 id="rewardTitle">UN NUOVO DISTINTIVO!</h2><div id="rewardList"></div><p>È TUO! LO TROVI NELLO SCRIGNO DEL TUO PROFILO.</p><button id="closeReward" type="button">CONTINUA L’AVVENTURA</button><a href="profilo.html">APRI IL MIO SCRIGNO →</a></dialog>
+<script src="esploria-accesso.js?v=codici-scelti-1"></script><script src="radura-talpe.js?v=1"></script></body></html>

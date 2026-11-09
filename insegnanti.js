@@ -21,6 +21,7 @@ function resetBadgeImage(keepFile = false) {
   updateAwardButton();
 }
 function clearSession() {
+  closeStatistics();
   token = null; currentCode = ''; currentProfileId = null; activeProfiles = [];
   closeDeleteDialog();
   resetBadgeImage();
@@ -79,7 +80,8 @@ async function loadProfiles() {
     const remove = document.createElement('button'); remove.type = 'button'; remove.className = 'danger';
     remove.textContent = 'ELIMINA DEFINITIVAMENTE'; remove.disabled = managingProfile;
     remove.addEventListener('click',() => openDeleteDialog(profile));
-    actions.append(toggle,remove);
+    const statsButton=document.createElement('button');statsButton.type='button';statsButton.className='secondary';statsButton.textContent='STATISTICHE DI GIOCO';statsButton.disabled=managingProfile;statsButton.addEventListener('click',()=>openStatistics(profile));
+    actions.append(statsButton,toggle,remove);
     li.append(title,detail,actions); el('profiles').append(li);
     if (profile.attivo) {
       const option = document.createElement('option'); option.value = profile.id;
@@ -88,6 +90,7 @@ async function loadProfiles() {
     }
   }
   if (activeProfiles.some(p => p.id === previous)) el('badgeProfile').value = previous;
+  if(statisticsProfile&&!profiles.some(p=>p.id===statisticsProfile.id))closeStatistics();
   updateAwardButton();
 }
 el('loginForm').addEventListener('submit',async event => {
@@ -278,3 +281,51 @@ el('deleteProfileForm').addEventListener('submit',async event => {
     el('deleteProfileConfirm').disabled = !validDeletionConfirmation();
   }
 });
+
+/* STATISTICHE DELL’ESCAPE: accessibili solo all’insegnante autenticata. */
+let statisticsGeneration=0,statisticsProfile=null,nextStatisticsOffset=null,statisticsLoading=false;
+const roomNames={1:'AULA',2:'CORRIDOIO',3:'PALESTRA',4:'BIBLIOTECA'};
+function statsNode(tag,text,className){const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(className)n.className=className;return n}
+function statsTime(value){const seconds=Math.round(Math.max(0,Number(value)||0)/1000);return Math.floor(seconds/60)+' MIN '+String(seconds%60).padStart(2,'0')+' S'}
+function statsDate(value){const date=new Date(value);return Number.isNaN(date.getTime())?'DATA NON DISPONIBILE':date.toLocaleString('it-IT')}
+function ensureStatistics(){
+ if(el('learningStats'))return el('learningStats');
+ const style=statsNode('style');style.textContent='.statsSummary{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:18px 0}.statsMetric{background:#fffdf7;border:1px solid #d9c6a9;border-radius:12px;padding:12px}.statsMetric strong{display:block;font-size:28px;color:#486a63}.statsScroll{overflow-x:auto}.statsTable{width:100%;border-collapse:collapse;font-size:17px;min-width:560px}.statsTable th,.statsTable td{padding:9px;border-bottom:1px solid #d9c6a9;text-align:left;vertical-align:top;overflow-wrap:anywhere;max-width:320px}.statsRun{padding:14px 0;border-bottom:1px solid #d9c6a9}.statsRun summary{cursor:pointer;font-weight:bold}.statsNote{font-size:17px;line-height:1.4}.statsWrong{color:#923f30}.statsGood{color:#345e43}#learningStats{scroll-margin-top:20px}';document.head.append(style);
+ const section=statsNode('section',undefined,'card');section.id='learningStats';section.hidden=true;
+ const title=statsNode('h2');title.id='learningStatsTitle';
+ const message=statsNode('p');message.id='learningStatsMessage';message.setAttribute('role','status');
+ const note=statsNode('p','SONO REGISTRATE SOLTANTO LE RISPOSTE INSERITE NEL GIOCO. PER AULA E PALESTRA IL CODICE FINALE NON PERMETTE DI IDENTIFICARE L’OPERAZIONE SBAGLIATA SUL QUADERNO.','statsNote');
+ const timeNote=statsNode('p','I TEMPI INDICANO LA PERMANENZA CON LA PAGINA VISIBILE, COMPRESE LETTURA ED ESPLORAZIONE. NON MISURANO DA SOLI LA COMPRENSIONE O L’IMPEGNO.','statsNote');
+ const summary=statsNode('div',undefined,'statsSummary');summary.id='learningStatsSummary';
+ const runs=statsNode('div');runs.id='learningStatsRuns';
+ const more=statsNode('button','ALTRE PARTITE','secondary');more.id='learningStatsMore';more.type='button';more.hidden=true;more.addEventListener('click',()=>{if(statisticsProfile&&nextStatisticsOffset!==null&&!statisticsLoading)loadStatistics(nextStatisticsOffset)});
+ const actions=statsNode('div',undefined,'profileActions');const refresh=statsNode('button','AGGIORNA STATISTICHE','secondary');refresh.type='button';refresh.addEventListener('click',()=>{if(statisticsProfile)loadStatistics(0)});const close=statsNode('button','CHIUDI','secondary');close.type='button';close.addEventListener('click',closeStatistics);actions.append(refresh,close);
+ section.append(title,message,note,timeNote,summary,runs,more,actions);el('profiles').after(section);return section;
+}
+function closeStatistics(){statisticsGeneration++;statisticsProfile=null;nextStatisticsOffset=null;statisticsLoading=false;if(el('learningStats')){el('learningStats').hidden=true;el('learningStatsTitle').textContent='';el('learningStatsMessage').textContent='';el('learningStatsSummary').replaceChildren();el('learningStatsRuns').replaceChildren()}}
+function openStatistics(profile){if(!token||managingProfile)return;ensureStatistics();statisticsProfile=profile;el('learningStats').hidden=false;el('learningStatsTitle').textContent='STATISTICHE · '+profileLabel(profile);el('learningStats').scrollIntoView?.({behavior:'smooth',block:'start'});loadStatistics(0)}
+function statsTable(headers,rows){const wrap=statsNode('div',undefined,'statsScroll'),table=statsNode('table',undefined,'statsTable'),head=statsNode('thead'),tr=statsNode('tr');headers.forEach(h=>{const cell=statsNode('th',h);cell.scope='col';tr.append(cell)});head.append(tr);const body=statsNode('tbody');rows.forEach(cells=>{const row=statsNode('tr');cells.forEach(value=>row.append(statsNode('td',String(value??'—'))));body.append(row)});table.append(head,body);wrap.append(table);return wrap}
+function renderRun(run){
+ const details=statsNode('details',undefined,'statsRun');const status=run.completata_il?'COMPLETATA':'IN CORSO';details.append(statsNode('summary',statsDate(run.iniziata_il)+' · '+status+' · '+(roomNames[run.stanza]||'STANZA NON RILEVATA')));
+ const t=run.telemetria;if(!t||t.versione!==1){details.append(statsNode('p','PARTITA AVVIATA PRIMA DELL’ATTIVAZIONE DELLE STATISTICHE: I TENTATIVI PRECEDENTI NON SONO DISPONIBILI.','statsNote'));return details}
+ details.append(statsNode('p','RILEVAZIONE DAL '+statsDate(t.dal)+' · TEMPO CON PAGINA VISIBILE: '+statsTime(t.tempo_ms),'statsNote'));
+ const roomTimes=Object.entries(t.stanze_ms||{}).map(([room,time])=>[roomNames[room]||room,statsTime(time)]);if(roomTimes.length)details.append(statsTable(['STANZA','TEMPO CON PAGINA VISIBILE'],roomTimes));
+ const questions=Object.values(t.prove||{});if(questions.length){details.append(statsNode('h3','TENTATIVI PER PROVA'));details.append(statsTable(['STANZA / ARGOMENTO','QUESITO','TENTATIVI','ERRORI','CORRETTE'],questions.map(q=>[(roomNames[q.stanza]||'')+' · '+q.categoria,q.domanda,q.tentativi,q.errori,q.corrette])))}else details.append(statsNode('p','NON SONO ANCORA STATE INSERITE RISPOSTE.','statsNote'));
+ const events=Array.isArray(t.eventi)?t.eventi:[];if(events.length){const attempts=statsNode('details');attempts.append(statsNode('summary','VEDI LE RISPOSTE INSERITE'));if((t.eventi_totali||0)>events.length)attempts.append(statsNode('p','SONO MOSTRATI GLI ULTIMI '+events.length+' TENTATIVI. I CONTATORI COMPRENDONO ANCHE QUELLI PRECEDENTI.','statsNote'));attempts.append(statsTable(['DATA','PROVA','RISPOSTA','RISPOSTA ATTESA','ESITO','TEMPO DAL PRECEDENTE TENTATIVO O APERTURA'],[...events].reverse().map(e=>[statsDate(e.quando),(roomNames[e.stanza]||'')+' · '+e.categoria,e.risposta,e.atteso,e.corretta?'CORRETTA':'DA RIVEDERE',statsTime(e.tempo_ms)])));details.append(attempts)}
+ return details;
+}
+async function loadStatistics(offset){
+ if(!token||!statisticsProfile)return;const requestId=++statisticsGeneration,selected=statisticsProfile,access=token;statisticsLoading=true;
+ el('learningStatsMessage').textContent='CARICO LE STATISTICHE…';el('learningStatsMore').disabled=true;
+ if(offset===0){el('learningStatsSummary').replaceChildren();el('learningStatsRuns').replaceChildren();el('learningStatsMore').hidden=true}
+ try{
+  const result=await request('/rest/v1/rpc/esploria_statistiche_escape',{p_profilo_id:selected.id,p_offset:offset,p_limite:10},access);
+  if(requestId!==statisticsGeneration||token!==access)return;
+  if(offset===0){const totals=result.totali||{};for(const [label,value] of [['PARTITE INIZIATE',totals.iniziate],['COMPLETATE',totals.completate],['TENTATIVI RILEVATI',totals.tentativi],['ERRORI RILEVATI',totals.errori],['RISPOSTE CORRETTE',totals.corrette]]){const box=statsNode('div',label,'statsMetric');box.append(statsNode('strong',String(value||0)));el('learningStatsSummary').append(box)}
+   el('learningStatsMessage').textContent=totals.iniziate?'DATI DEI TENTATIVI DISPONIBILI PER '+(totals.con_dati||0)+' PARTITE.':'NESSUNA PARTITA DELL’ESCAPE ROOM AVVIATA.';
+  }else el('learningStatsMessage').textContent='ALTRE PARTITE CARICATE.';
+  (result.partite||[]).forEach(run=>el('learningStatsRuns').append(renderRun(run)));
+  nextStatisticsOffset=result.prossimo_offset;el('learningStatsMore').hidden=nextStatisticsOffset===null||nextStatisticsOffset===undefined;
+ }catch(error){if(requestId!==statisticsGeneration)return;el('learningStatsMessage').textContent=error.message+' Per le statistiche verifica di aver eseguito attiva-statistiche-escape.sql in Supabase.'}
+ finally{if(requestId===statisticsGeneration){statisticsLoading=false;el('learningStatsMore').disabled=false}}
+}

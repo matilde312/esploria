@@ -21,11 +21,11 @@ function resetBadgeImage(keepFile = false) {
   updateAwardButton();
 }
 function clearSession() {
-  closeStatistics();closeOcaStatistics();
+  closeStatistics();closeNameEditor();
   token = null; currentCode = ''; currentProfileId = null; activeProfiles = [];
   closeDeleteDialog();
   resetBadgeImage();
-  for (const id of ['chosenCode','password','badgeTitle','badgeDescription']) el(id).value = '';
+  for (const id of ['chosenCode','newChildName','password','badgeTitle','badgeDescription']) el(id).value = '';
   for (const id of ['newCode','newProfile','awardMessage']) el(id).textContent = '';
   el('profiles').replaceChildren(); el('badgeProfile').replaceChildren();
   el('codeCard').hidden = true; el('dashboard').hidden = true; el('loginForm').hidden = false;
@@ -46,6 +46,7 @@ async function request(path, body, accessToken) {
     if (accessToken && response.status === 401) { clearSession(); throw new Error('La sessione è scaduta. Accedi di nuovo.'); }
     if (response.status === 403 || data?.code === '42501') throw new Error('Questo account non è autorizzato oppure il profilo non è disponibile.');
     const messages = {
+      NOME_NON_VALIDO:'SCRIVI UN NOME DI MASSIMO 80 CARATTERI.',
       CONFERMA_ELIMINAZIONE_NON_VALIDA:'La conferma non corrisponde al profilo da eliminare.',
       STATO_NON_VALIDO:'Lo stato del profilo non è valido.',
       DISTINTIVO_GIA_PRESENTE:'Questo profilo ha già un distintivo con lo stesso nome.',
@@ -61,8 +62,9 @@ async function request(path, body, accessToken) {
   return data;
 }
 async function loadProfiles() {
-  closeOcaStatistics();
-  const profiles = await request('/rest/v1/rpc/esploria_elenca_profili',{},token);
+  const access=token;
+  const profiles = await request('/rest/v1/rpc/esploria_profili_insegnante',{},access);
+  if(token!==access)return;
   const previous = el('badgeProfile').value;
   activeProfiles = profiles.filter(p => p.attivo);
   el('badgeProfile').replaceChildren(); el('profiles').replaceChildren();
@@ -71,8 +73,8 @@ async function loadProfiles() {
   el('empty').hidden = profiles.length !== 0;
   for (const profile of profiles) {
     const li = document.createElement('li'), title = document.createElement('strong'), detail = document.createElement('small');
-    title.textContent = profile.nome_personaggio || 'IN ATTESA DELLA SCELTA DEL COMPAGNO';
-    detail.textContent = 'Profilo ' + profile.id + (profile.animale ? ' · ' + profile.animale : '') + (profile.attivo ? ' · ATTIVO' : ' · DISATTIVATO');
+    title.textContent = profile.nome_riservato || profile.nome_personaggio || 'NOME DEL BAMBINO DA INSERIRE';
+    detail.textContent = (profile.nome_personaggio ? 'COMPAGNO: '+profile.nome_personaggio+' · ' : '') + 'PROFILO ' + profile.id + (profile.animale ? ' · ' + profile.animale : '') + (profile.attivo ? ' · ATTIVO' : ' · DISATTIVATO');
     const actions = document.createElement('div'); actions.className = 'profileActions';
     const toggle = document.createElement('button'); toggle.type = 'button'; toggle.className = 'secondary';
     toggle.textContent = profile.attivo ? 'DISATTIVA' : 'RIATTIVA';
@@ -81,18 +83,19 @@ async function loadProfiles() {
     const remove = document.createElement('button'); remove.type = 'button'; remove.className = 'danger';
     remove.textContent = 'ELIMINA DEFINITIVAMENTE'; remove.disabled = managingProfile;
     remove.addEventListener('click',() => openDeleteDialog(profile));
-    const statsButton=document.createElement('button');statsButton.type='button';statsButton.className='secondary';statsButton.textContent='STATISTICHE DI GIOCO';statsButton.disabled=managingProfile;statsButton.addEventListener('click',()=>openStatistics(profile));
-    const ocaButton=document.createElement('button');ocaButton.type='button';ocaButton.className='secondary';ocaButton.textContent='CALCOLO MENTALE';ocaButton.disabled=managingProfile;ocaButton.addEventListener('click',()=>openOcaStatistics(profile));
-    actions.append(statsButton,ocaButton,toggle,remove);
+    const statsButton=document.createElement('button');statsButton.type='button';statsButton.className='secondary';statsButton.textContent='BORGO · MATEMATICA';statsButton.disabled=managingProfile;statsButton.addEventListener('click',()=>selectBorgoProfile(profile.id));
+    const nameButton=document.createElement('button');nameButton.type='button';nameButton.className='secondary';nameButton.textContent=profile.nome_riservato?'MODIFICA NOME RISERVATO':'INSERISCI NOME RISERVATO';nameButton.disabled=managingProfile;nameButton.addEventListener('click',()=>openNameEditor(profile));
+    actions.append(nameButton,statsButton,toggle,remove);
     li.append(title,detail,actions); el('profiles').append(li);
     if (profile.attivo) {
       const option = document.createElement('option'); option.value = profile.id;
-      option.textContent = (profile.nome_personaggio || 'COMPAGNO NON ANCORA SCELTO') + (profile.animale ? ' · ' + profile.animale : '') + ' · ' + profile.id.slice(0,8);
+      option.textContent = (profile.nome_riservato || profile.nome_personaggio || 'COMPAGNO NON ANCORA SCELTO') + (profile.animale ? ' · ' + profile.animale : '') + ' · ' + profile.id.slice(0,8);
       el('badgeProfile').append(option);
     }
   }
   if (activeProfiles.some(p => p.id === previous)) el('badgeProfile').value = previous;
-  if(statisticsProfile&&!profiles.some(p=>p.id===statisticsProfile.id))closeStatistics();
+  populateBorgoProfiles(profiles);
+  loadBorgoStatistics();
   updateAwardButton();
 }
 el('loginForm').addEventListener('submit',async event => {
@@ -110,15 +113,15 @@ el('chooseCodeForm').addEventListener('submit',async event => {
   if (currentCode && !el('savedCode').checked) { tell('Conserva prima il codice mostrato e seleziona «HO CONSERVATO QUESTO CODICE».'); return; }
   const chosen = el('chosenCode').value.trim().toUpperCase(), normalized = chosen.replace(/[\s-]/g,'');
   if (!/^[A-Z0-9]{10,32}$/.test(normalized) || !/[A-Z]/.test(normalized) || !/[0-9]/.test(normalized)) { tell('Scegliete da 10 a 32 lettere e numeri, con almeno una lettera e un numero. Spazi e trattini non contano.'); el('chosenCode').focus(); return; }
-  creating = true; el('createButton').disabled = true; el('chosenCode').disabled = true; tell('CREAZIONE IN CORSO…');
+  creating = true; el('createButton').disabled = true; el('chosenCode').disabled = true; el('newChildName').disabled=true; tell('CREAZIONE IN CORSO…');
   try {
-    const result = await request('/rest/v1/rpc/esploria_crea_codice',{p_codice:chosen},token);
+    const result = await request('/rest/v1/rpc/esploria_crea_codice_con_nome',{p_codice:chosen,p_nome:el('newChildName').value.trim()},token);
     currentProfileId = result.id;
-    currentCode = result.codice; el('chosenCode').value = ''; el('newCode').textContent = result.codice; el('newProfile').textContent = 'Profilo ' + result.id;
+    currentCode = result.codice; el('chosenCode').value = ''; el('newChildName').value=''; el('newCode').textContent = result.codice; el('newProfile').textContent = 'Profilo ' + result.id;
     el('savedCode').checked = false; el('codeCard').hidden = false; tell('Codice creato. Conservalo insieme al riferimento del profilo.');
     try { await loadProfiles(); } catch (_) { tell('Codice creato. Conservalo; premi AGGIORNA ELENCO per aggiornare i profili.'); }
   } catch (error) { tell(error.message); }
-  finally { creating = false; el('createButton').disabled = false; el('chosenCode').disabled = false; }
+  finally { creating = false; el('createButton').disabled = false; el('chosenCode').disabled = false; el('newChildName').disabled=false; }
 });
 
 /* La miniatura viene preparata nel browser e inviata solo quando assegni il distintivo. */
@@ -201,7 +204,7 @@ window.addEventListener('beforeunload',event => { if (creating || awarding || im
 
 /* GESTIONE DEI SOLI PROFILI DELL’INSEGNANTE AUTENTICATA */
 function profileLabel(profile) {
-  return (profile.nome_personaggio || 'COMPAGNO NON ANCORA SCELTO')
+  return (profile.nome_riservato || profile.nome_personaggio || 'COMPAGNO NON ANCORA SCELTO')
     + (profile.animale ? ' · ' + profile.animale : '')
     + ' · PROFILO ' + profile.id.slice(0,8).toUpperCase();
 }
@@ -284,63 +287,33 @@ el('deleteProfileForm').addEventListener('submit',async event => {
   }
 });
 
-/* STATISTICHE DELL’ESCAPE: accessibili solo all’insegnante autenticata. */
-let statisticsGeneration=0,statisticsProfile=null,nextStatisticsOffset=null,statisticsLoading=false;
-const roomNames={1:'AULA',2:'CORRIDOIO',3:'PALESTRA',4:'BIBLIOTECA'};
-function statsNode(tag,text,className){const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(className)n.className=className;return n}
-function statsTime(value){const seconds=Math.round(Math.max(0,Number(value)||0)/1000);return Math.floor(seconds/60)+' MIN '+String(seconds%60).padStart(2,'0')+' S'}
-function statsDate(value){const date=new Date(value);return Number.isNaN(date.getTime())?'DATA NON DISPONIBILE':date.toLocaleString('it-IT')}
-function ensureStatistics(){
- if(el('learningStats'))return el('learningStats');
- const style=statsNode('style');style.textContent='.statsSummary{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:18px 0}.statsMetric{background:#fffdf7;border:1px solid #d9c6a9;border-radius:12px;padding:12px}.statsMetric strong{display:block;font-size:28px;color:#486a63}.statsScroll{overflow-x:auto}.statsTable{width:100%;border-collapse:collapse;font-size:17px;min-width:560px}.statsTable th,.statsTable td{padding:9px;border-bottom:1px solid #d9c6a9;text-align:left;vertical-align:top;overflow-wrap:anywhere;max-width:320px}.statsRun{padding:14px 0;border-bottom:1px solid #d9c6a9}.statsRun summary{cursor:pointer;font-weight:bold}.statsNote{font-size:17px;line-height:1.4}.statsWrong{color:#923f30}.statsGood{color:#345e43}#learningStats{scroll-margin-top:20px}';document.head.append(style);
- const section=statsNode('section',undefined,'card');section.id='learningStats';section.hidden=true;
- const title=statsNode('h2');title.id='learningStatsTitle';
- const message=statsNode('p');message.id='learningStatsMessage';message.setAttribute('role','status');
- const note=statsNode('p','SONO REGISTRATE SOLTANTO LE RISPOSTE INSERITE NEL GIOCO. PER AULA E PALESTRA IL CODICE FINALE NON PERMETTE DI IDENTIFICARE L’OPERAZIONE SBAGLIATA SUL QUADERNO.','statsNote');
- const timeNote=statsNode('p','I TEMPI INDICANO LA PERMANENZA CON LA PAGINA VISIBILE, COMPRESE LETTURA ED ESPLORAZIONE. NON MISURANO DA SOLI LA COMPRENSIONE O L’IMPEGNO.','statsNote');
- const summary=statsNode('div',undefined,'statsSummary');summary.id='learningStatsSummary';
- const runs=statsNode('div');runs.id='learningStatsRuns';
- const more=statsNode('button','ALTRE PARTITE','secondary');more.id='learningStatsMore';more.type='button';more.hidden=true;more.addEventListener('click',()=>{if(statisticsProfile&&nextStatisticsOffset!==null&&!statisticsLoading)loadStatistics(nextStatisticsOffset)});
- const actions=statsNode('div',undefined,'profileActions');const refresh=statsNode('button','AGGIORNA STATISTICHE','secondary');refresh.type='button';refresh.addEventListener('click',()=>{if(statisticsProfile)loadStatistics(0)});const close=statsNode('button','CHIUDI','secondary');close.type='button';close.addEventListener('click',closeStatistics);actions.append(refresh,close);
- section.append(title,message,note,timeNote,summary,runs,more,actions);el('profiles').after(section);return section;
+/* BORGO DEGLI INGRANAGGI: un unico quadro per la disciplina. */
+let borgoGeneration=0,nameGeneration=0,nameTarget=null,nameSaving=false;
+function node(tag,text,className){const n=document.createElement(tag);if(text!==undefined)n.textContent=String(text);if(className)n.className=className;return n}
+function closeStatistics(){borgoGeneration++;el('borgoContent').replaceChildren();el('borgoStatus').textContent='';el('borgoProfile').replaceChildren(new Option('TUTTA LA CLASSE',''));}
+function populateBorgoProfiles(profiles){const previous=el('borgoProfile').value;el('borgoProfile').replaceChildren(new Option('TUTTA LA CLASSE',''));for(const p of profiles){el('borgoProfile').append(new Option((p.nome_riservato||p.nome_personaggio||'PROFILO SENZA NOME')+' · '+p.id.slice(0,8).toUpperCase(),p.id))}if(profiles.some(p=>p.id===previous))el('borgoProfile').value=previous;}
+function selectBorgoProfile(id){el('borgoProfile').value=id;el('borgoStats').scrollIntoView?.({behavior:'smooth',block:'start'});loadBorgoStatistics();}
+function metric(label,value){const box=node('div',undefined,'borgoMetric');box.append(node('span',label),node('strong',Number(value||0).toLocaleString('it-IT')));return box;}
+function table(headers,rows){const wrap=node('div',undefined,'borgoScroll'),t=node('table',undefined,'borgoTable'),head=node('thead'),hr=node('tr'),body=node('tbody');headers.forEach(label=>{const th=node('th',label);th.scope='col';hr.append(th)});head.append(hr);rows.forEach(cells=>{const tr=node('tr');cells.forEach(cell=>{const td=node('td');if(cell instanceof Node)td.append(cell);else td.textContent=String(cell??'—');tr.append(td)});body.append(tr)});t.append(head,body);wrap.append(t);return wrap;}
+function renderBorgo(data){const root=el('borgoContent');root.replaceChildren();const total=data.totali;
+ const title=node('h3',data.profilo_id?(data.alunni[0]?.nome_riservato||data.alunni[0]?.compagno||'PROFILO SELEZIONATO'):'PANORAMICA DELLA CLASSE');root.append(title);
+ const metrics=node('div',undefined,'borgoMetrics');for(const [label,value] of [['PERCORSI INIZIATI',total.iniziate],['PERCORSI COMPLETATI',total.completate],['IN CORSO',total.in_corso],['TENTATIVI RILEVATI',total.tentativi],['CORRETTI',total.corrette],['DA RIVEDERE',total.errori]])metrics.append(metric(label,value));root.append(metrics);
+ if(!Number(total.tentativi))root.append(node('p','NON CI SONO ANCORA TENTATIVI REGISTRATI. I GRAFICI SI RIEMPIRANNO CON LE PROSSIME ATTIVITÀ.','borgoNote'));
+ if(Number(total.senza_telemetria))root.append(node('p',total.senza_telemetria+' PERCORSI PRECEDENTI NON HANNO IL DETTAGLIO DEI TENTATIVI. NON VENGONO CONSIDERATI COME ZERO ERRORI.','borgoNote'));
+ const chart=node('section',undefined,'borgoChart');chart.setAttribute('aria-label','ISTOGRAMMA DEI TENTATIVI PER ABILITÀ MATEMATICA');chart.append(node('h3','+ − ? · LE ABILITÀ MATEMATICHE'));
+ const legend=node('div',undefined,'borgoLegend');for(const [text,cls] of [['CORRETTI','borgoCorrect'],['DA RIVEDERE','borgoError']]){const item=node('span');const dot=node('span',undefined,'borgoDot '+cls);dot.setAttribute('aria-hidden','true');item.append(dot,document.createTextNode(text));legend.append(item)}chart.append(legend);
+ const max=Math.max(1,...data.abilita.map(a=>Number(a.tentativi)));for(const a of data.abilita){const row=node('div',undefined,'borgoBarRow');const label=node('div',undefined,'borgoBarLabel');label.append(node('span',a.simbolo+' '+a.titolo),node('span',Number(a.tentativi)?a.tentativi+' TENTATIVI':'NESSUN DATO'));const track=node('div',undefined,'borgoTrack');track.setAttribute('aria-hidden','true');for(const [cls,value]of[['borgoCorrect',a.corrette],['borgoError',a.errori]]){const part=node('span',undefined,cls);part.style.width=(100*Number(value)/max)+'%';track.append(part)}row.append(label,track,node('small',Number(a.tentativi)?a.corrette+' CORRETTI · '+a.errori+' DA RIVEDERE':'IN ATTESA DELLE PRIME RISPOSTE'));chart.append(row)}root.append(chart);
+ root.append(table(['ABILITÀ','TENTATIVI','CORRETTI','DA RIVEDERE','AL PRIMO TENTATIVO¹'],data.abilita.map(a=>[a.titolo,a.tentativi,a.corrette,a.errori,Number(a.prime_note)?a.prime_corrette+' / '+a.prime_note:'—'])));
+ root.append(node('p','¹ IL PRIMO TENTATIVO È RILEVATO NELLE PROVE DI CALCOLO. PER GLI ENIGMI USIAMO I CONTATORI DEI TENTATIVI E DEGLI ERRORI DISPONIBILI. UN CODICE ERRATO NON IDENTIFICA LA SINGOLA OPERAZIONE SBAGLIATA.','borgoNote'));
+ root.append(node('p','LE ADDIZIONI E LE SOTTRAZIONI COMPRENDONO LE RICHIESTE SU UNITÀ, DECINE, CENTINAIA E MIGLIAIA. MOLTIPLICAZIONI E DIVISIONI SVOLTE SUL QUADERNO NON VENGONO DEDOTTE DAL CODICE DELLA PORTA.','borgoNote'));
+ if(data.ordini.length){root.append(node('h3','U · DA · H · UK · DAK · HK'));const boxes=node('div',undefined,'borgoOrder'),orders=['UNITÀ','DECINE','CENTINAIA','UNITÀ DI MIGLIAIA','DECINE DI MIGLIAIA','CENTINAIA DI MIGLIAIA'];for(const o of data.ordini)boxes.append(node('span',(orders[Number(o.ordine)]||'ALTRO')+': '+o.errori+' DA RIVEDERE / '+o.tentativi+' TENTATIVI'));root.append(boxes)}
+ const weeks=node('section',undefined,'borgoChart');weeks.append(node('h3','IL PERCORSO NEL TEMPO'),node('p','PERCORSI COMPLETATI NELLE ULTIME SEI SETTIMANE','borgoNote'));const maxWeek=Math.max(1,...data.settimane.map(s=>Number(s.completate)));for(const s of data.settimane){const row=node('div',undefined,'borgoWeek'),date=new Date(s.settimana);const bar=node('div',undefined,'borgoTrack'),fill=node('span',undefined,'borgoCorrect');fill.style.width=(100*Number(s.completate)/maxWeek)+'%';bar.setAttribute('aria-hidden','true');bar.append(fill);row.append(node('span',date.toLocaleDateString('it-IT',{day:'2-digit',month:'2-digit',timeZone:'Europe/Rome'})),bar,node('span',s.completate));weeks.append(row)}root.append(weeks);
+ if(!data.profilo_id){root.append(node('h3','I BAMBINI DEL BORGO'));root.append(table(['BAMBINO / COMPAGNO','PERCORSI COMPLETATI','TENTATIVI','DA RIVEDERE',''],data.alunni.map(p=>{const name=node('span',p.nome_riservato||p.compagno||'NOME DA INSERIRE');if(p.nome_riservato&&p.compagno)name.append(node('small','COMPAGNO: '+p.compagno));const open=node('button','VEDI','secondary');open.type='button';open.setAttribute('aria-label','VEDI I DATI DI '+(p.nome_riservato||p.compagno||p.id));open.addEventListener('click',()=>selectBorgoProfile(p.id));return [name,p.completate+' / '+p.iniziate,p.tentativi,p.errori,open]})))}
+ root.append(node('p','TUTTI I DATI SONO RIUNITI PER BORGO DEGLI INGRANAGGI · MATEMATICA. I CONTEGGI DESCRIVONO LE RISPOSTE REGISTRATE E NON COSTITUISCONO UN VOTO.','borgoNote'));
 }
-function closeStatistics(){statisticsGeneration++;statisticsProfile=null;nextStatisticsOffset=null;statisticsLoading=false;if(el('learningStats')){el('learningStats').hidden=true;el('learningStatsTitle').textContent='';el('learningStatsMessage').textContent='';el('learningStatsSummary').replaceChildren();el('learningStatsRuns').replaceChildren()}}
-function openStatistics(profile){if(!token||managingProfile)return;ensureStatistics();statisticsProfile=profile;el('learningStats').hidden=false;el('learningStatsTitle').textContent='STATISTICHE · '+profileLabel(profile);el('learningStats').scrollIntoView?.({behavior:'smooth',block:'start'});loadStatistics(0)}
-function statsTable(headers,rows){const wrap=statsNode('div',undefined,'statsScroll'),table=statsNode('table',undefined,'statsTable'),head=statsNode('thead'),tr=statsNode('tr');headers.forEach(h=>{const cell=statsNode('th',h);cell.scope='col';tr.append(cell)});head.append(tr);const body=statsNode('tbody');rows.forEach(cells=>{const row=statsNode('tr');cells.forEach(value=>row.append(statsNode('td',String(value??'—'))));body.append(row)});table.append(head,body);wrap.append(table);return wrap}
-function renderRun(run){
- const details=statsNode('details',undefined,'statsRun');const status=run.completata_il?'COMPLETATA':'IN CORSO';details.append(statsNode('summary',statsDate(run.iniziata_il)+' · '+status+' · '+(roomNames[run.stanza]||'STANZA NON RILEVATA')));
- const t=run.telemetria;if(!t||t.versione!==1){details.append(statsNode('p','PARTITA AVVIATA PRIMA DELL’ATTIVAZIONE DELLE STATISTICHE: I TENTATIVI PRECEDENTI NON SONO DISPONIBILI.','statsNote'));return details}
- details.append(statsNode('p','RILEVAZIONE DAL '+statsDate(t.dal)+' · TEMPO CON PAGINA VISIBILE: '+statsTime(t.tempo_ms),'statsNote'));
- const roomTimes=Object.entries(t.stanze_ms||{}).map(([room,time])=>[roomNames[room]||room,statsTime(time)]);if(roomTimes.length)details.append(statsTable(['STANZA','TEMPO CON PAGINA VISIBILE'],roomTimes));
- const questions=Object.values(t.prove||{});if(questions.length){details.append(statsNode('h3','TENTATIVI PER PROVA'));details.append(statsTable(['STANZA / ARGOMENTO','QUESITO','TENTATIVI','ERRORI','CORRETTE'],questions.map(q=>[(roomNames[q.stanza]||'')+' · '+q.categoria,q.domanda,q.tentativi,q.errori,q.corrette])))}else details.append(statsNode('p','NON SONO ANCORA STATE INSERITE RISPOSTE.','statsNote'));
- const events=Array.isArray(t.eventi)?t.eventi:[];if(events.length){const attempts=statsNode('details');attempts.append(statsNode('summary','VEDI LE RISPOSTE INSERITE'));if((t.eventi_totali||0)>events.length)attempts.append(statsNode('p','SONO MOSTRATI GLI ULTIMI '+events.length+' TENTATIVI. I CONTATORI COMPRENDONO ANCHE QUELLI PRECEDENTI.','statsNote'));attempts.append(statsTable(['DATA','PROVA','RISPOSTA','RISPOSTA ATTESA','ESITO','TEMPO DAL PRECEDENTE TENTATIVO O APERTURA'],[...events].reverse().map(e=>[statsDate(e.quando),(roomNames[e.stanza]||'')+' · '+e.categoria,e.risposta,e.atteso,e.corretta?'CORRETTA':'DA RIVEDERE',statsTime(e.tempo_ms)])));details.append(attempts)}
- return details;
-}
-async function loadStatistics(offset){
- if(!token||!statisticsProfile)return;const requestId=++statisticsGeneration,selected=statisticsProfile,access=token;statisticsLoading=true;
- el('learningStatsMessage').textContent='CARICO LE STATISTICHE…';el('learningStatsMore').disabled=true;
- if(offset===0){el('learningStatsSummary').replaceChildren();el('learningStatsRuns').replaceChildren();el('learningStatsMore').hidden=true}
- try{
-  const result=await request('/rest/v1/rpc/esploria_statistiche_escape',{p_profilo_id:selected.id,p_offset:offset,p_limite:10},access);
-  if(requestId!==statisticsGeneration||token!==access)return;
-  if(offset===0){const totals=result.totali||{};for(const [label,value] of [['PARTITE INIZIATE',totals.iniziate],['COMPLETATE',totals.completate],['TENTATIVI RILEVATI',totals.tentativi],['ERRORI RILEVATI',totals.errori],['RISPOSTE CORRETTE',totals.corrette]]){const box=statsNode('div',label,'statsMetric');box.append(statsNode('strong',String(value||0)));el('learningStatsSummary').append(box)}
-   el('learningStatsMessage').textContent=totals.iniziate?'DATI DEI TENTATIVI DISPONIBILI PER '+(totals.con_dati||0)+' PARTITE.':'NESSUNA PARTITA DELL’ESCAPE ROOM AVVIATA.';
-  }else el('learningStatsMessage').textContent='ALTRE PARTITE CARICATE.';
-  (result.partite||[]).forEach(run=>el('learningStatsRuns').append(renderRun(run)));
-  nextStatisticsOffset=result.prossimo_offset;el('learningStatsMore').hidden=nextStatisticsOffset===null||nextStatisticsOffset===undefined;
- }catch(error){if(requestId!==statisticsGeneration)return;el('learningStatsMessage').textContent=error.message+' Per le statistiche verifica di aver eseguito attiva-statistiche-escape.sql in Supabase.'}
- finally{if(requestId===statisticsGeneration){statisticsLoading=false;el('learningStatsMore').disabled=false}}
-}
-
-/* CALCOLO MENTALE: tempi e tentativi verificati nel database. */
-let ocaStatsGeneration=0;
-function closeOcaStatistics(){ocaStatsGeneration++;if(el('ocaTeacherStats')){el('ocaTeacherStats').hidden=true;el('ocaTeacherStats').replaceChildren()}}
-function ocaNumber(n){return String(Number(n)).replace(/\B(?=(\d{3})+(?!\d))/g,'.')}
-function ocaQuestion(q){const orders=[['U','UNITÀ'],['DA','DECINE'],['H','CENTINAIA'],['UK','UNITÀ DI MIGLIAIA'],['DAK','DECINE DI MIGLIAIA'],['HK','CENTINAIA DI MIGLIAIA']];const verb=q.delta>0?'AGGIUNGI':'TOGLI';return ocaNumber(q.numero)+' → '+verb+' '+(q.modo===2?ocaNumber(Math.abs(q.delta)):q.quantita+' '+orders[q.ordine][q.modo===0?0:1])}
-async function openOcaStatistics(profile){
- if(!token||managingProfile)return;ensureStatistics();let section=el('ocaTeacherStats');if(!section){section=statsNode('section',undefined,'card');section.id='ocaTeacherStats';el('profiles').after(section)}const requestId=++ocaStatsGeneration,access=token;section.hidden=false;section.replaceChildren(statsNode('h2','CALCOLO MENTALE · '+profileLabel(profile)),statsNode('p','CARICO TEMPI E TENTATIVI…'));section.scrollIntoView?.({behavior:'smooth',block:'start'});
- try{const data=await request('/rest/v1/rpc/esploria_oca_statistiche',{p_profilo_id:profile.id},access);if(requestId!==ocaStatsGeneration||token!==access)return;
- section.replaceChildren(statsNode('h2','CALCOLO MENTALE · '+profileLabel(profile)));section.append(statsNode('p','PARTITE INIZIATE: '+data.totali.iniziate+' · COMPLETATE: '+data.totali.completate+' · TENTATIVI DA RIVEDERE: '+data.totali.errori));if(data.totali.migliore_ms!==null)section.append(statsNode('p','MIGLIOR TEMPO: '+statsTime(data.totali.migliore_ms)));section.append(statsNode('p','ULTIME 20 PARTITE. IL TEMPO DELLA GARA INCLUDE ANCHE EVENTUALI USCITE DALLA PAGINA E ATTESE DI COLLEGAMENTO. NON È UNA MISURA ISOLATA DELL’APPRENDIMENTO.','statsNote'));
- for(const run of data.partite){const details=statsNode('details',undefined,'statsRun');details.append(statsNode('summary',statsDate(run.iniziata_il)+' · '+(run.completata_il?'COMPLETATA':run.abbandonata_il?'INTERROTTA':'IN CORSO')+' · '+run.posizione+'/18 · ERRORI: '+run.errori));details.append(statsTable(['TAPPA','RICHIESTA','RISPOSTA','ATTESO','ESITO','TEMPO DEL TENTATIVO'],run.tentativi.map(t=>[t.tappa,ocaQuestion(t.quesito),t.risposta,ocaNumber(t.atteso),t.corretta?'CORRETTA':'DA RIVEDERE',statsTime(t.tempo_ms)])));if(run.tentativi.length===200)details.append(statsNode('p','DETTAGLIO DEGLI ULTIMI 200 TENTATIVI. I CONTATORI COMPRENDONO TUTTA LA PARTITA.','statsNote'));section.append(details)}if(!data.partite.length)section.append(statsNode('p','NESSUNA PARTITA AVVIATA.'));const close=statsNode('button','CHIUDI','secondary');close.type='button';close.addEventListener('click',closeOcaStatistics);section.append(close);
- }catch(error){if(requestId===ocaStatsGeneration)section.append(statsNode('p',error.message+' VERIFICA DI AVER ESEGUITO attiva-gioco-oca.sql.'))}
-}
+async function loadBorgoStatistics(){if(!token)return;const generation=++borgoGeneration,access=token,id=el('borgoProfile').value;el('borgoContent').replaceChildren();el('borgoStatus').textContent='CARICO I PROGRESSI DEL BORGO…';el('borgoRefresh').disabled=true;try{const data=await request('/rest/v1/rpc/esploria_statistiche_borgo',{p_profilo_id:id||null},access);if(generation!==borgoGeneration||access!==token)return;renderBorgo(data);el('borgoStatus').textContent='DATI AGGIORNATI · '+(id?'BAMBINO SELEZIONATO':'TUTTA LA CLASSE');}catch(error){if(generation===borgoGeneration&&access===token)el('borgoStatus').textContent=error.message+' CONTROLLA DI AVER ESEGUITO attiva-borgo-statistiche.sql.';}finally{if(generation===borgoGeneration)el('borgoRefresh').disabled=false;}}
+function openNameEditor(profile){if(!token||managingProfile)return;nameGeneration++;nameTarget=profile;el('childNameProfile').textContent='PROFILO '+profile.id.slice(0,8).toUpperCase()+(profile.nome_personaggio?' · COMPAGNO: '+profile.nome_personaggio:'');el('childNameInput').value=profile.nome_riservato||'';el('childNameMessage').textContent='';nameSaving=false;el('saveChildName').disabled=false;el('cancelChildName').disabled=false;el('childNameInput').disabled=false;el('childNameDialog').showModal();el('childNameInput').focus();}
+function closeNameEditor(){nameGeneration++;nameTarget=null;nameSaving=false;el('childNameDialog').close();el('childNameInput').value='';el('childNameProfile').textContent='';el('childNameMessage').textContent='';}
+el('childNameForm').addEventListener('submit',async event=>{event.preventDefault();if(!nameTarget||nameSaving||!token)return;const target=nameTarget,generation=++nameGeneration,access=token;nameSaving=true;el('saveChildName').disabled=true;el('cancelChildName').disabled=true;el('childNameInput').disabled=true;el('childNameMessage').textContent='SALVO IL NOME RISERVATO…';try{await request('/rest/v1/rpc/esploria_salva_nome_riservato',{p_profilo_id:target.id,p_nome:el('childNameInput').value.trim()},access);if(generation!==nameGeneration||access!==token)return;closeNameEditor();await loadProfiles();if(access===token)tell('NOME RISERVATO SALVATO.');}catch(error){if(generation===nameGeneration&&access===token)el('childNameMessage').textContent=error.message;}finally{if(generation===nameGeneration){nameSaving=false;el('saveChildName').disabled=false;el('cancelChildName').disabled=false;el('childNameInput').disabled=false;}}});
+el('cancelChildName').addEventListener('click',()=>{if(!nameSaving)closeNameEditor()});el('childNameDialog').addEventListener('cancel',event=>{event.preventDefault();if(!nameSaving)closeNameEditor()});
+el('borgoProfile').addEventListener('change',loadBorgoStatistics);el('borgoRefresh').addEventListener('click',loadBorgoStatistics);

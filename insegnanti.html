@@ -17,6 +17,9 @@
 #deleteProfileExpected{font-family:monospace;font-size:21px;user-select:none;overflow-wrap:anywhere}
 #deleteProfileInput{text-transform:uppercase}
 #deleteProfileMessage{white-space:pre-line}
+
+.borgoEyebrow{letter-spacing:2px;font-size:17px;color:#486a63}.borgoMetrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:20px 0}.borgoMetric{background:#fffdf7;border:1px solid #d9c6a9;border-radius:16px;padding:15px}.borgoMetric strong{display:block;font-size:32px;color:#486a63}.borgoMetric span{font-size:17px}.borgoNote{font-size:17px;line-height:1.45;color:#526561}.borgoChart{padding:16px;background:#fffdf7;border:1px solid #d9c6a9;border-radius:16px;margin:18px 0}.borgoChart h3{margin:0 0 12px;font-size:24px}.borgoBarRow{margin:17px 0}.borgoBarLabel{font-size:18px;display:flex;justify-content:space-between;gap:10px}.borgoTrack{display:flex;height:20px;background:#e8e6d9;border-radius:8px;overflow:hidden;margin-top:7px}.borgoCorrect{background:#486a63}.borgoError{background:#c66e50}.borgoLegend{font-size:17px;display:flex;gap:20px;flex-wrap:wrap}.borgoDot{display:inline-block;width:12px;height:12px;margin-right:6px;border-radius:3px}.borgoScroll{overflow-x:auto}.borgoTable{border-collapse:collapse;width:100%;font-size:18px;min-width:560px}.borgoTable th,.borgoTable td{text-align:left;padding:12px 9px;border-bottom:1px solid #d9c6a9}.borgoTable th{font-size:16px}.borgoTable button{width:auto;margin:0;font-size:17px;padding:6px 12px}.borgoWeek{display:grid;grid-template-columns:80px 1fr 50px;gap:10px;align-items:center;font-size:17px;margin:12px 0}.borgoWeek .borgoTrack{margin:0}.borgoOrder{display:flex;flex-wrap:wrap;gap:10px}.borgoOrder span{padding:10px;background:#fffdf7;border:1px solid #d9c6a9;border-radius:12px;font-size:18px}#borgoStats{scroll-margin-top:20px}#childNameDialog{width:min(560px,calc(100vw - 28px));max-height:calc(100dvh - 32px);overflow:auto;background:#fff5e2;color:#243d4b;border:3px solid #a9855d;border-radius:22px;padding:26px;font:inherit}#childNameDialog::backdrop{background:rgba(23,42,55,.65)}#childNameInput,#newChildName{text-transform:uppercase}#childNameHelp,#childNameProfile{font-size:18px}
+@media(max-width:600px){.borgoMetrics{grid-template-columns:repeat(2,minmax(0,1fr))}.borgoBarLabel{flex-direction:column;gap:2px}.borgoChart{padding:12px}.borgoWeek{grid-template-columns:60px 1fr 30px}}
 </style>
 </head>
 <body>
@@ -36,6 +39,7 @@
 <label for="chosenCode">SCEGLI UN CODICE INSIEME AL BAMBINO</label>
 <input id="chosenCode" type="text" maxlength="40" autocomplete="off" autocapitalize="characters" spellcheck="false" required aria-describedby="codeHelp" placeholder="ES. LUNA-VOLPE-27">
 <small id="codeHelp">Almeno 10 lettere e numeri in tutto, con almeno una lettera e un numero. Puoi separare le parole con spazi o trattini. Usa lettere senza accenti.</small>
+<label for="newChildName">NOME DEL BAMBINO · VISIBILE SOLO A TE (FACOLTATIVO)</label><input id="newChildName" maxlength="80" autocomplete="off" aria-describedby="namePrivacy"><small id="namePrivacy">LO VEDI SOLO NELLA TUA AREA INSEGNANTE. NON COMPARE NEI GIOCHI O NELLE CLASSIFICHE.</small>
 <button id="createButton" type="submit">SALVA IL CODICE SCELTO</button>
 </form>
 <section id="codeCard" hidden aria-labelledby="codeTitle">
@@ -43,6 +47,12 @@
 <p>Copialo e conservalo prima di chiudere questa pagina: viene mostrato soltanto ora. Consegnalo al bambino a cui lo assegni.</p>
 <button id="copyButton" class="secondary" type="button">COPIA IL CODICE</button>
 <label><input id="savedCode" type="checkbox"> HO CONSERVATO QUESTO CODICE</label>
+</section>
+<section id="borgoStats" class="card" aria-labelledby="borgoTitle">
+<p class="borgoEyebrow">LA MATEMATICA A ESPLORIA</p><h2 id="borgoTitle">⚙ BORGO DEGLI INGRANAGGI</h2>
+<label for="borgoProfile">DI CHI VUOI VEDERE I PROGRESSI?</label><select id="borgoProfile"><option value="">TUTTA LA CLASSE</option></select>
+<div class="profileActions"><button id="borgoRefresh" type="button" class="secondary">AGGIORNA STATISTICHE</button></div>
+<p id="borgoStatus" role="status" aria-live="polite"></p><div id="borgoContent"></div>
 </section>
 <h2>I TUOI PROFILI</h2><p id="empty" hidden>Non hai ancora creato codici.</p><ul id="profiles"></ul>
 <button id="refreshButton" class="secondary" type="button">AGGIORNA ELENCO</button>
@@ -79,6 +89,12 @@
 <div class="profileActions"><button id="deleteProfileConfirm" class="danger" type="submit" disabled>ELIMINA DEFINITIVAMENTE</button><button id="deleteProfileCancel" class="secondary" type="button">ANNULLA</button></div>
 </form>
 </dialog>
-<script src="insegnanti.js?v=oca-1"></script>
+<dialog id="childNameDialog" aria-labelledby="childNameTitle"><form id="childNameForm">
+<h2 id="childNameTitle">NOME DEL BAMBINO · SOLO PER TE</h2><p id="childNameProfile"></p>
+<label for="childNameInput">NOME RISERVATO</label><input id="childNameInput" maxlength="80" autocomplete="off" aria-describedby="childNameHelp">
+<p id="childNameHelp">NON COMPARE NEL PROFILO DEL BAMBINO, NEI GIOCHI O NELLE CLASSIFICHE. LASCIA VUOTO PER RIMUOVERE IL NOME.</p>
+<p id="childNameMessage" role="status" aria-live="polite"></p><div class="profileActions"><button id="saveChildName" type="submit">SALVA NOME</button><button id="cancelChildName" type="button" class="secondary">ANNULLA</button></div>
+</form></dialog>
+<script src="insegnanti.js?v=borgo-1"></script>
 </body>
 </html>

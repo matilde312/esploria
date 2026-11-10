@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESPLORIA · LA CUCINA DEL PORTO</title><link rel="stylesheet" href="cucina-porto.css?v=1"></head>
+<body><main>
+<nav><a href="porto.html">← PORTO DELLE LINGUE</a><a id="profileLink" href="profilo.html">IL MIO ANGOLO</a></nav>
+<header><p class="eyebrow">PORTO DELLE LINGUE · INGLESE</p><h1>LA CUCINA DEL PORTO</h1><p>ASCOLTA, DOSA, MESCOLA… E PORTA IN TAVOLA!</p></header>
+<section id="welcome" class="parchment"><h2 lang="en">Hello, little chef!</h2><p>Ogni viaggio in cucina ha una ricetta diversa. Leggi o ascolta l’istruzione, poi trascina gli ingredienti nella ciotola.</p><p>Ogni confezione è una porzione: per 200 g di farina usa due sacchetti da 100 g! Puoi anche toccare un ingrediente o usare Invio.</p><p>Completa 1, 5 e 10 ricette per conquistare i tuoi distintivi.</p><button id="start" disabled>PREPARA UNA RICETTA →</button></section>
+<section id="game" hidden aria-label="Il bancone della cucina">
+<div class="instruction parchment"><div><p id="recipeName" class="eyebrow"></p><h2 id="instruction" lang="en" tabindex="-1"></h2><p id="stepCount"></p></div><div class="instructionButtons"><button id="listen" class="secondary">🔊 ASCOLTA</button><button id="help" class="secondary">UN AIUTO</button></div><p id="translation" hidden></p><progress id="progress" value="0" max="1" aria-label="Passaggi completati"></progress></div>
+<div class="kitchen">
+<div class="shelf" id="ingredients" aria-label="Ingredienti: trascina oppure tocca una porzione"></div>
+<div class="worktop"><div class="bowlArea"><div id="bowl" class="bowl" tabindex="0" role="button" aria-label="Ciotola: seleziona prima un ingrediente e premi Invio qui per aggiungerlo"><div class="mixture"></div><span id="bowlLabel">CIOTOLA</span><span class="spoon" aria-hidden="true"></span></div><output id="scale" aria-live="polite"></output><button id="undo" class="small secondary">TOGLI UNA PORZIONE</button></div>
+<button id="oven" class="oven" aria-label="Forno: metti a cuocere l’impasto"><span class="knobs" aria-hidden="true">● ● ●</span><span class="ovenWindow" aria-hidden="true">♨</span><span>OVEN</span></button></div>
+<div id="actionArea" class="actionArea"><button id="action" hidden></button><p id="gestureHint"></p></div>
+</div>
+<p id="feedback" role="status" aria-live="polite"></p>
+<button id="restart" class="textButton">LASCIA QUESTA RICETTA</button>
+</section>
+<section id="finish" class="parchment" hidden><div id="dish" class="dish" aria-hidden="true"></div><h2 lang="en">Your recipe is ready!</h2><p id="finishText"></p><div id="newBadges"></div><button id="again">UN’ALTRA RICETTA →</button></section>
+<p id="total" class="personalProgress">RICETTE COMPLETATE: 0</p>
+<div class="connection"><p id="connection" role="status" aria-live="polite">PREPARO LA CUCINA…</p><button id="retry" class="secondary" hidden>RIPROVA IL COLLEGAMENTO</button></div>
+<p class="note">Le ricette sono semplificate per il gioco. In una cucina vera chiedi sempre aiuto a un adulto.</p>
+</main><script src="esploria-accesso.js?v=codici-scelti-1"></script><script src="cucina-dati.js?v=1"></script><script src="cucina-porto.js?v=1"></script></body></html>

@@ -21,7 +21,7 @@ function resetBadgeImage(keepFile = false) {
   updateAwardButton();
 }
 function clearSession() {
-  closeStatistics();closeNameEditor();
+  closeStatistics();closePortoStatistics();closeNameEditor();
   token = null; currentCode = ''; currentProfileId = null; activeProfiles = [];
   closeDeleteDialog();
   resetBadgeImage();
@@ -85,7 +85,8 @@ async function loadProfiles() {
     remove.addEventListener('click',() => openDeleteDialog(profile));
     const statsButton=document.createElement('button');statsButton.type='button';statsButton.className='secondary';statsButton.textContent='BORGO · MATEMATICA';statsButton.disabled=managingProfile;statsButton.addEventListener('click',()=>selectBorgoProfile(profile.id));
     const nameButton=document.createElement('button');nameButton.type='button';nameButton.className='secondary';nameButton.textContent=profile.nome_riservato?'MODIFICA NOME RISERVATO':'INSERISCI NOME RISERVATO';nameButton.disabled=managingProfile;nameButton.addEventListener('click',()=>openNameEditor(profile));
-    actions.append(nameButton,statsButton,toggle,remove);
+    const portoButton=document.createElement('button');portoButton.type='button';portoButton.className='secondary';portoButton.textContent='PORTO · INGLESE';portoButton.disabled=managingProfile;portoButton.addEventListener('click',()=>selectPortoProfile(profile.id));
+    actions.append(nameButton,statsButton,portoButton,toggle,remove);
     li.append(title,detail,actions); el('profiles').append(li);
     if (profile.attivo) {
       const option = document.createElement('option'); option.value = profile.id;
@@ -94,6 +95,8 @@ async function loadProfiles() {
     }
   }
   if (activeProfiles.some(p => p.id === previous)) el('badgeProfile').value = previous;
+  populatePortoProfiles(profiles);
+  loadPortoStatistics();
   populateBorgoProfiles(profiles);
   loadBorgoStatistics();
   updateAwardButton();

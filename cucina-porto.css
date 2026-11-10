@@ -1,4 +1,86 @@
 @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
-*{box-sizing:border-box}body{margin:0;background:#eee4d3;color:#263e49;font-family:'Patrick Hand',cursive;font-size:21px}main{max-width:1260px;margin:auto;padding:20px}button,a{font:inherit}button{border:2px solid #914d32;border-radius:16px;padding:11px 23px;background:#bd623e;color:#fff9ed;cursor:pointer;box-shadow:0 3px 0 #813f2b}button:disabled{opacity:.6;cursor:default}button:hover:not(:disabled){filter:brightness(1.08)}a{color:#275f6b;text-decoration:none}a:hover{text-decoration:underline}button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:4px solid #1c6077;outline-offset:4px}.secondary{background:#366f77;border-color:#214b55;box-shadow:0 3px 0 #214b55}nav{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}header{text-align:center;padding:20px 0}h1{font-size:clamp(35px,5vw,57px);margin:5px 0}h2{font-size:clamp(27px,3vw,36px);font-weight:400;margin:8px 0}p{margin:9px 0;line-height:1.4}.eyebrow{letter-spacing:2px;font-size:18px;color:#3e6b6c}.parchment{background:#fff5df;border:3px solid #b28b59;border-radius:24px;padding:24px;box-shadow:0 5px 0 #bc9b6b44}#welcome{max-width:850px;margin:0 auto 28px;text-align:center}.instruction{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}.instructionButtons{display:flex;gap:10px;flex-wrap:wrap}#translation{width:100%;background:#e2ead7;padding:10px;border-radius:10px}progress{width:100%;height:14px;accent-color:#347681}.kitchen{border:8px solid #b68d57;border-radius:26px;background:#dcc49e url('cucina-sfondo.png') center/cover;box-shadow:0 5px 0 #81553733;padding:200px 28px 22px;min-height:680px}.shelf{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;padding:15px;background:#fff4d5e8;border:3px solid #ae8451;border-radius:20px;box-shadow:0 8px 0 #92633d55}.ingredient{background:#fff8e8;color:#243e48;border:2px solid #b18e61;padding:8px;width:125px;box-shadow:0 3px 0 #af8756;touch-action:none;user-select:none}.ingredient.selected{outline:4px solid #287a85;outline-offset:2px}.ingredientName{display:block;font-size:22px}.portion{display:block;font-size:19px;color:#71502e}.foodArt{display:block;width:86px;height:74px;margin:auto;background-image:url('cucina-ingredienti.png');background-size:400% 300%;background-repeat:no-repeat;border-radius:10px}.worktop{display:flex;align-items:center;justify-content:center;gap:80px;margin-top:28px}.bowlArea{text-align:center;width:290px}.bowl{position:relative;height:150px;background:linear-gradient(100deg,#387e85,#9ad1c9 46%,#458890);border:5px solid #2a606b;border-top:14px solid #c2e5db;border-radius:15% 15% 48% 48%;box-shadow:0 9px 0 #5c3a2833;display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:none;user-select:none;color:#163f4b;font-weight:bold;text-shadow:0 1px #e9fff0}.mixture{position:absolute;top:-10px;left:8px;right:8px;height:28px;background:#ebce8a;border:3px solid #b19151;border-radius:50%}.spoon{position:absolute;right:35px;top:-45px;width:13px;height:105px;border:2px solid #7b4d2f;background:#cf9657;border-radius:12px;transform:rotate(25deg);transform-origin:50% 85%;pointer-events:none}#bowlLabel{z-index:1}.bowl.ready{outline:4px dashed #fff2b5;outline-offset:8px}.bowl.stirring .spoon{animation:stir .5s linear infinite}.bowl.rolling{transform:scaleX(1.05)}#scale{display:block;margin:12px auto 8px;padding:7px;background:#fff9e4;border:2px solid #9b815c;border-radius:12px;color:#244b52;min-height:46px;font-size:24px}.small{font-size:17px;padding:7px 12px}.oven{display:flex;flex-direction:column;align-items:center;gap:8px;width:170px;min-height:195px;background:linear-gradient(120deg,#c9d1c9,#66858a);border:5px solid #355860;color:#213f49;box-shadow:0 8px 0 #5c3a2844;touch-action:none}.oven:disabled{opacity:1;cursor:default}.knobs{color:#fff2c7;letter-spacing:12px;font-size:19px}.ovenWindow{display:block;background:#253e47;border:7px solid #b2bfb4;border-radius:14px;color:#d9a95b;width:100%;font-size:46px;line-height:1.3}.oven.baking .ovenWindow{background:#763c27;box-shadow:0 0 18px #ffd26f}.actionArea{text-align:center;min-height:83px;margin-top:20px}.actionArea p{background:#fff7e5e8;border-radius:12px;display:table;margin:12px auto 0;padding:5px 12px;font-size:18px}#feedback{text-align:center;min-height:38px;font-size:25px}.textButton{background:none;color:#3c6168;border:0;box-shadow:none;text-decoration:underline;font-size:18px}.badgePanel{margin-top:28px;text-align:center}.badges{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.badge{padding:15px;border:2px dashed #b8a37e;border-radius:19px;background:#f1e9d7;color:#64645a}.badge.earned{border:2px solid #bb9244;background:#fff0bd;color:#52401c}.badge span{display:block;font-size:40px}.badge strong{display:block}.badge small{font-size:17px}#finish{max-width:850px;margin:auto;text-align:center}.dish{font-size:105px}.reward{padding:16px;margin:16px 0;border:3px solid #c49c4c;border-radius:20px;background:#fff0bd}.connection{text-align:center;margin-top:22px}.note{text-align:center;font-size:17px;color:#55625a}[hidden]{display:none!important}.dragGhost{position:fixed;z-index:20;pointer-events:none;opacity:.9;transform:translate(-50%,-50%);width:100px;height:90px;filter:drop-shadow(0 5px 5px #0004)}@keyframes stir{0%{transform:rotate(-35deg)}50%{transform:rotate(35deg)}100%{transform:rotate(-35deg)}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}@media(max-width:650px){main{padding:14px}.kitchen{padding:105px 12px 15px;min-height:620px;background-position:center top}.worktop{gap:20px}.bowlArea{width:58%}.bowl{height:120px}.oven{width:120px;min-height:165px;padding:8px}.ingredient{width:95px;padding:6px}.foodArt{width:66px;height:60px}.ingredientName{font-size:19px}.portion{font-size:16px}.shelf{gap:8px;padding:10px}.parchment{padding:18px}.instructionButtons button{font-size:18px;padding:9px 14px}.badges{grid-template-columns:1fr}.badge{display:flex;align-items:center;gap:15px;justify-content:center;flex-wrap:wrap}.badge span{font-size:32px}.spoon{right:20px}.knobs{letter-spacing:6px}} 
-
+*{box-sizing:border-box}
+body{margin:0;background:#f1e9d9;color:#263e49;font-family:'Patrick Hand',cursive;font-size:21px}
+main{max-width:1260px;margin:auto;padding:20px}
+button,a{font:inherit}
+button{border:2px solid #914d32;border-radius:16px;padding:11px 23px;background:#bd623e;color:#fff9ed;cursor:pointer;box-shadow:0 3px 0 #813f2b}
+button:disabled{opacity:.6;cursor:default}
+button:hover:not(:disabled){filter:brightness(1.06)}
+a{color:#275f6b;text-decoration:none}a:hover{text-decoration:underline}
+button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:4px solid #1c6077;outline-offset:4px}
+.secondary{background:#366f77;border-color:#214b55;box-shadow:0 3px 0 #214b55}
+nav{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+header{text-align:center;padding:20px 0}
+h1{font-size:clamp(35px,5vw,57px);margin:5px 0}
+h2{font-size:clamp(27px,3vw,36px);font-weight:400;margin:8px 0}
+p{margin:9px 0;line-height:1.4}
+.eyebrow{letter-spacing:2px;font-size:18px;color:#3e6b6c}
+.parchment{background:#fff8e8;border:2px solid #b99a6f;border-radius:24px;padding:24px;box-shadow:0 5px 0 #bc9b6b33}
+#welcome{max-width:850px;margin:0 auto 28px;text-align:center}
+.instruction{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.instructionButtons{display:flex;gap:10px;flex-wrap:wrap}
+#translation{width:100%;background:#e2ead7;padding:10px;border-radius:10px}
+progress{width:100%;height:12px;accent-color:#347681}
+/* Il panorama ha la propria altezza: non viene ingrandito per coprire il bancone. */
+.kitchen{overflow:hidden;border:3px solid #b69769;border-radius:24px;background:#e6c596;box-shadow:0 6px 0 #81553722}
+.kitchen-view{width:100%;background:#eae0ca;line-height:0}
+.kitchen-view img{display:block;width:100%;height:auto;aspect-ratio:3/1;object-fit:contain}
+.cooking-board{position:relative;padding:0 28px 24px;background:linear-gradient(#e9cda4e8,#e1bd8ce8),repeating-linear-gradient(0deg,#bd9461 0 2px,#e9cca1 2px 100px);border-top:2px solid #c09b68}
+.benchTitle{position:relative;display:table;z-index:1;margin:-19px auto 4px;padding:3px 30px;border:1px solid #b19367;border-radius:20px;background:#fff7df;color:#3a665e;font-size:24px;font-weight:400;letter-spacing:1px}
+/* Oggetti liberi sul legno, con etichette piccole separate dall'illustrazione. */
+.shelf{display:flex;justify-content:center;align-items:flex-end;flex-wrap:wrap;gap:10px 18px;padding:4px 0 20px;border-bottom:1px solid #aa7f4f55}
+.ingredient{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;min-width:96px;max-width:130px;padding:4px 4px 10px;border:0;background:transparent;color:#243e48;box-shadow:none;touch-action:none;user-select:none;border-radius:15px}
+.ingredient:hover:not(:disabled){background:#fff5dc66;transform:translateY(-4px)}
+.ingredient:disabled{opacity:.65}
+.ingredient.selected{outline:3px solid #287a85;outline-offset:2px}
+.foodArt{display:block;width:90px;height:90px;flex-shrink:0;background-image:url('cucina-ingredienti-v2.png');background-size:400% 300%;background-repeat:no-repeat;filter:drop-shadow(0 5px 3px #674d2522)}
+.ingredientName{display:block;font-size:23px;line-height:1.1}
+.portion{display:block;min-width:70px;margin-top:5px;padding:2px 10px;border:1px solid #ad8e5f80;border-radius:16px;background:#fff7e6;color:#64492d;font-size:18px;line-height:1.25}
+.worktop{display:flex;align-items:center;justify-content:center;gap:clamp(24px,8vw,110px);margin-top:16px}
+.bowlArea{text-align:center;width:300px;min-width:0}
+.bowl{position:relative;width:100%;height:245px;border:0;border-radius:32px;background:transparent;box-shadow:none;cursor:pointer;touch-action:none;user-select:none;display:flex;align-items:flex-end;justify-content:center}
+.bowl::before{content:'';position:absolute;width:245px;height:245px;left:50%;top:0;transform:translateX(-50%);background-image:url('cucina-utensili-v2.png');background-repeat:no-repeat;background-size:200% 200%;background-position:0 0;pointer-events:none;filter:drop-shadow(0 8px 4px #6e4b2828)}
+.bowl.dough-mode::before{background-position:0 100%}
+.bowl.ready{outline:2px dashed #7c9e91;outline-offset:-8px;background:#fff9df22}
+.mixture{display:none}
+#bowlLabel{position:relative;z-index:1;margin-bottom:8px;padding:2px 16px;border-radius:15px;background:#fff9e4e8;font-size:19px;color:#315b58}
+.spoon{position:absolute;z-index:1;right:40px;top:6px;width:115px;height:115px;background-image:url('cucina-utensili-v2.png');background-repeat:no-repeat;background-size:200% 200%;background-position:100% 100%;transform:rotate(12deg);transform-origin:40% 80%;pointer-events:none}
+.dough-mode .spoon{display:none}
+.bowl.stirring .spoon{animation:stir .6s linear infinite}
+.bowl.rolling::before{transform:translateX(-50%) scaleX(1.04)}
+#scale{display:block;margin:10px auto 8px;padding:7px;background:#fff9e9;border:1px solid #9b815c;border-radius:12px;color:#244b52;min-height:44px;font-size:25px;max-width:250px}
+.small{font-size:17px;padding:7px 12px}
+.oven{position:relative;align-self:flex-start;display:flex;justify-content:center;align-items:flex-end;width:220px;height:245px;margin-top:0;padding:0 0 10px;background:transparent;border:0;border-radius:25px;color:#315b58;box-shadow:none;touch-action:none}
+.oven::before{content:'';position:absolute;left:50%;top:0;width:245px;height:245px;transform:translateX(-50%);background-image:url('cucina-utensili-v2.png');background-repeat:no-repeat;background-size:200% 200%;background-position:100% 0;pointer-events:none;filter:drop-shadow(0 7px 4px #6e4b2828)}
+.oven>span:last-child{position:relative;z-index:1;padding:2px 18px;border-radius:16px;background:#fff9e4e8;font-size:19px}
+.oven:disabled{opacity:.8;cursor:default}
+.oven:not(:disabled){outline:2px dashed #7c9e91;outline-offset:-8px;background:#fff9df33}
+.knobs,.ovenWindow{display:none}
+.oven.baking::before{filter:drop-shadow(0 0 15px #f5b744)}
+.actionArea{text-align:center;min-height:83px;margin-top:22px}
+.actionArea p{max-width:800px;margin:12px auto 0;font-size:18px;color:#534b36}
+#feedback{text-align:center;min-height:38px;font-size:25px}
+.textButton{background:none;color:#3c6168;border:0;box-shadow:none;text-decoration:underline;font-size:18px}
+#finish{max-width:850px;margin:auto;text-align:center}
+.dish{font-size:105px}
+.reward{padding:16px;margin:16px 0;border:3px solid #c49c4c;border-radius:20px;background:#fff0bd}
+.connection{text-align:center;margin-top:22px}
+.note{text-align:center;font-size:17px;color:#55625a}
 .personalProgress{text-align:center;margin:28px 0 12px;font-size:24px}
+[hidden]{display:none!important}
+.dragGhost{position:fixed;z-index:20;pointer-events:none;opacity:.95;transform:translate(-50%,-50%) rotate(-8deg);width:90px;height:90px;filter:drop-shadow(0 8px 5px #0003)}
+@keyframes stir{0%{transform:rotate(-20deg)}50%{transform:rotate(30deg)}100%{transform:rotate(-20deg)}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+@media(max-width:650px){
+main{padding:12px}.parchment{padding:16px}header{padding:16px 0}
+.kitchen{border-width:2px;border-radius:18px}
+.cooking-board{padding:0 12px 20px}.benchTitle{font-size:21px;margin-top:-16px}
+.shelf{gap:5px 8px;padding-bottom:14px}.ingredient{min-width:77px;max-width:90px;padding:4px}
+.foodArt{width:66px;height:66px}.ingredientName{font-size:20px}.portion{font-size:16px;min-width:60px;padding:2px 7px}
+.worktop{gap:10px;margin-top:12px}.bowlArea{width:57%}.bowl{height:190px}
+.bowl::before{width:190px;height:190px}.spoon{right:8%;top:6px;width:90px;height:90px}
+.oven{width:43%;height:190px}.oven::before{width:190px;height:190px;left:50%;transform:translateX(-50%)}
+#bowlLabel,.oven>span:last-child{font-size:16px;padding:2px 10px}#scale{font-size:21px}
+.instructionButtons button{font-size:18px;padding:9px 14px}
+}
+@media(max-width:380px){.bowl,.oven{height:155px}.bowl::before,.oven::before{width:155px;height:155px}.spoon{width:75px;height:75px}.small{font-size:15px;padding:7px 8px}.ingredient{min-width:70px}}

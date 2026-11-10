@@ -22,6 +22,7 @@ function resetBadgeImage(keepFile = false) {
 }
 function clearSession() {
   closeStatistics();closePortoStatistics();closeNameEditor();
+  profilesGeneration++;appliedClass='A'; el('classSummary').textContent='';el('classHint').textContent='';el('classFilter').value='A';
   token = null; currentCode = ''; currentProfileId = null; activeProfiles = [];
   closeDeleteDialog();
   resetBadgeImage();
@@ -46,6 +47,8 @@ async function request(path, body, accessToken) {
     if (accessToken && response.status === 401) { clearSession(); throw new Error('La sessione è scaduta. Accedi di nuovo.'); }
     if (response.status === 403 || data?.code === '42501') throw new Error('Questo account non è autorizzato oppure il profilo non è disponibile.');
     const messages = {
+      CLASSE_NON_VALIDA:'SCEGLI A, B, C O PROVA.',
+      PROFILO_NON_AUTORIZZATO:'QUESTO PROFILO NON È DISPONIBILE NELLA CLASSE SELEZIONATA.',
       NOME_NON_VALIDO:'SCRIVI UN NOME DI MASSIMO 80 CARATTERI.',
       CONFERMA_ELIMINAZIONE_NON_VALIDA:'La conferma non corrisponde al profilo da eliminare.',
       STATO_NON_VALIDO:'Lo stato del profilo non è valido.',
@@ -57,14 +60,17 @@ async function request(path, body, accessToken) {
     };
     if (messages[data?.message]) throw new Error(messages[data.message]);
     if (path.includes('/auth/v1/token')) throw new Error('Accesso non riuscito. Controlla email e password.');
+    if(path.includes('esploria_profili_con_classi')||path.includes('esploria_assegna_classe')||path.includes('esploria_crea_codice_classe')||path.includes('esploria_statistiche_classe'))throw new Error('CLASSI NON DISPONIBILI. CONTROLLA IL COLLEGAMENTO E DI AVER ESEGUITO attiva-classi.sql IN SUPABASE.');
     throw new Error('Operazione non riuscita. Verifica di aver eseguito gli aggiornamenti SQL, incluso 009-gestione-profili.sql, in Supabase.');
   }
   return data;
 }
 async function loadProfiles() {
-  const access=token;
-  const profiles = await request('/rest/v1/rpc/esploria_profili_insegnante',{},access);
-  if(token!==access)return;
+  const access=token,generation=++profilesGeneration;
+  const allProfiles = await request('/rest/v1/rpc/esploria_profili_con_classi',{},access);
+  if(token!==access||generation!==profilesGeneration)return;
+  updateClassSummary(allProfiles);
+  const profiles=allProfiles.filter(inSelectedClass);
   const previous = el('badgeProfile').value;
   activeProfiles = profiles.filter(p => p.attivo);
   el('badgeProfile').replaceChildren(); el('profiles').replaceChildren();
@@ -74,7 +80,7 @@ async function loadProfiles() {
   for (const profile of profiles) {
     const li = document.createElement('li'), title = document.createElement('strong'), detail = document.createElement('small');
     title.textContent = profile.nome_riservato || profile.nome_personaggio || 'NOME DEL BAMBINO DA INSERIRE';
-    detail.textContent = (profile.nome_personaggio ? 'COMPAGNO: '+profile.nome_personaggio+' · ' : '') + 'PROFILO ' + profile.id + (profile.animale ? ' · ' + profile.animale : '') + (profile.attivo ? ' · ATTIVO' : ' · DISATTIVATO');
+    detail.textContent = (profile.nome_personaggio ? 'COMPAGNO: '+profile.nome_personaggio+' · ' : '') + 'PROFILO ' + profile.id + (profile.animale ? ' · ' + profile.animale : '') + (profile.attivo ? ' · ATTIVO' : ' · DISATTIVATO')+' · '+(profile.classe?classLabel(profile.classe):'DA ASSEGNARE');
     const actions = document.createElement('div'); actions.className = 'profileActions';
     const toggle = document.createElement('button'); toggle.type = 'button'; toggle.className = 'secondary';
     toggle.textContent = profile.attivo ? 'DISATTIVA' : 'RIATTIVA';
@@ -87,7 +93,7 @@ async function loadProfiles() {
     const nameButton=document.createElement('button');nameButton.type='button';nameButton.className='secondary';nameButton.textContent=profile.nome_riservato?'MODIFICA NOME RISERVATO':'INSERISCI NOME RISERVATO';nameButton.disabled=managingProfile;nameButton.addEventListener('click',()=>openNameEditor(profile));
     const portoButton=document.createElement('button');portoButton.type='button';portoButton.className='secondary';portoButton.textContent='PORTO · INGLESE';portoButton.disabled=managingProfile;portoButton.addEventListener('click',()=>selectPortoProfile(profile.id));
     actions.append(nameButton,statsButton,portoButton,toggle,remove);
-    li.append(title,detail,actions); el('profiles').append(li);
+    li.append(title,detail,classAssignmentControl(profile),actions); el('profiles').append(li);
     if (profile.attivo) {
       const option = document.createElement('option'); option.value = profile.id;
       option.textContent = (profile.nome_riservato || profile.nome_personaggio || 'COMPAGNO NON ANCORA SCELTO') + (profile.animale ? ' · ' + profile.animale : '') + ' · ' + profile.id.slice(0,8);
@@ -116,15 +122,15 @@ el('chooseCodeForm').addEventListener('submit',async event => {
   if (currentCode && !el('savedCode').checked) { tell('Conserva prima il codice mostrato e seleziona «HO CONSERVATO QUESTO CODICE».'); return; }
   const chosen = el('chosenCode').value.trim().toUpperCase(), normalized = chosen.replace(/[\s-]/g,'');
   if (!/^[A-Z0-9]{10,32}$/.test(normalized) || !/[A-Z]/.test(normalized) || !/[0-9]/.test(normalized)) { tell('Scegliete da 10 a 32 lettere e numeri, con almeno una lettera e un numero. Spazi e trattini non contano.'); el('chosenCode').focus(); return; }
-  creating = true; el('createButton').disabled = true; el('chosenCode').disabled = true; el('newChildName').disabled=true; tell('CREAZIONE IN CORSO…');
+  creating = true; el('createButton').disabled = true; el('chosenCode').disabled = true; el('newChildName').disabled=true; el('newProfileClass').disabled=true;el('classFilter').disabled=true; tell('CREAZIONE IN CORSO…');
   try {
-    const result = await request('/rest/v1/rpc/esploria_crea_codice_con_nome',{p_codice:chosen,p_nome:el('newChildName').value.trim()},token);
+    const result = await request('/rest/v1/rpc/esploria_crea_codice_classe',{p_codice:chosen,p_nome:el('newChildName').value.trim(),p_classe:el('newProfileClass').value},token);
     currentProfileId = result.id;
     currentCode = result.codice; el('chosenCode').value = ''; el('newChildName').value=''; el('newCode').textContent = result.codice; el('newProfile').textContent = 'Profilo ' + result.id;
     el('savedCode').checked = false; el('codeCard').hidden = false; tell('Codice creato. Conservalo insieme al riferimento del profilo.');
     try { await loadProfiles(); } catch (_) { tell('Codice creato. Conservalo; premi AGGIORNA ELENCO per aggiornare i profili.'); }
   } catch (error) { tell(error.message); }
-  finally { creating = false; el('createButton').disabled = false; el('chosenCode').disabled = false; el('newChildName').disabled=false; }
+  finally { creating = false; el('createButton').disabled = false; el('chosenCode').disabled = false; el('newChildName').disabled=false;el('newProfileClass').disabled=false;el('classFilter').disabled=false; }
 });
 
 /* La miniatura viene preparata nel browser e inviata solo quando assegni il distintivo. */
@@ -213,7 +219,8 @@ function profileLabel(profile) {
 }
 function managementBusy(value) {
   managingProfile = value;
-  el('profiles').querySelectorAll('button').forEach(button => { button.disabled = value; });
+  el('classFilter').disabled=value;
+  el('profiles').querySelectorAll('button,select').forEach(button => { button.disabled = value; });
 }
 async function toggleProfile(profile) {
   if (managingProfile || !token) return;
@@ -293,13 +300,13 @@ el('deleteProfileForm').addEventListener('submit',async event => {
 /* BORGO DEGLI INGRANAGGI: un unico quadro per la disciplina. */
 let borgoGeneration=0,nameGeneration=0,nameTarget=null,nameSaving=false;
 function node(tag,text,className){const n=document.createElement(tag);if(text!==undefined)n.textContent=String(text);if(className)n.className=className;return n}
-function closeStatistics(){borgoGeneration++;el('borgoContent').replaceChildren();el('borgoStatus').textContent='';el('borgoProfile').replaceChildren(new Option('TUTTA LA CLASSE',''));}
-function populateBorgoProfiles(profiles){const previous=el('borgoProfile').value;el('borgoProfile').replaceChildren(new Option('TUTTA LA CLASSE',''));for(const p of profiles){el('borgoProfile').append(new Option((p.nome_riservato||p.nome_personaggio||'PROFILO SENZA NOME')+' · '+p.id.slice(0,8).toUpperCase(),p.id))}if(profiles.some(p=>p.id===previous))el('borgoProfile').value=previous;}
+function closeStatistics(){borgoGeneration++;el('borgoContent').replaceChildren();el('borgoStatus').textContent='';el('borgoProfile').replaceChildren(new Option('TUTTI I PROFILI · '+classLabel(),''));}
+function populateBorgoProfiles(profiles){const previous=el('borgoProfile').value;el('borgoProfile').replaceChildren(new Option('TUTTI I PROFILI · '+classLabel(),''));for(const p of profiles){el('borgoProfile').append(new Option((p.nome_riservato||p.nome_personaggio||'PROFILO SENZA NOME')+' · '+p.id.slice(0,8).toUpperCase(),p.id))}if(profiles.some(p=>p.id===previous))el('borgoProfile').value=previous;}
 function selectBorgoProfile(id){el('borgoProfile').value=id;el('borgoStats').scrollIntoView?.({behavior:'smooth',block:'start'});loadBorgoStatistics();}
 function metric(label,value){const box=node('div',undefined,'borgoMetric');box.append(node('span',label),node('strong',Number(value||0).toLocaleString('it-IT')));return box;}
 function table(headers,rows){const wrap=node('div',undefined,'borgoScroll'),t=node('table',undefined,'borgoTable'),head=node('thead'),hr=node('tr'),body=node('tbody');headers.forEach(label=>{const th=node('th',label);th.scope='col';hr.append(th)});head.append(hr);rows.forEach(cells=>{const tr=node('tr');cells.forEach(cell=>{const td=node('td');if(cell instanceof Node)td.append(cell);else td.textContent=String(cell??'—');tr.append(td)});body.append(tr)});t.append(head,body);wrap.append(t);return wrap;}
 function renderBorgo(data){const root=el('borgoContent');root.replaceChildren();const total=data.totali;
- const title=node('h3',data.profilo_id?(data.alunni[0]?.nome_riservato||data.alunni[0]?.compagno||'PROFILO SELEZIONATO'):'PANORAMICA DELLA CLASSE');root.append(title);
+ const title=node('h3',data.profilo_id?(data.alunni[0]?.nome_riservato||data.alunni[0]?.compagno||'PROFILO SELEZIONATO'):'PANORAMICA · '+classLabel());root.append(title);
  const metrics=node('div',undefined,'borgoMetrics');for(const [label,value] of [['PERCORSI INIZIATI',total.iniziate],['PERCORSI COMPLETATI',total.completate],['IN CORSO',total.in_corso],['TENTATIVI RILEVATI',total.tentativi],['CORRETTI',total.corrette],['DA RIVEDERE',total.errori]])metrics.append(metric(label,value));root.append(metrics);
  if(!Number(total.tentativi))root.append(node('p','NON CI SONO ANCORA TENTATIVI REGISTRATI. I GRAFICI SI RIEMPIRANNO CON LE PROSSIME ATTIVITÀ.','borgoNote'));
  if(Number(total.senza_telemetria))root.append(node('p',total.senza_telemetria+' PERCORSI PRECEDENTI NON HANNO IL DETTAGLIO DEI TENTATIVI. NON VENGONO CONSIDERATI COME ZERO ERRORI.','borgoNote'));
@@ -315,7 +322,7 @@ function renderBorgo(data){const root=el('borgoContent');root.replaceChildren();
  if(!data.profilo_id){root.append(node('h3','I BAMBINI DEL BORGO'));root.append(table(['BAMBINO / COMPAGNO','PERCORSI COMPLETATI','TENTATIVI','DA RIVEDERE',''],data.alunni.map(p=>{const name=node('span',p.nome_riservato||p.compagno||'NOME DA INSERIRE');if(p.nome_riservato&&p.compagno)name.append(node('small','COMPAGNO: '+p.compagno));const open=node('button','VEDI','secondary');open.type='button';open.setAttribute('aria-label','VEDI I DATI DI '+(p.nome_riservato||p.compagno||p.id));open.addEventListener('click',()=>selectBorgoProfile(p.id));return [name,p.completate+' / '+p.iniziate,p.tentativi,p.errori,open]})))}
  root.append(node('p','TUTTI I DATI SONO RIUNITI PER BORGO DEGLI INGRANAGGI · MATEMATICA. I CONTEGGI DESCRIVONO LE RISPOSTE REGISTRATE E NON COSTITUISCONO UN VOTO.','borgoNote'));
 }
-async function loadBorgoStatistics(){if(!token)return;const generation=++borgoGeneration,access=token,id=el('borgoProfile').value;el('borgoContent').replaceChildren();el('borgoStatus').textContent='CARICO I PROGRESSI DEL BORGO…';el('borgoRefresh').disabled=true;try{const data=await request('/rest/v1/rpc/esploria_statistiche_borgo',{p_profilo_id:id||null},access);if(generation!==borgoGeneration||access!==token)return;renderBorgo(data);el('borgoStatus').textContent='DATI AGGIORNATI · '+(id?'BAMBINO SELEZIONATO':'TUTTA LA CLASSE');}catch(error){if(generation===borgoGeneration&&access===token)el('borgoStatus').textContent=error.message+' CONTROLLA DI AVER ESEGUITO attiva-borgo-statistiche.sql.';}finally{if(generation===borgoGeneration)el('borgoRefresh').disabled=false;}}
+async function loadBorgoStatistics(){if(!token)return;const generation=++borgoGeneration,access=token,id=el('borgoProfile').value;el('borgoContent').replaceChildren();el('borgoStatus').textContent='CARICO I PROGRESSI DEL BORGO…';el('borgoRefresh').disabled=true;try{const data=await request('/rest/v1/rpc/esploria_statistiche_classe',{p_materia:'matematica',p_classe:selectedClass(),p_profilo_id:id||null},access);if(generation!==borgoGeneration||access!==token)return;renderBorgo(data);el('borgoStatus').textContent='DATI AGGIORNATI · '+classLabel()+' · '+(id?'BAMBINO SELEZIONATO':'TUTTI I PROFILI');}catch(error){if(generation===borgoGeneration&&access===token)el('borgoStatus').textContent=error.message+' CONTROLLA DI AVER ESEGUITO attiva-borgo-statistiche.sql.';}finally{if(generation===borgoGeneration)el('borgoRefresh').disabled=false;}}
 function openNameEditor(profile){if(!token||managingProfile)return;nameGeneration++;nameTarget=profile;el('childNameProfile').textContent='PROFILO '+profile.id.slice(0,8).toUpperCase()+(profile.nome_personaggio?' · COMPAGNO: '+profile.nome_personaggio:'');el('childNameInput').value=profile.nome_riservato||'';el('childNameMessage').textContent='';nameSaving=false;el('saveChildName').disabled=false;el('cancelChildName').disabled=false;el('childNameInput').disabled=false;el('childNameDialog').showModal();el('childNameInput').focus();}
 function closeNameEditor(){nameGeneration++;nameTarget=null;nameSaving=false;el('childNameDialog').close();el('childNameInput').value='';el('childNameProfile').textContent='';el('childNameMessage').textContent='';}
 el('childNameForm').addEventListener('submit',async event=>{event.preventDefault();if(!nameTarget||nameSaving||!token)return;const target=nameTarget,generation=++nameGeneration,access=token;nameSaving=true;el('saveChildName').disabled=true;el('cancelChildName').disabled=true;el('childNameInput').disabled=true;el('childNameMessage').textContent='SALVO IL NOME RISERVATO…';try{await request('/rest/v1/rpc/esploria_salva_nome_riservato',{p_profilo_id:target.id,p_nome:el('childNameInput').value.trim()},access);if(generation!==nameGeneration||access!==token)return;closeNameEditor();await loadProfiles();if(access===token)tell('NOME RISERVATO SALVATO.');}catch(error){if(generation===nameGeneration&&access===token)el('childNameMessage').textContent=error.message;}finally{if(generation===nameGeneration){nameSaving=false;el('saveChildName').disabled=false;el('cancelChildName').disabled=false;el('childNameInput').disabled=false;}}});

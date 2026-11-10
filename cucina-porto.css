@@ -84,3 +84,90 @@ main{padding:12px}.parchment{padding:16px}header{padding:16px 0}
 .instructionButtons button{font-size:18px;padding:9px 14px}
 }
 @media(max-width:380px){.bowl,.oven{height:155px}.bowl::before,.oven::before{width:155px;height:155px}.spoon{width:75px;height:75px}.small{font-size:15px;padding:7px 8px}.ingredient{min-width:70px}}
+/* Modalità di gioco compatta: richiesta e oggetti condividono il banco. */
+.howTo{text-align:left;max-width:610px;margin:20px auto;line-height:1.6}
+.in-game main{max-width:1180px;height:100svh;min-height:620px;padding:8px 14px;display:flex;flex-direction:column;gap:5px}
+.in-game header,.in-game #total,.in-game>.note,.in-game main>.note{display:none}
+.in-game nav{font-size:17px;min-height:25px;flex-shrink:0}
+.in-game #game{display:flex;flex-direction:column;gap:5px;flex:1;min-height:0}
+.in-game .instruction{padding:10px 16px;margin:0;gap:3px 12px;border-radius:17px;flex-shrink:0}
+.in-game .instruction h2{font-size:clamp(26px,3vw,34px);margin:2px 0;line-height:1.1}
+.in-game #recipeName{font-size:17px;letter-spacing:.6px;margin:0}
+.in-game #mission{font-size:15px;margin:2px 0}
+.in-game #stepCount{font-size:15px;margin:2px 0}
+.in-game .instructionButtons button{font-size:17px;padding:8px 12px}
+.in-game progress{height:8px}
+.in-game #translation{margin:3px 0;padding:5px;font-size:16px}
+.in-game .kitchen{flex:1;min-height:290px;display:flex;position:relative;border-radius:17px}
+.in-game .kitchen-view{display:none}
+.in-game .cooking-board{width:100%;height:100%;padding:0 12px 7px;display:flex;flex-direction:column;background:linear-gradient(#f1dbb6e8,#dfbb88e8),repeating-linear-gradient(0deg,#bc9465 0 1px,#e5c79a 1px 90px);border:0}
+.in-game .benchTitle{font-size:17px;margin:3px auto 0;padding:0 18px;background:#fff8e7b3}
+.in-game .shelf{padding:0 0 5px;gap:5px 16px;flex-shrink:0;flex-wrap:nowrap}
+.in-game .ingredient{min-width:70px;max-width:120px;padding:2px 4px;transition:background .15s}
+.in-game .foodArt{width:82px;height:82px}
+.in-game .ingredientName{font-size:21px}
+.in-game .portion{font-size:17px;margin:2px 0;min-width:60px}
+.in-game .ingredient:hover:not(:disabled){transform:none;background:#fff9e366}
+.in-game .worktop{flex:1;min-height:0;margin:0;gap:clamp(20px,8vw,90px);align-items:center}
+.in-game .bowlArea{width:240px}
+.in-game .bowl{height:180px;max-width:240px;margin:auto}
+.in-game .bowl::before{width:190px;height:190px;top:-7px}
+.in-game .spoon{width:80px;height:80px;right:37px;top:0}
+.in-game #bowlLabel{font-size:15px;margin:0;padding:0 10px;line-height:1.3}
+.in-game .bowl.ready{outline-offset:0}
+.in-game #scale{margin:5px auto 0;padding:2px 8px;min-height:0;font-size:23px;line-height:1.2;max-width:190px}
+.in-game #portionTrail{font-size:13px;margin:1px 0;color:#546059;line-height:1.1}
+.in-game .small{font-size:14px;padding:4px 8px;margin:3px 0;line-height:1.2}
+.in-game .oven{width:190px;height:190px;align-self:center;pointer-events:none}
+.in-game .oven::before{width:190px;height:190px}
+.in-game .oven>span:last-child{font-size:15px;padding:1px 12px}
+.in-game .actionArea{display:flex;justify-content:center;align-items:center;gap:10px;min-height:30px;margin:0;flex-shrink:0}
+.in-game .actionArea p{font-size:17px;line-height:1.1;margin:0;max-width:650px}
+#gestureProgress{font-size:15px;color:#315b58}
+#gestureGuide{font-size:32px;line-height:1;color:#296d75;font-family:system-ui,sans-serif;display:inline-block}
+[data-gesture="mix"] #gestureGuide{animation:guideTurn 2s linear infinite}
+[data-gesture="roll"] #gestureGuide{animation:guideSlide 1.5s ease-in-out infinite}
+[data-gesture="add"] #gestureGuide,[data-gesture="bake"] #gestureGuide{animation:guideSlide 1.5s ease-in-out infinite}
+#stepReview{display:flex;align-items:center;justify-content:center;gap:15px;background:#e4efd9;border:2px solid #608267;border-radius:14px;padding:6px 12px;flex-shrink:0}
+#reviewText{font-size:19px;line-height:1.15;margin:0}
+#nextStep{font-size:20px;padding:7px 18px;flex-shrink:0}
+.in-game #feedback{font-size:17px;line-height:1.15;min-height:20px;margin:0;text-align:center;flex-shrink:0}
+.in-game #restart{align-self:center;font-size:13px;padding:2px;line-height:1;flex-shrink:0}
+.in-game .connection{font-size:12px;line-height:1.1;margin:0;flex-shrink:0;text-align:center}
+.in-game .connection p{margin:0}
+.in-game #retry{font-size:15px;padding:5px 10px}
+#learnedWords{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:16px 0}
+#learnedWords span{padding:6px 14px;background:#e6eddf;border-radius:18px;font-size:20px}
+@keyframes guideTurn{to{transform:rotate(360deg)}}
+@keyframes guideSlide{50%{transform:translateX(9px)}}
+@media(max-width:650px){
+.in-game main{padding:5px 8px;min-height:620px}
+.in-game nav{font-size:14px;min-height:22px}
+.in-game .instruction{padding:8px 10px}
+.in-game #recipeName{font-size:14px}
+.in-game .instruction h2{font-size:27px}
+.in-game #mission{font-size:12px}
+.in-game .instructionButtons{gap:6px}
+.in-game .instructionButtons button{font-size:15px;padding:5px 9px}
+.in-game .shelf{gap:3px}
+.in-game .ingredient{min-width:0;flex:1;padding:1px;max-width:76px}
+.in-game .foodArt{width:49px;height:49px}
+.in-game .ingredientName{font-size:17px;line-height:1.1}
+.in-game .portion{font-size:14px;padding:1px 3px;min-width:0;width:100%;white-space:nowrap}
+.in-game .worktop{gap:8px}
+.in-game .bowlArea{width:58%}
+.in-game .bowl{height:135px}
+.in-game .bowl::before{width:145px;height:145px}
+.in-game .spoon{width:70px;height:70px;right:17%}
+.in-game .oven{width:38%;height:145px}
+.in-game .oven::before{width:145px;height:145px}
+.in-game .actionArea p{font-size:14px}
+#gestureGuide{font-size:27px}
+#stepReview{padding:5px 8px;gap:8px}
+#reviewText{font-size:16px}
+#nextStep{font-size:17px;padding:7px 11px}
+.in-game .kitchen{min-height:280px}
+}
+@media(prefers-reduced-motion:reduce){#gestureGuide{animation:none!important}}
+
+.in-game .oven{outline:none;background:transparent}.in-game #game[data-gesture="bake"] .oven{outline:2px dashed #397a78;outline-offset:-4px;background:#fff9df33}

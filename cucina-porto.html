@@ -1,26 +1,26 @@
 <!doctype html>
-<html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESPLORIA · LA CUCINA DEL PORTO</title><link rel="stylesheet" href="cucina-porto.css?v=spazi-4"></head>
+<html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESPLORIA · HARBOUR KITCHEN</title><link rel="stylesheet" href="cucina-porto.css?v=english-5"></head>
 <body><main>
 <nav><a href="porto.html">← PORTO DELLE LINGUE</a><a id="profileLink" href="profilo.html">IL MIO ANGOLO</a></nav>
 <header><p class="eyebrow">PORTO DELLE LINGUE · INGLESE</p><h1>LA CUCINA DEL PORTO</h1><p>ASCOLTA, DOSA, MESCOLA… E PORTA IN TAVOLA!</p></header>
 <section id="welcome" class="parchment"><h2 lang="en">Hello, little chef!</h2><p><strong>LA TUA MISSIONE:</strong> prepara una ricetta seguendo le richieste in inglese.</p><ol class="howTo"><li>Leggi la richiesta o premi ASCOLTA.</li><li>Trascina l’ingrediente nella ciotola: aggiungi una porzione alla volta.</li><li>Controlla la quantità nella ciotola, poi passa alla richiesta successiva.</li></ol><p><strong>ESEMPIO:</strong> “Add 200 g of flour.” → farina da 100 g → <strong>trascina 2 sacchetti nella ciotola</strong>.</p><p>Completa 1, 5 e 10 ricette per conquistare i tuoi distintivi.</p><button id="start" disabled>PREPARA UNA RICETTA →</button></section>
-<section id="game" hidden aria-label="Il bancone della cucina">
-<div class="instruction parchment"><div><p id="recipeName" class="eyebrow"></p><p id="mission"></p><h2 id="instruction" lang="en" tabindex="-1"></h2><p id="stepCount"></p></div><div class="instructionButtons"><button id="listen" class="secondary">🔊 ASCOLTA</button><button id="help" class="secondary">UN AIUTO</button></div><p id="translation" hidden></p><progress id="progress" value="0" max="1" aria-label="Passaggi completati"></progress></div>
+<section id="game" lang="en" hidden aria-label="The kitchen counter">
+<div class="instruction parchment"><div><p id="recipeName" class="eyebrow"></p><p id="mission"></p><h2 id="instruction" lang="en" tabindex="-1"></h2><p id="stepCount"></p></div><div class="instructionButtons"><button id="listen" class="secondary">🔊 LISTEN</button><button id="help" class="secondary">HINT</button></div><p id="translation" hidden></p><progress id="progress" value="0" max="1" aria-label="Completed steps"></progress></div>
 <div class="kitchen">
-<div class="kitchen-view"><img src="cucina-panorama-v2.png" alt="Una cucina luminosa affacciata sul mare del Porto delle Lingue" width="2172" height="724"></div>
+<div class="kitchen-view"><img src="cucina-panorama-v2.png" alt="A sunny kitchen overlooking Language Harbour" width="2172" height="724"></div>
 <div class="cooking-board">
 <h3 class="benchTitle" lang="en">Ingredients</h3>
-<div class="shelf" id="ingredients" aria-label="Ingredienti da trascinare nella ciotola"></div>
-<div class="worktop"><div class="bowlArea"><div id="bowl" class="bowl" tabindex="0" role="button" aria-label="Ciotola degli ingredienti"><div class="mixture"></div><span id="bowlLabel">CIOTOLA</span><span class="spoon" aria-hidden="true"></span></div><output id="scale" aria-live="polite"></output><p id="portionTrail"></p><button id="undo" class="small secondary">TOGLI UNA PORZIONE</button></div>
-<div id="oven" class="oven" aria-label="Forno illustrato"><span class="knobs" aria-hidden="true">● ● ●</span><span class="ovenWindow" aria-hidden="true">♨</span><span>OVEN</span></div></div>
+<div class="shelf" id="ingredients" aria-label="Ingredients to drag into the bowl"></div>
+<div class="worktop"><div class="bowlArea"><div id="bowl" class="bowl" tabindex="0" role="button" aria-label="Mixing bowl"><div class="mixture"></div><span id="bowlLabel">BOWL</span><span class="spoon" aria-hidden="true"></span></div><output id="scale" aria-live="polite"></output><p id="portionTrail"></p><button id="undo" class="small secondary">REMOVE ONE PORTION</button></div>
+<div id="oven" class="oven" aria-label="Oven"><span class="knobs" aria-hidden="true">● ● ●</span><span class="ovenWindow" aria-hidden="true">♨</span><span>OVEN</span></div></div>
 <div id="actionArea" class="actionArea"><span id="gestureGuide" aria-hidden="true">↘</span><span id="gestureProgress" aria-live="polite"></span><button id="action" hidden></button><p id="gestureHint"></p></div>
 </div>
 </div>
-<div id="stepReview" hidden><p id="reviewText" role="status"></p><button id="nextStep" hidden>AVANTI →</button></div><p id="feedback" role="status" aria-live="polite"></p>
-<button id="restart" class="textButton">LASCIA QUESTA RICETTA</button>
+<div id="stepReview" hidden><p id="reviewText" role="status"></p><button id="nextStep" hidden>NEXT →</button></div><p id="feedback" role="status" aria-live="polite"></p>
+<button id="restart" class="textButton">LEAVE THIS RECIPE</button>
 </section>
-<section id="finish" class="parchment" hidden><div id="dish" class="dish" aria-hidden="true"></div><h2 lang="en">Your recipe is ready!</h2><p id="finishText"></p><h3>LE PAROLE CHE HAI USATO</h3><div id="learnedWords"></div><div id="newBadges"></div><button id="again">UN’ALTRA RICETTA →</button></section>
-<p id="total" class="personalProgress">RICETTE COMPLETATE: 0</p>
-<div class="connection"><p id="connection" role="status" aria-live="polite">PREPARO LA CUCINA…</p><button id="retry" class="secondary" hidden>RIPROVA IL COLLEGAMENTO</button></div>
+<section id="finish" lang="en" class="parchment" hidden><div id="dish" class="dish" aria-hidden="true"></div><h2 lang="en">Your recipe is ready!</h2><p id="finishText"></p><h3>WORDS YOU USED</h3><div id="learnedWords"></div><div id="newBadges"></div><button id="again">COOK AGAIN →</button></section>
+<p id="total" class="personalProgress">RECIPES COMPLETED: 0</p>
+<div class="connection"><p id="connection" role="status" aria-live="polite">GETTING THE KITCHEN READY…</p><button id="retry" class="secondary" hidden>TRY AGAIN</button></div>
 <p class="note">Le ricette sono semplificate per il gioco. In una cucina vera chiedi sempre aiuto a un adulto.</p>
-</main><script src="esploria-accesso.js?v=codici-scelti-1"></script><script src="cucina-dati.js?v=1"></script><script src="cucina-porto.js?v=didattica-3"></script></body></html>
+</main><script src="esploria-accesso.js?v=codici-scelti-1"></script><script src="cucina-dati.js?v=1"></script><script src="cucina-porto.js?v=english-5"></script></body></html>

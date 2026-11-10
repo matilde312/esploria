@@ -171,3 +171,65 @@ main{padding:12px}.parchment{padding:16px}header{padding:16px 0}
 @media(prefers-reduced-motion:reduce){#gestureGuide{animation:none!important}}
 
 .in-game .oven{outline:none;background:transparent}.in-game #game[data-gesture="bake"] .oven{outline:2px dashed #397a78;outline-offset:-4px;background:#fff9df33}
+
+/* Le tre zone mantengono uno spazio proprio anche con finestra bassa o zoom. */
+body{background:#eee4d0 url('cucina-panorama-v2.png') center top/cover fixed no-repeat}
+body::before{content:'';position:fixed;inset:0;z-index:-1;background:linear-gradient(90deg,#f4eadc55,#f4eadcaa 28%,#f4eadcaa 72%,#f4eadc55);pointer-events:none}
+.in-game main{height:max(100svh,760px);min-height:760px}
+.in-game nav{padding:2px 10px;border-radius:12px;background:#fff8e6e8}
+.in-game .connection{background:#fff8e6e8;border-radius:9px;padding:2px 6px}
+.in-game .kitchen{min-height:440px;flex:1 0 440px}
+.in-game .cooking-board{height:auto;flex:1;display:grid;grid-template-rows:auto auto minmax(270px,1fr) auto;gap:8px;padding:5px 14px 12px;background:linear-gradient(#f2dfb9,#e5c493)}
+.in-game .benchTitle{margin:0 auto}
+.in-game .shelf{margin:0;padding:0 0 10px;align-items:end}
+.in-game .worktop{display:grid;grid-template-columns:minmax(0,260px) minmax(0,210px);gap:30px;align-items:center;justify-content:center;min-height:270px;padding:10px 0;margin:0}
+.in-game .bowlArea{width:100%;display:flex;flex-direction:column;align-items:center;gap:4px}
+.in-game .bowl{width:100%;height:175px;margin:0;flex-shrink:0}
+.in-game .bowl::before{width:175px;height:175px;top:0}
+.in-game .spoon{right:40px;top:2px}
+.in-game #scale{margin:0;flex-shrink:0;min-height:31px}
+.in-game #portionTrail{margin:0;line-height:1.2;flex-shrink:0}
+.in-game .small{margin:0;flex-shrink:0}
+.in-game .oven{width:195px;height:195px;justify-self:center;align-self:center}
+.in-game .oven::before{width:195px;height:195px}
+.in-game .actionArea{padding:6px 10px;border-top:1px solid #b3986977;min-height:42px;position:relative}
+.in-game #feedback{background:#fff8e6e8;border-radius:9px;padding:3px}
+.in-game #restart{background:#fff8e6e8;border-radius:8px;padding:4px 10px}
+@media(max-width:650px){
+.in-game main{height:max(100svh,720px);min-height:720px}
+.in-game .kitchen{min-height:365px;flex-basis:365px}
+.in-game .cooking-board{grid-template-rows:auto auto minmax(215px,1fr) auto;gap:5px;padding:4px 8px 8px}
+.in-game .worktop{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);min-height:215px;gap:10px;padding:8px 0}
+.in-game .bowl{height:130px}
+.in-game .bowl::before{width:130px;height:130px;top:0}
+.in-game .spoon{width:65px;height:65px;right:14%;top:0}
+.in-game .oven{width:135px;height:135px}
+.in-game .oven::before{width:135px;height:135px}
+.in-game .actionArea{min-height:43px;padding:5px;gap:5px}
+.in-game .actionArea p{font-size:13px;line-height:1.2}
+.in-game .shelf{padding-bottom:6px}
+}
+/* L'altezza segue il contenuto: nessun controllo può essere tagliato dal banco. */
+.in-game main{height:auto;min-height:100svh}
+.in-game #mission{display:none}
+.in-game .instruction{padding:8px 14px}
+.in-game .instruction h2{font-size:30px}
+.in-game .kitchen{flex:1 0 auto;min-height:0}
+.in-game .cooking-board{grid-template-rows:auto auto minmax(215px,1fr) auto;gap:5px}
+.in-game .foodArt{width:64px;height:64px}
+.in-game .shelf{padding-bottom:6px}
+.in-game .worktop{min-height:215px;padding:7px 0}
+.in-game .bowl{height:120px}
+.in-game .bowl::before{width:120px;height:120px}
+.in-game .spoon{width:65px;height:65px;right:25%;top:0}
+.in-game .oven,.in-game .oven::before{width:145px;height:145px}
+.in-game #game:has(#stepReview:not([hidden])) #feedback{display:none}
+@media(max-width:650px){
+.in-game main{height:auto;min-height:100svh}
+.in-game .instruction h2{font-size:27px}
+.in-game .foodArt{width:49px;height:49px}
+.in-game .cooking-board{grid-template-rows:auto auto minmax(205px,1fr) auto;gap:4px}
+.in-game .worktop{min-height:205px}
+.in-game .actionArea{min-height:40px}
+.in-game .oven,.in-game .oven::before{width:130px;height:130px}
+}

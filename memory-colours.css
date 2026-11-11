@@ -7,3 +7,5 @@
 body{text-transform:uppercase}
 .word{font-size:clamp(18px,2.1vw,28px);letter-spacing:.3px}
 @media(max-width:760px){.word{font-size:clamp(14px,4.5vw,19px);letter-spacing:0}}
+
+.memoryReward{padding:16px;margin:15px 0;border:2px solid #bb9450;border-radius:18px;background:#fff0bf}.memoryReward h3{font-size:24px;margin:5px 0}.memoryReward p{font-size:18px}.memoryReward a{display:inline-block;margin-top:7px}

@@ -28,3 +28,5 @@ p{line-height:1.4;margin:8px 0}
 .welcome h2{color:#203d36}
 .welcome p{color:#29473e}
 @media(max-width:600px){.welcome{padding:18px 14px;border-radius:16px}}
+
+.play-button{display:inline-block;padding:8px 24px;background:#4b735b;color:#fff8e5;border:2px solid #36543f;border-radius:18px;text-decoration:none;box-shadow:0 3px 0 #36543f;font-size:24px}.play-button:hover{background:#3d614b}.play-button:focus-visible{outline:3px solid #bb6942;outline-offset:4px}@media(max-width:600px){.play-button{font-size:17px;padding:5px 12px}}

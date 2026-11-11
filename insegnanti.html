@@ -50,13 +50,13 @@
 <section id="firstPassword" hidden><h2>SCEGLI LA TUA PASSWORD PERSONALE</h2><p>QUESTO PASSAGGIO SERVE SOLTANTO AL PRIMO ACCESSO. DOPO VEDRAI LE CLASSI ASSEGNATE.</p><form id="firstPasswordForm"><label for="newTeacherPassword">NUOVA PASSWORD · ALMENO 12 CARATTERI</label><input id="newTeacherPassword" type="password" minlength="12" maxlength="128" autocomplete="new-password" required><label for="confirmTeacherPassword">RIPETI LA PASSWORD</label><input id="confirmTeacherPassword" type="password" minlength="12" maxlength="128" autocomplete="new-password" required><button id="saveTeacherPassword" type="submit">SALVA LA MIA PASSWORD</button></form><button id="cancelTeacherPassword" type="button" class="secondary">ESCI</button><p id="passwordStatus" role="status"></p></section>
 <div id="dashboard" hidden><p id="teacherRoleNote" class="borgoNote"></p>
 <details id="teamPanel" class="card discipline" name="discipline" hidden aria-labelledby="teamTitle"><summary><span><strong id="teamTitle">GESTISCI INSEGNANTI</strong><small>ACCOUNT E CLASSI · SOLO AMMINISTRATRICE</small></span><span class="disciplineState" aria-hidden="true"><span class="whenClosed">APRI +</span><span class="whenOpen">CHIUDI −</span></span></summary><div class="disciplineBody"><p>SOLO TU PUOI CREARE GLI ACCESSI E SCEGLIERE LE CLASSI. OGNI INSEGNANTE VEDE I BAMBINI E LE STATISTICHE DELLE CLASSI ASSEGNATE.</p><form id="createTeacherForm"><label for="teacherEmail">EMAIL DELL’INSEGNANTE</label><input id="teacherEmail" type="email" maxlength="254" autocomplete="off" required><label for="teacherPassword">PASSWORD INIZIALE · ALMENO 12 CARATTERI</label><input id="teacherPassword" type="password" minlength="12" maxlength="128" autocomplete="new-password" required><fieldset id="createTeacherClasses" class="teamClasses"><legend>CLASSI DA ASSEGNARE</legend><label><input type="checkbox" value="A">A</label><label><input type="checkbox" value="B">B</label><label><input type="checkbox" value="C">C</label><label><input type="checkbox" value="Prova">PROVA</label></fieldset><button id="createTeacherButton" type="submit">CREA ACCESSO INSEGNANTE</button></form><p id="teamStatus" role="status"></p><button id="teamRefresh" type="button" class="secondary">AGGIORNA INSEGNANTI</button><div id="teamList"></div></div></details>
-<section class="card" aria-labelledby="classTitle">
-<h2 id="classTitle">LE TUE CLASSI</h2>
+<details id="classPanel" class="card discipline" name="discipline" aria-labelledby="classTitle"><summary><span><strong id="classTitle">LE TUE CLASSI</strong><small>SCEGLI LA CLASSE DA VISUALIZZARE</small></span><span class="disciplineState" aria-hidden="true"><span class="whenClosed">APRI +</span><span class="whenOpen">CHIUDI −</span></span></summary><div class="disciplineBody">
 <label for="classFilter">SCEGLI LA CLASSE DA VISUALIZZARE</label>
 <select id="classFilter"><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="Prova">PROVA</option><option value="ABC">A + B + C · SENZA PROVA</option><option value="da_assegnare">DA ASSEGNARE</option></select>
 <p id="classSummary"></p><p id="classHint" class="borgoNote"></p>
 <p id="classDescription" class="borgoNote">LA SCELTA FILTRA I PROFILI E LE STATISTICHE DI TUTTE LE DISCIPLINE. PUOI CAMBIARE CLASSE A OGNI PROFILO SENZA CAMBIARE IL SUO CODICE.</p>
-</section>
+</div></details>
+<details id="codeCreationPanel" class="card discipline" name="discipline" aria-labelledby="codeCreationTitle"><summary><span><strong id="codeCreationTitle">CREA UN CODICE</strong><small>UN NUOVO PROFILO PER UN BAMBINO</small></span><span class="disciplineState" aria-hidden="true"><span class="whenClosed">APRI +</span><span class="whenOpen">CHIUDI −</span></span></summary><div class="disciplineBody">
 <p id="codeIntro">Ogni codice apre una nuova avventura. Il bambino sceglierà il compagno e il suo nome.</p>
 <form id="chooseCodeForm">
 <label for="chosenCode">SCEGLI UN CODICE INSIEME AL BAMBINO</label>
@@ -65,7 +65,7 @@
 <label for="newChildName">NOME DEL BAMBINO · VISIBILE ALLE INSEGNANTI AUTORIZZATE (FACOLTATIVO)</label><input id="newChildName" maxlength="80" autocomplete="off" aria-describedby="namePrivacy"><small id="namePrivacy">LO VEDONO SOLO LE INSEGNANTI AUTORIZZATE ALLA CLASSE. NON COMPARE NEI GIOCHI O NELLE CLASSIFICHE.</small>
 <label for="newProfileClass">CLASSE DEL NUOVO PROFILO</label><select id="newProfileClass" required><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="Prova">PROVA</option></select>
 <button id="createButton" type="submit">SALVA IL CODICE SCELTO</button>
-</form>
+</form></div></details>
 <section id="codeCard" hidden aria-labelledby="codeTitle">
 <h2 id="codeTitle">IL NUOVO CODICE</h2><p id="newCode"></p><p id="newProfile"></p>
 <p>Copialo e conservalo prima di chiudere questa pagina: viene mostrato soltanto ora. Consegnalo al bambino a cui lo assegni.</p>
@@ -92,10 +92,10 @@
 <summary><span><strong id="grammarTitle">📖 ITALIANO · GRAMMATICA</strong><small>OFFICINA DELLE PAROLE</small></span><span class="disciplineState" aria-hidden="true"><span class="whenClosed">APRI +</span><span class="whenOpen">CHIUDI −</span></span></summary>
 <div class="disciplineBody"><label for="grammarProfile">DI CHI VUOI VEDERE I PROGRESSI?</label><select id="grammarProfile"><option value="">TUTTA LA CLASSE</option></select><div class="profileActions"><button id="grammarRefresh" type="button" class="secondary">AGGIORNA STATISTICHE DI GRAMMATICA</button></div><p id="grammarStatus" role="status" aria-live="polite"></p><div id="grammarContent"></div></div>
 </details>
-<h2>I TUOI PROFILI</h2><p id="empty" hidden>Nessun profilo nel gruppo selezionato.</p><ul id="profiles"></ul>
+<details id="profilesPanel" class="card discipline" name="discipline" aria-labelledby="profilesTitle"><summary><span><strong id="profilesTitle">I PROFILI DELLA CLASSE</strong><small>BAMBINI E COLLEGAMENTI ALLE STATISTICHE</small></span><span class="disciplineState" aria-hidden="true"><span class="whenClosed">APRI +</span><span class="whenOpen">CHIUDI −</span></span></summary><div class="disciplineBody"><p id="empty" hidden>Nessun profilo nel gruppo selezionato.</p><ul id="profiles"></ul>
 <button id="refreshButton" class="secondary" type="button">AGGIORNA ELENCO</button>
-<section id="manualBadgePanel" class="card" aria-labelledby="badgeHeading">
-<h2 id="badgeHeading">ASSEGNA UN DISTINTIVO</h2>
+</div></details>
+<details id="manualBadgePanel" class="card discipline" name="discipline" aria-labelledby="badgeHeading"><summary><span><strong id="badgeHeading">ASSEGNA UN DISTINTIVO</strong><small>UN PREMIO PERSONALE PER UN BAMBINO</small></span><span class="disciplineState" aria-hidden="true"><span class="whenClosed">APRI +</span><span class="whenOpen">CHIUDI −</span></span></summary><div class="disciplineBody">
 <p>Premia un impegno, una scoperta o un gesto speciale. Il bambino lo troverà nel proprio profilo.</p>
 <form id="awardForm">
 <label for="badgeProfile">A QUALE PROFILO?</label><select id="badgeProfile" required><option value="">SCEGLI UN PROFILO</option></select>
@@ -110,7 +110,7 @@
 <select id="badgeSymbol"><option value="stella">⭐ STELLA</option><option value="foglia">🌿 FOGLIA</option><option value="bussola">🧭 BUSSOLA</option><option value="cuore">💚 CUORE</option><option value="trofeo">🏆 TROFEO</option></select>
 <button id="awardButton" type="submit" disabled>ASSEGNA IL DISTINTIVO</button>
 </form><p id="awardMessage" role="status" aria-live="polite"></p>
-</section>
+</div></details>
 <button id="logoutButton" class="secondary" type="button">ESCI</button>
 </div><p id="message" role="status" aria-live="polite"></p>
 </section>
@@ -140,6 +140,6 @@
 <script src="insegnanti-memory.js?v=distintivi-2"></script>
 <script src="grammatica-distintivi.js?v=1"></script>
 <script src="insegnanti-grammatica.js?v=1"></script>
-<script src="insegnanti-team.js?v=2"></script>
+<script src="insegnanti-team.js?v=pannelli-3"></script>
 </body>
 </html>

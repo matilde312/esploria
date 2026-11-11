@@ -21,7 +21,7 @@ function resetBadgeImage(keepFile = false) {
   updateAwardButton();
 }
 function clearSession() {
-  closeStatistics();closePortoStatistics();closeGrammarStatistics();closeNameEditor();
+  closeStatistics();closePortoStatistics();closeGrammarStatistics();closeNameEditor();resetTeamAccess();
   document.querySelectorAll('details.discipline').forEach(section=>{section.open=false;});
   profilesGeneration++;appliedClass='A'; el('classSummary').textContent='';el('classHint').textContent='';el('classFilter').value='A';
   token = null; currentCode = ''; currentProfileId = null; activeProfiles = [];
@@ -99,8 +99,8 @@ async function loadProfiles() {
     const nameButton=document.createElement('button');nameButton.type='button';nameButton.className='secondary';nameButton.textContent=profile.nome_riservato?'MODIFICA NOME RISERVATO':'INSERISCI NOME RISERVATO';nameButton.disabled=managingProfile;nameButton.addEventListener('click',()=>openNameEditor(profile));
     const portoButton=document.createElement('button');portoButton.type='button';portoButton.className='secondary';portoButton.textContent='PORTO · INGLESE';portoButton.disabled=managingProfile;portoButton.addEventListener('click',()=>selectPortoProfile(profile.id));
     const grammarButton=node('button','OFFICINA · GRAMMATICA','secondary');grammarButton.type='button';grammarButton.disabled=managingProfile;grammarButton.addEventListener('click',()=>selectGrammarProfile(profile.id));
-    actions.append(nameButton,statsButton,portoButton,grammarButton,toggle,remove);
-    li.append(title,detail,classAssignmentControl(profile),actions); el('profiles').append(li);
+    if(collaborator())actions.append(statsButton,portoButton,grammarButton);else actions.append(nameButton,statsButton,portoButton,grammarButton,toggle,remove);
+    li.append(title,detail);if(!collaborator())li.append(classAssignmentControl(profile));li.append(actions); el('profiles').append(li);
     if (profile.attivo) {
       const option = document.createElement('option'); option.value = profile.id;
       option.textContent = (profile.nome_riservato || profile.nome_personaggio || 'COMPAGNO NON ANCORA SCELTO') + (profile.animale ? ' · ' + profile.animale : '') + ' · ' + profile.id.slice(0,8);
@@ -122,6 +122,7 @@ el('loginForm').addEventListener('submit',async event => {
   try {
     const session = await request('/auth/v1/token?grant_type=password',{email:el('email').value.trim(),password:el('password').value});
     token = session.access_token; el('password').value = '';
+    if(!await prepareTeacherAccess())return;
     await loadProfiles(); el('loginForm').hidden = true; el('dashboard').hidden = false; tell('');
   } catch (error) { clearSession(); tell(error.message); }
   finally { busy = false; el('loginButton').disabled = false; }

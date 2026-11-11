@@ -33,6 +33,7 @@
 .discipline .whenOpen{display:none}.discipline[open] .whenClosed{display:none}.discipline[open] .whenOpen{display:inline}
 .disciplineBody{border-top:1px solid #d5bf99;padding:20px 24px}
 @media(max-width:650px){.discipline>summary{padding:17px}.discipline>summary strong{font-size:25px}.discipline>summary small{font-size:14px}.disciplineState{font-size:16px}.disciplineBody{padding:17px}}
+.teamClasses{display:flex;gap:16px;flex-wrap:wrap;border:1px solid #c6ad88;border-radius:12px;margin:18px 0;padding:12px}.teamClasses legend{font-size:18px}.teamClasses label,.teamActive{display:flex;gap:8px;align-items:center;margin:0}.teamClasses input,.teamActive input{width:auto;accent-color:#486a63}.teamTeacher{border-top:1px solid #c6ad88;margin-top:24px;padding-top:16px}.teamTeacher h3{overflow-wrap:anywhere}.teamTeacher button{font-size:19px}#teamStatus,#passwordStatus{white-space:pre-line}
 </style>
 </head>
 <body>
@@ -46,20 +47,22 @@
 <label for="password">PASSWORD</label><input id="password" type="password" autocomplete="current-password" required>
 <button id="loginButton" type="submit">ENTRA</button>
 </form>
-<div id="dashboard" hidden>
+<section id="firstPassword" hidden><h2>SCEGLI LA TUA PASSWORD PERSONALE</h2><p>QUESTO PASSAGGIO SERVE SOLTANTO AL PRIMO ACCESSO. DOPO VEDRAI LE CLASSI ASSEGNATE.</p><form id="firstPasswordForm"><label for="newTeacherPassword">NUOVA PASSWORD · ALMENO 12 CARATTERI</label><input id="newTeacherPassword" type="password" minlength="12" maxlength="128" autocomplete="new-password" required><label for="confirmTeacherPassword">RIPETI LA PASSWORD</label><input id="confirmTeacherPassword" type="password" minlength="12" maxlength="128" autocomplete="new-password" required><button id="saveTeacherPassword" type="submit">SALVA LA MIA PASSWORD</button></form><button id="cancelTeacherPassword" type="button" class="secondary">ESCI</button><p id="passwordStatus" role="status"></p></section>
+<div id="dashboard" hidden><p id="teacherRoleNote" class="borgoNote"></p>
+<details id="teamPanel" class="card discipline" name="discipline" hidden aria-labelledby="teamTitle"><summary><span><strong id="teamTitle">GESTISCI INSEGNANTI</strong><small>ACCOUNT E CLASSI · SOLO AMMINISTRATRICE</small></span><span class="disciplineState" aria-hidden="true"><span class="whenClosed">APRI +</span><span class="whenOpen">CHIUDI −</span></span></summary><div class="disciplineBody"><p>SOLO TU PUOI CREARE GLI ACCESSI E SCEGLIERE LE CLASSI. OGNI INSEGNANTE VEDE I BAMBINI E LE STATISTICHE DELLE CLASSI ASSEGNATE.</p><form id="createTeacherForm"><label for="teacherEmail">EMAIL DELL’INSEGNANTE</label><input id="teacherEmail" type="email" maxlength="254" autocomplete="off" required><label for="teacherPassword">PASSWORD INIZIALE · ALMENO 12 CARATTERI</label><input id="teacherPassword" type="password" minlength="12" maxlength="128" autocomplete="new-password" required><fieldset id="createTeacherClasses" class="teamClasses"><legend>CLASSI DA ASSEGNARE</legend><label><input type="checkbox" value="A">A</label><label><input type="checkbox" value="B">B</label><label><input type="checkbox" value="C">C</label><label><input type="checkbox" value="Prova">PROVA</label></fieldset><button id="createTeacherButton" type="submit">CREA ACCESSO INSEGNANTE</button></form><p id="teamStatus" role="status"></p><button id="teamRefresh" type="button" class="secondary">AGGIORNA INSEGNANTI</button><div id="teamList"></div></div></details>
 <section class="card" aria-labelledby="classTitle">
 <h2 id="classTitle">LE TUE CLASSI</h2>
 <label for="classFilter">SCEGLI LA CLASSE DA VISUALIZZARE</label>
 <select id="classFilter"><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="Prova">PROVA</option><option value="ABC">A + B + C · SENZA PROVA</option><option value="da_assegnare">DA ASSEGNARE</option></select>
 <p id="classSummary"></p><p id="classHint" class="borgoNote"></p>
-<p class="borgoNote">LA SCELTA FILTRA I PROFILI E LE STATISTICHE DI MATEMATICA E INGLESE. PUOI CAMBIARE CLASSE A OGNI PROFILO SENZA CAMBIARE IL SUO CODICE.</p>
+<p id="classDescription" class="borgoNote">LA SCELTA FILTRA I PROFILI E LE STATISTICHE DI TUTTE LE DISCIPLINE. PUOI CAMBIARE CLASSE A OGNI PROFILO SENZA CAMBIARE IL SUO CODICE.</p>
 </section>
-<p>Ogni codice apre una nuova avventura. Il bambino sceglierà il compagno e il suo nome.</p>
+<p id="codeIntro">Ogni codice apre una nuova avventura. Il bambino sceglierà il compagno e il suo nome.</p>
 <form id="chooseCodeForm">
 <label for="chosenCode">SCEGLI UN CODICE INSIEME AL BAMBINO</label>
 <input id="chosenCode" type="text" maxlength="40" autocomplete="off" autocapitalize="characters" spellcheck="false" required aria-describedby="codeHelp" placeholder="ES. LUNA-VOLPE-27">
 <small id="codeHelp">Almeno 10 lettere e numeri in tutto, con almeno una lettera e un numero. Puoi separare le parole con spazi o trattini. Usa lettere senza accenti.</small>
-<label for="newChildName">NOME DEL BAMBINO · VISIBILE SOLO A TE (FACOLTATIVO)</label><input id="newChildName" maxlength="80" autocomplete="off" aria-describedby="namePrivacy"><small id="namePrivacy">LO VEDI SOLO NELLA TUA AREA INSEGNANTE. NON COMPARE NEI GIOCHI O NELLE CLASSIFICHE.</small>
+<label for="newChildName">NOME DEL BAMBINO · VISIBILE ALLE INSEGNANTI AUTORIZZATE (FACOLTATIVO)</label><input id="newChildName" maxlength="80" autocomplete="off" aria-describedby="namePrivacy"><small id="namePrivacy">LO VEDONO SOLO LE INSEGNANTI AUTORIZZATE ALLA CLASSE. NON COMPARE NEI GIOCHI O NELLE CLASSIFICHE.</small>
 <label for="newProfileClass">CLASSE DEL NUOVO PROFILO</label><select id="newProfileClass" required><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="Prova">PROVA</option></select>
 <button id="createButton" type="submit">SALVA IL CODICE SCELTO</button>
 </form>
@@ -91,7 +94,7 @@
 </details>
 <h2>I TUOI PROFILI</h2><p id="empty" hidden>Nessun profilo nel gruppo selezionato.</p><ul id="profiles"></ul>
 <button id="refreshButton" class="secondary" type="button">AGGIORNA ELENCO</button>
-<section class="card" aria-labelledby="badgeHeading">
+<section id="manualBadgePanel" class="card" aria-labelledby="badgeHeading">
 <h2 id="badgeHeading">ASSEGNA UN DISTINTIVO</h2>
 <p>Premia un impegno, una scoperta o un gesto speciale. Il bambino lo troverà nel proprio profilo.</p>
 <form id="awardForm">
@@ -130,12 +133,13 @@
 <p id="childNameHelp">NON COMPARE NEL PROFILO DEL BAMBINO, NEI GIOCHI O NELLE CLASSIFICHE. LASCIA VUOTO PER RIMUOVERE IL NOME.</p>
 <p id="childNameMessage" role="status" aria-live="polite"></p><div class="profileActions"><button id="saveChildName" type="submit">SALVA NOME</button><button id="cancelChildName" type="button" class="secondary">ANNULLA</button></div>
 </form></dialog>
-<script src="insegnanti.js?v=grammatica-1"></script>
+<script src="insegnanti.js?v=team-2"></script>
 <script src="insegnanti-porto.js?v=discipline-1"></script>
-<script src="insegnanti-classi.js?v=grammatica-1"></script>
+<script src="insegnanti-classi.js?v=team-2"></script>
 <script src="memory-distintivi.js?v=1"></script>
 <script src="insegnanti-memory.js?v=distintivi-2"></script>
 <script src="grammatica-distintivi.js?v=1"></script>
 <script src="insegnanti-grammatica.js?v=1"></script>
+<script src="insegnanti-team.js?v=2"></script>
 </body>
 </html>

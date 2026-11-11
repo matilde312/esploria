@@ -22,6 +22,7 @@ function resetBadgeImage(keepFile = false) {
 }
 function clearSession() {
   closeStatistics();closePortoStatistics();closeNameEditor();
+  document.querySelectorAll('details.discipline').forEach(section=>{section.open=false;});
   profilesGeneration++;appliedClass='A'; el('classSummary').textContent='';el('classHint').textContent='';el('classFilter').value='A';
   token = null; currentCode = ''; currentProfileId = null; activeProfiles = [];
   closeDeleteDialog();
@@ -307,7 +308,7 @@ let borgoGeneration=0,nameGeneration=0,nameTarget=null,nameSaving=false;
 function node(tag,text,className){const n=document.createElement(tag);if(text!==undefined)n.textContent=String(text);if(className)n.className=className;return n}
 function closeStatistics(){borgoGeneration++;el('borgoContent').replaceChildren();el('borgoStatus').textContent='';el('borgoProfile').replaceChildren(new Option('TUTTI I PROFILI · '+classLabel(),''));}
 function populateBorgoProfiles(profiles){const previous=el('borgoProfile').value;el('borgoProfile').replaceChildren(new Option('TUTTI I PROFILI · '+classLabel(),''));for(const p of profiles){el('borgoProfile').append(new Option((p.nome_riservato||p.nome_personaggio||'PROFILO SENZA NOME')+' · '+p.id.slice(0,8).toUpperCase(),p.id))}if(profiles.some(p=>p.id===previous))el('borgoProfile').value=previous;}
-function selectBorgoProfile(id){el('borgoProfile').value=id;el('borgoStats').scrollIntoView?.({behavior:'smooth',block:'start'});loadBorgoStatistics();}
+function selectBorgoProfile(id){el('borgoStats').open=true;el('portoStats').open=false;el('borgoProfile').value=id;el('borgoStats').scrollIntoView?.({behavior:'smooth',block:'start'});loadBorgoStatistics();}
 function metric(label,value){const box=node('div',undefined,'borgoMetric');box.append(node('span',label),node('strong',Number(value||0).toLocaleString('it-IT')));return box;}
 function table(headers,rows){const wrap=node('div',undefined,'borgoScroll'),t=node('table',undefined,'borgoTable'),head=node('thead'),hr=node('tr'),body=node('tbody');headers.forEach(label=>{const th=node('th',label);th.scope='col';hr.append(th)});head.append(hr);rows.forEach(cells=>{const tr=node('tr');cells.forEach(cell=>{const td=node('td');if(cell instanceof Node)td.append(cell);else td.textContent=String(cell??'—');tr.append(td)});body.append(tr)});t.append(head,body);wrap.append(t);return wrap;}
 function renderBorgo(data){const root=el('borgoContent');root.replaceChildren();const total=data.totali;
@@ -333,3 +334,10 @@ function closeNameEditor(){nameGeneration++;nameTarget=null;nameSaving=false;el(
 el('childNameForm').addEventListener('submit',async event=>{event.preventDefault();if(!nameTarget||nameSaving||!token)return;const target=nameTarget,generation=++nameGeneration,access=token;nameSaving=true;el('saveChildName').disabled=true;el('cancelChildName').disabled=true;el('childNameInput').disabled=true;el('childNameMessage').textContent='SALVO IL NOME RISERVATO…';try{await request('/rest/v1/rpc/esploria_salva_nome_riservato',{p_profilo_id:target.id,p_nome:el('childNameInput').value.trim()},access);if(generation!==nameGeneration||access!==token)return;closeNameEditor();await loadProfiles();if(access===token)tell('NOME RISERVATO SALVATO.');}catch(error){if(generation===nameGeneration&&access===token)el('childNameMessage').textContent=error.message;}finally{if(generation===nameGeneration){nameSaving=false;el('saveChildName').disabled=false;el('cancelChildName').disabled=false;el('childNameInput').disabled=false;}}});
 el('cancelChildName').addEventListener('click',()=>{if(!nameSaving)closeNameEditor()});el('childNameDialog').addEventListener('cancel',event=>{event.preventDefault();if(!nameSaving)closeNameEditor()});
 el('borgoProfile').addEventListener('change',loadBorgoStatistics);el('borgoRefresh').addEventListener('click',loadBorgoStatistics);
+
+/* Materie richiudibili: una sola disciplina aperta per volta. */
+document.querySelectorAll('details.discipline').forEach(section=>{
+ section.addEventListener('toggle',()=>{
+  if(section.open)document.querySelectorAll('details.discipline').forEach(other=>{if(other!==section)other.open=false;});
+ });
+});

@@ -21,6 +21,18 @@
 .borgoEyebrow{letter-spacing:2px;font-size:17px;color:#486a63}.borgoMetrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:20px 0}.borgoMetric{background:#fffdf7;border:1px solid #d9c6a9;border-radius:16px;padding:15px}.borgoMetric strong{display:block;font-size:32px;color:#486a63}.borgoMetric span{font-size:17px}.borgoNote{font-size:17px;line-height:1.45;color:#526561}.borgoChart{padding:16px;background:#fffdf7;border:1px solid #d9c6a9;border-radius:16px;margin:18px 0}.borgoChart h3{margin:0 0 12px;font-size:24px}.borgoBarRow{margin:17px 0}.borgoBarLabel{font-size:18px;display:flex;justify-content:space-between;gap:10px}.borgoTrack{display:flex;height:20px;background:#e8e6d9;border-radius:8px;overflow:hidden;margin-top:7px}.borgoCorrect{background:#486a63}.borgoError{background:#c66e50}.borgoLegend{font-size:17px;display:flex;gap:20px;flex-wrap:wrap}.borgoDot{display:inline-block;width:12px;height:12px;margin-right:6px;border-radius:3px}.borgoScroll{overflow-x:auto}.borgoTable{border-collapse:collapse;width:100%;font-size:18px;min-width:560px}.borgoTable th,.borgoTable td{text-align:left;padding:12px 9px;border-bottom:1px solid #d9c6a9}.borgoTable th{font-size:16px}.borgoTable button{width:auto;margin:0;font-size:17px;padding:6px 12px}.borgoWeek{display:grid;grid-template-columns:80px 1fr 50px;gap:10px;align-items:center;font-size:17px;margin:12px 0}.borgoWeek .borgoTrack{margin:0}.borgoOrder{display:flex;flex-wrap:wrap;gap:10px}.borgoOrder span{padding:10px;background:#fffdf7;border:1px solid #d9c6a9;border-radius:12px;font-size:18px}#borgoStats{scroll-margin-top:20px}#childNameDialog{width:min(560px,calc(100vw - 28px));max-height:calc(100dvh - 32px);overflow:auto;background:#fff5e2;color:#243d4b;border:3px solid #a9855d;border-radius:22px;padding:26px;font:inherit}#childNameDialog::backdrop{background:rgba(23,42,55,.65)}#childNameInput,#newChildName{text-transform:uppercase}#childNameHelp,#childNameProfile{font-size:18px}
 @media(max-width:600px){.borgoMetrics{grid-template-columns:repeat(2,minmax(0,1fr))}.borgoBarLabel{flex-direction:column;gap:2px}.borgoChart{padding:12px}.borgoWeek{grid-template-columns:60px 1fr 30px}}
 .profileClass{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:12px 0}.profileClass label{margin:0}.profileClass select{width:auto;min-width:140px;margin:0}.profileClass button{width:auto;margin:0}#classSummary{font-size:19px}#classFilter{font-size:24px}
+
+.discipline{padding:0!important;overflow:hidden;scroll-margin-top:18px}
+.discipline>summary{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 24px;cursor:pointer;list-style:none;color:#284a4d}
+.discipline>summary::-webkit-details-marker{display:none}
+.discipline>summary strong{display:block;font-size:29px;font-weight:400}
+.discipline>summary small{display:block;font-size:17px;letter-spacing:1px;color:#526961;margin-top:4px}
+.discipline>summary:focus-visible{outline:3px solid #b85c3f;outline-offset:-5px;border-radius:20px}
+.discipline>summary:hover{background:#f4e9d2}
+.disciplineState{font-size:18px;white-space:nowrap;color:#486a63}
+.discipline .whenOpen{display:none}.discipline[open] .whenClosed{display:none}.discipline[open] .whenOpen{display:inline}
+.disciplineBody{border-top:1px solid #d5bf99;padding:20px 24px}
+@media(max-width:650px){.discipline>summary{padding:17px}.discipline>summary strong{font-size:25px}.discipline>summary small{font-size:14px}.disciplineState{font-size:16px}.disciplineBody{padding:17px}}
 </style>
 </head>
 <body>
@@ -57,18 +69,22 @@
 <button id="copyButton" class="secondary" type="button">COPIA IL CODICE</button>
 <label><input id="savedCode" type="checkbox"> HO CONSERVATO QUESTO CODICE</label>
 </section>
-<section id="borgoStats" class="card" aria-labelledby="borgoTitle">
-<p class="borgoEyebrow">LA MATEMATICA A ESPLORIA</p><h2 id="borgoTitle">⚙ BORGO DEGLI INGRANAGGI</h2>
+<details id="borgoStats" class="card discipline" name="discipline" aria-labelledby="borgoTitle">
+<summary><span><strong id="borgoTitle">⚙ MATEMATICA</strong><small>BORGO DEGLI INGRANAGGI</small></span><span class="disciplineState" aria-hidden="true"><span class="whenClosed">APRI +</span><span class="whenOpen">CHIUDI −</span></span></summary>
+<div class="disciplineBody">
 <label for="borgoProfile">DI CHI VUOI VEDERE I PROGRESSI?</label><select id="borgoProfile"><option value="">TUTTA LA CLASSE</option></select>
 <div class="profileActions"><button id="borgoRefresh" type="button" class="secondary">AGGIORNA STATISTICHE</button></div>
 <p id="borgoStatus" role="status" aria-live="polite"></p><div id="borgoContent"></div>
-</section>
-<section id="portoStats" class="card" aria-labelledby="portoTitle">
-<p class="borgoEyebrow">L’INGLESE A ESPLORIA</p><h2 id="portoTitle">⚓ PORTO DELLE LINGUE</h2>
+</div>
+</details>
+<details id="portoStats" class="card discipline" name="discipline" aria-labelledby="portoTitle">
+<summary><span><strong id="portoTitle">⚓ INGLESE</strong><small>PORTO DELLE LINGUE</small></span><span class="disciplineState" aria-hidden="true"><span class="whenClosed">APRI +</span><span class="whenOpen">CHIUDI −</span></span></summary>
+<div class="disciplineBody">
 <label for="portoProfile">DI CHI VUOI VEDERE I PROGRESSI?</label><select id="portoProfile"><option value="">TUTTA LA CLASSE</option></select>
 <div class="profileActions"><button id="portoRefresh" type="button" class="secondary">AGGIORNA STATISTICHE DI INGLESE</button></div>
 <p id="portoStatus" role="status" aria-live="polite"></p><div id="portoContent"></div><section id="memoryContent" aria-label="Statistiche del memory colori"></section>
-</section>
+</div>
+</details>
 <h2>I TUOI PROFILI</h2><p id="empty" hidden>Nessun profilo nel gruppo selezionato.</p><ul id="profiles"></ul>
 <button id="refreshButton" class="secondary" type="button">AGGIORNA ELENCO</button>
 <section class="card" aria-labelledby="badgeHeading">
@@ -110,8 +126,8 @@
 <p id="childNameHelp">NON COMPARE NEL PROFILO DEL BAMBINO, NEI GIOCHI O NELLE CLASSIFICHE. LASCIA VUOTO PER RIMUOVERE IL NOME.</p>
 <p id="childNameMessage" role="status" aria-live="polite"></p><div class="profileActions"><button id="saveChildName" type="submit">SALVA NOME</button><button id="cancelChildName" type="button" class="secondary">ANNULLA</button></div>
 </form></dialog>
-<script src="insegnanti.js?v=classi-diagnosi-2"></script>
-<script src="insegnanti-porto.js?v=memory-1"></script>
+<script src="insegnanti.js?v=discipline-1"></script>
+<script src="insegnanti-porto.js?v=discipline-1"></script>
 <script src="insegnanti-classi.js?v=1"></script>
 <script src="insegnanti-memory.js?v=1"></script>
 </body>

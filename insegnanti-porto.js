@@ -2,7 +2,7 @@
 let portoGeneration=0;
 function closePortoStatistics(){portoGeneration++;el('portoContent').replaceChildren();el('memoryContent').replaceChildren();el('portoStatus').textContent='';el('portoProfile').replaceChildren(new Option('TUTTI I PROFILI · '+classLabel(),''));el('portoRefresh').disabled=false;}
 function populatePortoProfiles(profiles){const previous=el('portoProfile').value;el('portoProfile').replaceChildren(new Option('TUTTI I PROFILI · '+classLabel(),''));for(const p of profiles)el('portoProfile').append(new Option((p.nome_riservato||p.nome_personaggio||'PROFILO SENZA NOME')+' · '+p.id.slice(0,8).toUpperCase(),p.id));if(profiles.some(p=>p.id===previous))el('portoProfile').value=previous;}
-function selectPortoProfile(id){el('portoProfile').value=id;el('portoStats').scrollIntoView?.({behavior:'smooth',block:'start'});loadPortoStatistics();}
+function selectPortoProfile(id){el('portoStats').open=true;el('borgoStats').open=false;el('portoProfile').value=id;el('portoStats').scrollIntoView?.({behavior:'smooth',block:'start'});loadPortoStatistics();}
 function renderPorto(data){const root=el('portoContent');root.replaceChildren();const t=data.totali;root.append(node('h3',data.profilo_id?(data.alunni[0]?.nome_riservato||data.alunni[0]?.compagno||'PROFILO SELEZIONATO'):'PANORAMICA · '+classLabel()));
  const metrics=node('div',undefined,'borgoMetrics');for(const [label,value] of [['RICETTE INIZIATE',t.iniziate],['RICETTE COMPLETATE',t.completate],['IN CORSO',t.in_corso],['AIUTI RICHIESTI',t.aiuti],['TENTATIVI DA RIVEDERE',t.errori]])metrics.append(metric(label,value));root.append(metrics);
  if(!t.iniziate)root.append(node('p','NON CI SONO ANCORA RICETTE REGISTRATE. I DATI COMPARIRANNO DOPO LE PRIME PARTITE CON IL CODICE.','borgoNote'));

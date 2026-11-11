@@ -34,3 +34,12 @@ p{line-height:1.4;margin:8px 0}
 /* Illustrazione nel centro della cornice, senza sovrapporre titolo e pulsante. */
 .notice-content{inset:17% 14% 18%;gap:10px}.game-preview{display:block;min-height:0;height:clamp(70px,18vw,220px);max-width:100%;width:auto;object-fit:contain;border-radius:12px;box-shadow:0 2px 8px #66492b30}
 @media(max-width:600px){.notice-content{inset:18% 14%;gap:5px}.notice-content h2{font-size:clamp(16px,4vw,24px)}.game-preview{height:clamp(58px,18vw,108px);border-radius:6px}.notice-content .play-button{line-height:1.2;font-size:16px;padding:4px 14px}}
+
+/* Le schede dell’Officina seguono la stessa disposizione delle altre materie. */
+.games-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;max-width:1440px;margin:0 auto;align-items:start}
+.games-grid .notice{width:100%;container-type:inline-size}
+.games-grid .notice-content{inset:16% 14%;gap:clamp(4px,1.2cqw,10px)}
+.games-grid .notice-content h2{font-size:clamp(16px,4.4cqw,33px)}
+.games-grid .game-preview{height:clamp(64px,24cqw,220px)}
+.games-grid .play-button{font-size:clamp(16px,3.5cqw,24px);line-height:1.2;padding:6px 18px}
+@media(max-width:900px){.games-grid{grid-template-columns:minmax(0,1fr);max-width:720px;gap:20px}}

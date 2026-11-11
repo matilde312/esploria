@@ -34,6 +34,7 @@
 .disciplineBody{border-top:1px solid #d5bf99;padding:20px 24px}
 @media(max-width:650px){.discipline>summary{padding:17px}.discipline>summary strong{font-size:25px}.discipline>summary small{font-size:14px}.disciplineState{font-size:16px}.disciplineBody{padding:17px}}
 .teamClasses{display:flex;gap:16px;flex-wrap:wrap;border:1px solid #c6ad88;border-radius:12px;margin:18px 0;padding:12px}.teamClasses legend{font-size:18px}.teamClasses label,.teamActive{display:flex;gap:8px;align-items:center;margin:0}.teamClasses input,.teamActive input{width:auto;accent-color:#486a63}.teamTeacher{border-top:1px solid #c6ad88;margin-top:24px;padding-top:16px}.teamTeacher h3{overflow-wrap:anywhere}.teamTeacher button{font-size:19px}#teamStatus,#passwordStatus{white-space:pre-line}
+.gameStats{border-top:1px solid #c6ad88;margin-top:22px;padding-top:14px}.gameStats>summary{cursor:pointer;font-size:24px;color:#315c52;padding:8px 0}.gameStats>summary:focus-visible{outline:3px solid #bc5e3e;outline-offset:3px}
 </style>
 </head>
 <body>
@@ -90,7 +91,7 @@
 </details>
 <details id="grammarStats" class="card discipline" name="discipline" aria-labelledby="grammarTitle">
 <summary><span><strong id="grammarTitle">📖 ITALIANO · GRAMMATICA E ORTOGRAFIA</strong><small>OFFICINA DELLE PAROLE</small></span><span class="disciplineState" aria-hidden="true"><span class="whenClosed">APRI +</span><span class="whenOpen">CHIUDI −</span></span></summary>
-<div class="disciplineBody"><label for="grammarProfile">DI CHI VUOI VEDERE I PROGRESSI?</label><select id="grammarProfile"><option value="">TUTTA LA CLASSE</option></select><div class="profileActions"><button id="grammarRefresh" type="button" class="secondary">AGGIORNA STATISTICHE DI GRAMMATICA</button></div><p id="grammarStatus" role="status" aria-live="polite"></p><div id="grammarContent"></div><section id="doppieContent" aria-label="STATISTICHE DEL PONTE DELLE DOPPIE"></section></div>
+<div class="disciplineBody"><label for="grammarProfile">DI CHI VUOI VEDERE I PROGRESSI?</label><select id="grammarProfile"><option value="">TUTTA LA CLASSE</option></select><div class="profileActions"><button id="grammarRefresh" type="button" class="secondary">AGGIORNA STATISTICHE DI GRAMMATICA</button></div><p id="grammarStatus" role="status" aria-live="polite"></p><div id="grammarContent"></div><section id="doppieContent" aria-label="STATISTICHE DEL PONTE DELLE DOPPIE"></section><details class="gameStats" aria-labelledby="legamiStatsTitle"><summary id="legamiStatsTitle">I LEGAMI DELLE PAROLE · APRI LE STATISTICHE</summary><label for="legamiLevelFilter">LIVELLO DEI LEGAMI</label><select id="legamiLevelFilter"><option value="">TUTTI I LIVELLI</option><option value="scintilla">SCINTILLA</option><option value="intreccio">INTRECCIO</option><option value="trama">TRAMA</option></select><div id="legamiContent"></div></details></div>
 </details>
 <details id="profilesPanel" class="card discipline" name="discipline" aria-labelledby="profilesTitle"><summary><span><strong id="profilesTitle">I PROFILI DELLA CLASSE</strong><small>BAMBINI E COLLEGAMENTI ALLE STATISTICHE</small></span><span class="disciplineState" aria-hidden="true"><span class="whenClosed">APRI +</span><span class="whenOpen">CHIUDI −</span></span></summary><div class="disciplineBody"><p id="empty" hidden>Nessun profilo nel gruppo selezionato.</p><ul id="profiles"></ul>
 <button id="refreshButton" class="secondary" type="button">AGGIORNA ELENCO</button>
@@ -139,9 +140,11 @@
 <script src="memory-distintivi.js?v=1"></script>
 <script src="insegnanti-memory.js?v=distintivi-2"></script>
 <script src="grammatica-distintivi.js?v=1"></script>
-<script src="insegnanti-grammatica.js?v=doppie-1"></script>
+<script src="insegnanti-grammatica.js?v=legami-1"></script>
 <script src="insegnanti-team.js?v=pannelli-3"></script>
 <script src="doppie-dati.js?v=1"></script>
 <script src="insegnanti-doppie.js?v=1"></script>
+<script src="legami-dati.js?v=1"></script>
+<script src="insegnanti-legami.js?v=1"></script>
 </body>
 </html>

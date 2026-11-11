@@ -43,3 +43,6 @@ p{line-height:1.4;margin:8px 0}
 .games-grid .game-preview{height:clamp(64px,24cqw,220px)}
 .games-grid .play-button{font-size:clamp(16px,3.5cqw,24px);line-height:1.2;padding:6px 18px}
 @media(max-width:900px){.games-grid{grid-template-columns:minmax(0,1fr);max-width:720px;gap:20px}}
+
+/* Quando i giochi sono dispari, l’ultima scheda mantiene la stessa misura. */
+@media(min-width:901px){.games-grid .notice:last-child:nth-child(odd):not(:first-child){grid-column:1/-1;width:calc(50% - 12px);justify-self:center}}

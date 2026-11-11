@@ -364,7 +364,7 @@ const places = {
       "IN QUESTA PICCOLA OFFICINA LE PAROLE " +
       "SI INCONTRANO, CAMBIANO FORMA E " +
       "CREANO QUALCOSA DI SPECIALE. " +
-      "PRESTO POTRAI ENTRARE!"
+      "ENTRA NELL’OFFICINA DELLE PAROLE!"
   },
 
   borgo: {
@@ -493,6 +493,11 @@ document.querySelectorAll("button.place").forEach(button => {
 
     if (button.id === "profilo" && hasCodeAccess()) {
       window.location.href = "profilo.html";
+      return;
+    }
+
+    if (button.id === "officina") {
+      window.location.href = "officina.html";
       return;
     }
 

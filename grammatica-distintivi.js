@@ -1,0 +1,2 @@
+/* Traguardi calcolati esclusivamente sui percorsi completi verificati online. */
+(function(root){'use strict';const goals=[{n:1,key:'concordanze-1',icon:'📜',it:'LE PAROLE FANNO SQUADRA'},{n:5,key:'concordanze-5',icon:'🪶',it:'ESPLORATORE DELLE PAROLE · 5 PERCORSI'},{n:10,key:'concordanze-10',icon:'🏅',it:'MAESTRO DELLE CONCORDANZE · 10 PERCORSI'}];root.EsploriaGrammarBadges=count=>goals.filter(b=>Number.isFinite(Number(count))&&Number(count)>=b.n).map(b=>({...b}));})(typeof window==='undefined'?globalThis:window);

@@ -30,3 +30,7 @@ p{line-height:1.4;margin:8px 0}
 @media(max-width:600px){.welcome{padding:18px 14px;border-radius:16px}}
 
 .play-button{display:inline-block;padding:8px 24px;background:#4b735b;color:#fff8e5;border:2px solid #36543f;border-radius:18px;text-decoration:none;box-shadow:0 3px 0 #36543f;font-size:24px}.play-button:hover{background:#3d614b}.play-button:focus-visible{outline:3px solid #bb6942;outline-offset:4px}@media(max-width:600px){.play-button{font-size:17px;padding:5px 12px}}
+
+/* Illustrazione nel centro della cornice, senza sovrapporre titolo e pulsante. */
+.notice-content{inset:17% 14% 18%;gap:10px}.game-preview{display:block;min-height:0;height:clamp(70px,18vw,220px);max-width:100%;width:auto;object-fit:contain;border-radius:12px;box-shadow:0 2px 8px #66492b30}
+@media(max-width:600px){.notice-content{inset:18% 14%;gap:5px}.notice-content h2{font-size:clamp(16px,4vw,24px)}.game-preview{height:clamp(58px,18vw,108px);border-radius:6px}.notice-content .play-button{line-height:1.2;font-size:16px;padding:4px 14px}}

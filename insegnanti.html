@@ -85,6 +85,10 @@
 <p id="portoStatus" role="status" aria-live="polite"></p><div id="portoContent"></div><section id="memoryContent" aria-label="Statistiche del memory colori"></section>
 </div>
 </details>
+<details id="grammarStats" class="card discipline" name="discipline" aria-labelledby="grammarTitle">
+<summary><span><strong id="grammarTitle">📖 ITALIANO · GRAMMATICA</strong><small>OFFICINA DELLE PAROLE</small></span><span class="disciplineState" aria-hidden="true"><span class="whenClosed">APRI +</span><span class="whenOpen">CHIUDI −</span></span></summary>
+<div class="disciplineBody"><label for="grammarProfile">DI CHI VUOI VEDERE I PROGRESSI?</label><select id="grammarProfile"><option value="">TUTTA LA CLASSE</option></select><div class="profileActions"><button id="grammarRefresh" type="button" class="secondary">AGGIORNA STATISTICHE DI GRAMMATICA</button></div><p id="grammarStatus" role="status" aria-live="polite"></p><div id="grammarContent"></div></div>
+</details>
 <h2>I TUOI PROFILI</h2><p id="empty" hidden>Nessun profilo nel gruppo selezionato.</p><ul id="profiles"></ul>
 <button id="refreshButton" class="secondary" type="button">AGGIORNA ELENCO</button>
 <section class="card" aria-labelledby="badgeHeading">
@@ -126,10 +130,12 @@
 <p id="childNameHelp">NON COMPARE NEL PROFILO DEL BAMBINO, NEI GIOCHI O NELLE CLASSIFICHE. LASCIA VUOTO PER RIMUOVERE IL NOME.</p>
 <p id="childNameMessage" role="status" aria-live="polite"></p><div class="profileActions"><button id="saveChildName" type="submit">SALVA NOME</button><button id="cancelChildName" type="button" class="secondary">ANNULLA</button></div>
 </form></dialog>
-<script src="insegnanti.js?v=discipline-1"></script>
+<script src="insegnanti.js?v=grammatica-1"></script>
 <script src="insegnanti-porto.js?v=discipline-1"></script>
-<script src="insegnanti-classi.js?v=1"></script>
+<script src="insegnanti-classi.js?v=grammatica-1"></script>
 <script src="memory-distintivi.js?v=1"></script>
 <script src="insegnanti-memory.js?v=distintivi-2"></script>
+<script src="grammatica-distintivi.js?v=1"></script>
+<script src="insegnanti-grammatica.js?v=1"></script>
 </body>
 </html>

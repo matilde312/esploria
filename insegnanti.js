@@ -86,7 +86,7 @@ async function loadProfiles() {
   for (const profile of profiles) {
     const li = document.createElement('li'), title = document.createElement('strong'), detail = document.createElement('small');
     title.textContent = profile.nome_riservato || profile.nome_personaggio || 'NOME DEL BAMBINO DA INSERIRE';
-    detail.textContent = (profile.nome_personaggio ? 'COMPAGNO: '+profile.nome_personaggio+' · ' : '') + 'PROFILO ' + profile.id + (profile.animale ? ' · ' + profile.animale : '') + (profile.attivo ? ' · ATTIVO' : ' · DISATTIVATO')+' · '+(profile.classe?classLabel(profile.classe):'DA ASSEGNARE');
+    detail.textContent = (profile.nome_personaggio ? 'Compagno: '+profile.nome_personaggio+' · ' : '') + (profile.attivo ? 'Attivo' : 'Sospeso')+' · '+(profile.classe?classLabel(profile.classe):'Da assegnare');
     const actions = document.createElement('div'); actions.className = 'profileActions';
     const toggle = document.createElement('button'); toggle.type = 'button'; toggle.className = 'secondary';
     toggle.textContent = profile.attivo ? 'DISATTIVA' : 'RIATTIVA';
@@ -99,8 +99,11 @@ async function loadProfiles() {
     const nameButton=document.createElement('button');nameButton.type='button';nameButton.className='secondary';nameButton.textContent=profile.nome_riservato?'MODIFICA NOME RISERVATO':'INSERISCI NOME RISERVATO';nameButton.disabled=managingProfile;nameButton.addEventListener('click',()=>openNameEditor(profile));
     const portoButton=document.createElement('button');portoButton.type='button';portoButton.className='secondary';portoButton.textContent='PORTO · INGLESE';portoButton.disabled=managingProfile;portoButton.addEventListener('click',()=>selectPortoProfile(profile.id));
     const grammarButton=node('button','OFFICINA · GRAMMATICA','secondary');grammarButton.type='button';grammarButton.disabled=managingProfile;grammarButton.addEventListener('click',()=>selectGrammarProfile(profile.id));
-    if(collaborator())actions.append(statsButton,portoButton,grammarButton);else actions.append(nameButton,statsButton,portoButton,grammarButton,toggle,remove);
-    li.append(title,detail);if(!collaborator())li.append(classAssignmentControl(profile));li.append(actions); el('profiles').append(li);
+    statsButton.textContent='Matematica';portoButton.textContent='Inglese';grammarButton.textContent='Italiano';
+    actions.append(statsButton,portoButton,grammarButton);
+    li.append(title,detail,actions);
+    if(!collaborator()){const management=document.createElement('details');management.className='profileManagement';const summary=document.createElement('summary');summary.textContent='Gestisci profilo';const tools=document.createElement('div');tools.className='profileActions';tools.append(nameButton,toggle,remove);management.append(summary,classAssignmentControl(profile),tools);li.append(management);}
+    el('profiles').append(li);
     if (profile.attivo) {
       const option = document.createElement('option'); option.value = profile.id;
       option.textContent = (profile.nome_riservato || profile.nome_personaggio || 'COMPAGNO NON ANCORA SCELTO') + (profile.animale ? ' · ' + profile.animale : '') + ' · ' + profile.id.slice(0,8);

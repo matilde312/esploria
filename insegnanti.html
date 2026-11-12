@@ -37,6 +37,7 @@
 .gameStats{border-top:1px solid #c6ad88;margin-top:22px;padding-top:14px}.gameStats>summary{cursor:pointer;font-size:24px;color:#315c52;padding:8px 0}.gameStats>summary:focus-visible{outline:3px solid #bc5e3e;outline-offset:3px}
 .teamTools{margin-top:18px;border-top:1px solid #c9b08b;padding-top:14px}.teamTools details{margin:12px 0;border:1px solid #d9c6a9;border-radius:12px;padding:12px}.teamTools summary{cursor:pointer;font-weight:bold}.teamTools .danger{background:#9f433a;color:white}.teamTools input[type=checkbox]{width:auto}.teamTools .pendingNote{background:#fff0cc;padding:12px;border-radius:12px}#accountPanel hr{border:0;border-top:1px solid #c9b08b;margin:26px 0}#forgotPasswordLink{text-align:center;font-size:20px}#accountStatus{white-space:pre-line}
 </style>
+<link rel="stylesheet" href="insegnanti-layout.css?v=adulto-1">
 </head>
 <body>
 <main>
@@ -44,7 +45,7 @@
 <section class="card">
 <h1>AREA INSEGNANTE</h1>
 <form id="loginForm">
-<p>Entra per creare i codici personali dei bambini.</p>
+<p>Accedi per consultare i progressi delle tue classi e gestire i profili.</p>
 <label for="email">EMAIL</label><input id="email" type="email" autocomplete="username" required>
 <label for="password">PASSWORD</label><input id="password" type="password" autocomplete="current-password" required>
 <button id="loginButton" type="submit">ENTRA</button>
@@ -136,18 +137,19 @@
 <p id="childNameHelp">NON COMPARE NEL PROFILO DEL BAMBINO, NEI GIOCHI O NELLE CLASSIFICHE. LASCIA VUOTO PER RIMUOVERE IL NOME.</p>
 <p id="childNameMessage" role="status" aria-live="polite"></p><div class="profileActions"><button id="saveChildName" type="submit">SALVA NOME</button><button id="cancelChildName" type="button" class="secondary">ANNULLA</button></div>
 </form></dialog>
-<script src="insegnanti.js?v=misure-1"></script>
+<script src="insegnanti.js?v=layout-5"></script>
 <script src="insegnanti-porto.js?v=discipline-1"></script>
 <script src="insegnanti-classi.js?v=team-2"></script>
 <script src="memory-distintivi.js?v=1"></script>
 <script src="insegnanti-memory.js?v=distintivi-2"></script>
 <script src="grammatica-distintivi.js?v=1"></script>
 <script src="insegnanti-grammatica.js?v=legami-1"></script>
-<script src="insegnanti-team.js?v=account-4"></script>
+<script src="insegnanti-team.js?v=layout-5"></script>
 <script src="doppie-dati.js?v=1"></script>
 <script src="insegnanti-doppie.js?v=1"></script>
 <script src="legami-dati.js?v=1"></script>
 <script src="insegnanti-legami.js?v=1"></script>
 <script src="misure-dati.js?v=1"></script><script src="insegnanti-misure.js?v=1"></script>
+<script src="insegnanti-layout.js?v=adulto-1"></script>
 </body>
 </html>

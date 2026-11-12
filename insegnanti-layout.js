@@ -22,7 +22,7 @@ views.progressi.append($('borgoStats'),$('portoStats'),$('grammarStats'));
 views.bambini.append($('profilesPanel'),$('codeCreationPanel'),$('codeCard'),$('manualBadgePanel'));
 views.team.append($('teamPanel'));views.account.append($('accountPanel'));
 const subjects=make('div',undefined,'workspaceSubjects');subjects.setAttribute('aria-label','Discipline');const subjectButtons={};
-const subjectDefs=[['borgoStats','Matematica','Borgo degli Ingranaggi'],['portoStats','Inglese','Porto delle Lingue'],['grammarStats','Italiano','Officina delle Parole']];
+const subjectDefs=[['borgoStats','Matematica','Borgo degli Ingranaggi'],['portoStats','Inglese','Porto delle Lingue'],['grammarStats','Italiano','Officina e Biblioteca']];
 for(const [id,label,place]of subjectDefs){const b=make('button',undefined,'subjectButton');b.type='button';b.setAttribute('aria-controls',id);b.append(make('strong',label),make('small',place));b.addEventListener('click',()=>showView('progressi',id));subjects.append(b);subjectButtons[id]=b;}views.progressi.prepend(subjects);
 const emptyProgress=make('p','Scegli una disciplina per aprire i risultati della classe.','workspaceHint');views.progressi.append(emptyProgress);
 // Panoramica: solo conteggi dei profili effettivamente caricati, nessun voto aggregato.

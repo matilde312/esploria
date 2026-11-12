@@ -1,0 +1,10 @@
+/* I distintivi delle storie si aggiungono allo scrigno comune. */
+(()=>{'use strict';let generation=0;
+document.addEventListener('esploria:profilo-nascosto',()=>{generation++;document.querySelectorAll('[data-storie-badge]').forEach(n=>n.remove())});
+async function loadStorieBadges(){const current=++generation;const code=(()=>{try{return sessionStorage.getItem('esploria-accesso-codice-v1')}catch(_){return null}})();if(!code)return;
+const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),15000);
+try{const response=await fetch('https://eovmvcxvyhtbsxrjdmak.supabase.co/rest/v1/rpc/esploria_storie',{method:'POST',headers:{'Content-Type':'application/json',apikey:'sb_publishable_wXXfLDRJLU3fZumfCYMHiA_qqL00eae'},body:JSON.stringify({p_codice:code,p_azione:'traguardi'}),signal:controller.signal});if(!response.ok)throw Error();const data=await response.json();if(current!==generation||sessionStorage.getItem('esploria-accesso-codice-v1')!==code)return;const list=document.getElementById('badges');if(!list)return;list.querySelectorAll('[data-storie-badge]').forEach(n=>n.remove());for(const badge of EsploriaStorie.badges(data.completate)){const card=document.createElement('article');card.className='badge';card.dataset.storieBadge=badge.key;const icon=document.createElement('span');icon.className='badgeIcon';icon.setAttribute('aria-hidden','true');icon.textContent=badge.icon;const title=document.createElement('h3');title.textContent=badge.it;const text=document.createElement('p');text.textContent=badge.n===1?'HAI COMPLETATO LA TUA PRIMA INDAGINE!':'HAI COMPLETATO '+badge.n+' INDAGINI NELLA BIBLIOTECA!';card.append(icon,title,text);list.append(card)}document.getElementById('badgeCount').textContent=String(list.children.length);if(list.children.length)document.getElementById('noBadges').hidden=true;
+}catch(_){/* Gli altri distintivi e il profilo restano disponibili. */}finally{clearTimeout(timer)}}
+document.addEventListener('esploria:profilo-caricato',loadStorieBadges);
+if(document.getElementById('privateArea')?.hidden===false)loadStorieBadges();
+})();

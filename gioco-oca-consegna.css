@@ -1,0 +1,26 @@
+/* Consegna leggibile: l’ordine ha sempre un nome, il colore lo accompagna. */
+#answerPanel>.eyebrow{font-size:19px;margin:2px 0 12px;text-align:center;letter-spacing:1px}
+.calculationCard{background:#fffdf3;border:3px solid #b7955d;border-radius:21px;padding:14px 10px 18px;margin:0 0 19px;box-shadow:0 4px 0 #9b7a4530}
+.operationTitle{margin:0 0 10px;text-align:center;font-size:21px;line-height:1.15;color:#355b57}
+#instruction{--order-ink:#294b56;--order-paper:#eff1e2;display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;min-height:0;margin:0 1px 13px;padding:12px 9px;background:var(--order-paper);border:2px solid currentColor;border-radius:13px;color:var(--order-ink);font-size:29px;line-height:1.1;text-align:center;text-transform:uppercase}
+#instruction .orderAmount{white-space:nowrap;font-size:36px;line-height:1}
+#instruction .orderName{max-width:100%;font-size:27px;line-height:1.1}
+#instruction.numericPrompt{font-size:21px;border-color:#d3ccb0;background:#f1efdf;color:#5d6659;padding:10px}
+[data-order="0"]{--order-ink:#1c60b2;--order-paper:#edf4ff}
+[data-order="1"]{--order-ink:#ae2c35;--order-paper:#fff0f0}
+[data-order="2"]{--order-ink:#287b3e;--order-paper:#eff8e9}
+[data-order="3"],[data-order="4"],[data-order="5"]{--order-ink:#ac5100;--order-paper:#fff1df}
+#instruction[data-order="0"]{--order-ink:#1c60b2;--order-paper:#edf4ff}
+#instruction[data-order="1"]{--order-ink:#ae2c35;--order-paper:#fff0f0}
+#instruction[data-order="2"]{--order-ink:#287b3e;--order-paper:#eff8e9}
+#instruction[data-order="3"],#instruction[data-order="4"],#instruction[data-order="5"]{--order-ink:#ac5100;--order-paper:#fff1df}
+.orderColor{color:var(--order-ink);text-transform:uppercase}
+#operationExpression{display:flex;align-items:baseline;justify-content:center;gap:8px;white-space:nowrap;color:#233f4b;font-size:46px;line-height:1.2;padding:5px 0;font-variant-numeric:tabular-nums}
+#operationExpression .currentNumber{font:inherit;line-height:inherit;margin:0;color:inherit;text-align:inherit}
+.operationSign{font-size:.86em;color:#375f58}.operationEquals{font-size:.75em;color:#667364}.operationUnknown{color:#aa622b}
+#operationExpression.calculationWide{font-size:32px;gap:6px}
+#answerForm>label{display:block;font-size:24px;text-align:center;color:#294f53;margin-bottom:8px}
+#answerForm #answer{font-size:40px;text-align:center;min-height:64px;border-width:3px}
+.legend .orderColor{font-size:19px}.legend dd.orderColor{line-height:1.25}
+@media(max-width:1100px) and (min-width:761px){#operationExpression{font-size:40px;gap:6px}#operationExpression.calculationWide{font-size:28px;gap:4px}#instruction .orderName{font-size:25px}.operationTitle{font-size:20px}}
+@media(max-width:760px){.calculationCard{padding:14px 10px 17px}#operationExpression{font-size:clamp(36px,9vw,52px);gap:7px}#operationExpression.calculationWide{font-size:clamp(27px,7vw,38px);gap:5px}#instruction .orderName{font-size:27px}#instruction .orderAmount{font-size:34px}.operationTitle{font-size:21px}}

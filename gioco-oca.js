@@ -15,10 +15,10 @@ async function rpc(action,args={}){const code=session();if(!code)throw new Error
  }catch(e){if(e.name==='AbortError'||e instanceof TypeError)throw new Error('COLLEGAMENTO INTERROTTO. PREMI RIPROVA: LA RISPOSTA NON VERRÀ CONTATA DUE VOLTE.');throw e}finally{clearTimeout(timer)}}
 function instruction(q){const sign=q.delta>0?'+':'−';return sign+' '+(q.modo===2?fmt(Math.abs(q.delta)):q.quantita+' '+ORDERS[q.ordine][1])}
 function renderQuestion(q){
- const sign=q.delta>0?'+':'−',number=fmt(q.numero),quantity=fmt(Math.abs(q.delta));
+ const sign=q.delta>0?'+':'−',number=fmt(q.numero),quantity=String(q.quantita)+ORDERS[q.ordine][0].toLowerCase();
  $('currentNumber').textContent=number;$('operationSign').textContent=sign;$('operationQuantity').textContent=quantity;
- const expression=$('operationExpression');expression.classList.toggle('calculationWide',String(Math.abs(q.numero)).length+String(Math.abs(q.delta)).length>9);
- expression.setAttribute('aria-label',number+(q.delta>0?' PIÙ ':' MENO ')+quantity+'. QUAL È IL RISULTATO?');
+ const expression=$('operationExpression');expression.dataset.order=String(q.ordine);expression.classList.toggle('calculationWide',String(Math.abs(q.numero)).length+String(Math.abs(q.delta)).length>9);
+ expression.setAttribute('aria-label',number+(q.delta>0?' PIÙ ':' MENO ')+q.quantita+' '+ORDERS[q.ordine][1]+'. QUAL È IL RISULTATO?');
  const prompt=$('instruction');prompt.replaceChildren();prompt.classList.toggle('numericPrompt',q.modo===2);prompt.removeAttribute('data-order');
  if(q.modo===2){prompt.textContent='TROVA IL NUOVO NUMERO';return;}
  prompt.dataset.order=String(q.ordine);const amount=document.createElement('span'),order=document.createElement('span');amount.className='orderAmount';amount.textContent=sign+' '+q.quantita;order.className='orderName';order.textContent=ORDERS[q.ordine][1];prompt.append(amount,order);

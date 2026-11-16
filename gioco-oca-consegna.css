@@ -24,3 +24,5 @@
 .legend .orderColor{font-size:19px}.legend dd.orderColor{line-height:1.25}
 @media(max-width:1100px) and (min-width:761px){#operationExpression{font-size:40px;gap:6px}#operationExpression.calculationWide{font-size:28px;gap:4px}#instruction .orderName{font-size:25px}.operationTitle{font-size:20px}}
 @media(max-width:760px){.calculationCard{padding:14px 10px 17px}#operationExpression{font-size:clamp(36px,9vw,52px);gap:7px}#operationExpression.calculationWide{font-size:clamp(27px,7vw,38px);gap:5px}#instruction .orderName{font-size:27px}#instruction .orderAmount{font-size:34px}.operationTitle{font-size:21px}}
+
+#operationQuantity{color:var(--order-ink);text-transform:none}
